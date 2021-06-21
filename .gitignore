@@ -1,6 +1,8 @@
-# History files
 .Rhistory
 .Rapp.history
+
+#macOS file metadata
+.DS_Store
 
 # Session Data files
 .RData
@@ -37,3 +39,9 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# pkgdown site
+docs/
+
+# translation temp files
+po/*~
