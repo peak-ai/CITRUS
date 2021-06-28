@@ -27,3 +27,6 @@ test_that("Number of Rows", {
 test_that("No nulls", {
   expect_equal(ncol(output[complete.cases(output), ]), 16)
 })
+
+
+

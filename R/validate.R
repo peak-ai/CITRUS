@@ -9,7 +9,7 @@ validate <- function(df, supervised = TRUE) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
-  categorical_columns <- df %>% select(-customerid) %>% select_if(is.character) %>% summarise_all(n_distinct)
+  categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
   
   if (!('response' %in% names(df)) & (supervised == TRUE)) {
     missing_columns <- c(missing_columns, 'response')
