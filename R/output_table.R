@@ -71,8 +71,8 @@ mode <- function(codes, max = T){
   }
 }
 range_output <- function(codes){
-  min_codes <- min(codes)
-  max_codes <- max(codes)
+  min_codes <- min(codes, na.rm = TRUE)
+  max_codes <- max(codes, na.rm = TRUE)
   output <- paste0(min_codes,' - ',max_codes)
   return(output)
 }
