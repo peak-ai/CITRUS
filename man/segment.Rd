@@ -6,7 +6,7 @@
 \usage{
 segment(data, modeltype = "tree", FUN = NULL, FUN_preprocess = NULL,
   steps = c("preprocess", "model"), prettify = F, print_plot = F,
-  hyperparameters = NULL, verbose = TRUE)
+  hyperparameters = NULL, force = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{data}{data.frame, the data to segment}
@@ -24,6 +24,8 @@ segment(data, modeltype = "tree", FUN = NULL, FUN_preprocess = NULL,
 \item{print_plot}{logical, TRUE if want to print the plot}
 
 \item{hyperparameters}{list of hyperparameters to use in the model.}
+
+\item{force}{logical, TRUE to ignore errors in validation step and force model execution.}
 
 \item{verbose}{logical whether information about the segmentation pipeline should be given.}
 }

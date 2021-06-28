@@ -9,6 +9,7 @@
 #' @param prettify logical, TRUE if want cleaned up outputs, FALSE for raw output
 #' @param print_plot logical, TRUE if want to print the plot
 #' @param hyperparameters list of hyperparameters to use in the model.
+#' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
 #' @export
 segment <- function(data,
@@ -18,7 +19,7 @@ segment <- function(data,
                     steps = c('preprocess', 'model'),
                     prettify = F,
                     print_plot = F,
-                    hyperparameters = NULL, verbose = TRUE) {
+                    hyperparameters = NULL, force = FALSE, verbose = TRUE) {
 
   # Data processing layer
   # returns data in appropriate format called 'data'
@@ -48,7 +49,7 @@ segment <- function(data,
         if(verbose == TRUE) {message('Tree based model chosen')}
 
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = TRUE)
+        validate(data, supervised = TRUE, force = force)
         # Default hyperparameters
         if(is.null(hyperparameters)){
           if(verbose == TRUE) {message('Using default hyper-parameters')}
@@ -80,7 +81,7 @@ segment <- function(data,
         if(verbose == TRUE) {message('Unsupervised model chosen')}
   
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = FALSE)
+        validate(data, supervised = FALSE, force = force)
   
         # Default hyperparameters
         if(is.null(hyperparameters)){
