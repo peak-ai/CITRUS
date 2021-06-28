@@ -2,7 +2,7 @@
 #'
 #' Segments the data by running all steps in the segmentation pipeline, including output table
 #' @param data data.frame, the data to segment
-#' @param modeltype character, the type of model to use to segment choices are: 'tree'
+#' @param modeltype character, the type of model to use to segment choices are: 'tree', 'unsupervised'
 #' @param FUN function, A user specified function to segment, if the standard methods are not wanting to be used
 #' @param FUN_preprocess function, A user specified function to preprocess, if the standard methods are not wanting to be used
 #' @param steps list, names of the steps the user want to run the data on. Options are 'preprocess' and 'model'
