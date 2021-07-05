@@ -25,8 +25,3 @@ test_that("Throw error when too many categorical levels", {
 test_that("Unique customer count", {
   expect_equal(nrow(output_preprocess), length(unique(output_preprocess[["customerid"]])))
 })
-
-
-
-
-

@@ -5,11 +5,15 @@
 #' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
 #' @importFrom dplyr n_distinct
 #' @export
-validate <- function(df, supervised = TRUE) {
+validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
   categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
+  
+  if (!is.null(hyperparameters$segmentation_variables)) {
+    df <- df[,names(df) %in% hyperparameters$segmentation_variables]
+  }
   
   if (!('response' %in% names(df)) & (supervised == TRUE)) {
     missing_columns <- c(missing_columns, 'response')
