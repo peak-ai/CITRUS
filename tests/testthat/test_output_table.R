@@ -19,7 +19,6 @@ test_that("Number of Columns", {
   expect_equal(ncol(output), 16)
 })
 
-
 test_that("Number of Rows", {
   expect_equal(nrow(output), 6)
 })
