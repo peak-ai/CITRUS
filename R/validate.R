@@ -6,7 +6,7 @@
 #' @param force logical, TRUE to ignore error on categorical columns
 #' @importFrom dplyr n_distinct
 #' @export
-validate <- function(df, supervised = TRUE, force = FALSE) {
+validate <- function(df, supervised = TRUE, force) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
