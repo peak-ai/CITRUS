@@ -25,6 +25,15 @@ A few reminders when submitting a pull request:
 - Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, consider submitting them as separate pull requests.
 - Write a [good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
+## Branch schema
+
+<center>
+
+| Branch | Description                                                   |
+|--------|---------------------------------------------------------------|
+| main   | The most recent version on CRAN, if you're submitting a fix to an issue with the CRAN release, fork this branch |
+| dev    | The branch with all the approved changes for the next release. Submit your PRs to this branch. When a new version is released on CRAN this branch gets merged with main. |
+
 ## What can you help with?
 
 If you'd like to contribute, but aren't sure where to start, take a look at the **open issues** in this repository for some ideas.
