@@ -10,7 +10,7 @@ If you are interested in contributing to the package, please follow guidelines f
 
 ## Installation
 
-```
+```r
 # install.packages("devtools")
 devtools::install_github("peak-ai/citrus")
 ```
@@ -23,7 +23,7 @@ In its current state, we are assuming that the input data is a transactions tabl
 
 Using the segmentation functions could be as simple as calling a one-liner:
 
-```
+```r
 output <- segment(citrus::transactional_data, 
                   modeltype = 'tree',
                   steps = c('preprocess','model'),
@@ -37,7 +37,7 @@ The above code uses default hyperparameters. There are two types of hyperparamet
 
 Hyperparameters can be passed into the functions at any time, most of the modules of the CITRUS pipeline has `hyperparameters` as a function input. The hyperparameters should be passed as a list as follows
 
-```
+```r
 hyperparameters = list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
                        number_of_personas = 6,
@@ -66,7 +66,7 @@ Modularity was a primary design consideration when building **CITRUS**. This all
 #### Preprocessing Example 1 
 MVP preprocessing. If nothing other than numeric_operation_list = NA, the preprocessing will default to RFM preprocessing
 Can be used in e.g. unsupervised learning
-```
+```r
 formatted <- preprocess(citrus::transactional_data, numeric_operation_list = NA)
 ```
 
@@ -75,7 +75,7 @@ Aggregating the numeric columns using the 'min' and standard deviation 'sd'.
 Uses the most common category for each user in the column 'country'.
 The target column is the mean of the transactionvalue column.
 
-```
+```r
 formatted <- preprocess(citrus::transactional_data,
                         categories = c('country'), 
                         numeric_operation_list = c('min', 'sd'),
@@ -87,7 +87,7 @@ formatted <- preprocess(citrus::transactional_data,
 #### Data Validation Example 1
 DF invalid because the 'customerid' column is missing
 
-```
+```r
 invalid_df <- formatted %>% 
   select(-customerid)
 
@@ -97,7 +97,7 @@ validate(invalid_df, supervised = TRUE)
 #### Data Validation Example 2 
 DF invalid because the 'response' column is missing and the customerid column is not unique
 
-```
+```r
 invalid_df <- formatted %>% 
   rbind(formatted[rep(1, 5), ]) %>%
   select(-response)
@@ -108,7 +108,7 @@ validate(invalid_df, supervised = TRUE)
 #### Data Validation Example 3 
 DF invalid because only the customerid, and response column exists, there are no feature columns to predict over.
 
-```
+```r
 invalid_df <- formatted %>% 
   select(customerid, response)
 
@@ -118,7 +118,7 @@ validate(invalid_df, supervised = TRUE)
 #### Data Validation Example 4
 Successful validation
 
-```
+```r
 validate(formatted, supervised = TRUE)
 ```
 ### Segment
@@ -127,7 +127,7 @@ Runs the default decision tree optimisation function to segment the customers.
 Skips the 'preprocess' step and goes straight from the 'model' step and onwards.
 Instructed to prettify the plot and display it
 
-```
+```r
 output <- segment(citrus::preprocessed_data, 
                   modeltype = 'tree',
                   steps = c('model'),
@@ -140,7 +140,7 @@ Uses a user defined function to classify the customers
 Skips the 'preprocess' step and goes straight from the 'model' step and onwards.
 No hyper parameters passed
 
-```
+```r
 my_custom_function <- function(df) {
   
   final_df <- df %>%
@@ -165,7 +165,7 @@ output <- segment(citrus::preprocessed_data,
 #### Segment Example 3 
 MVP segmentation. Uses both the default preprocess step and the default model step
 
-```
+```r
 output <- segment(citrus::transactional_data, prettify = TRUE, print_plot = TRUE)
 ```
 
@@ -173,7 +173,7 @@ output <- segment(citrus::transactional_data, prettify = TRUE, print_plot = TRUE
 MVP segmentation for unsupervised learning
 Uses both the default preprocess step and the default model step
 
-```
+```r
 output <- segment(citrus::transactional_data %>% select(-desc_chars), modeltype = 'unsupervised', prettify = TRUE)
 ```
 
@@ -181,7 +181,7 @@ output <- segment(citrus::transactional_data %>% select(-desc_chars), modeltype 
 #### Model Abstraction Example 1 
 The model abstraction layer takes the output of the model segment layer and extracts the relevant information and converts it into a model class ready for the model management layer.
 
-```
+```r
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
                        number_of_personas = 6,
@@ -197,7 +197,7 @@ model <- tree_abstract(model, citrus::preprocessed_data)
 #### Model Management Example 1 
 The model management layer is used to store the model outputs and relevant metadata, this is defaulted to not save. To get this layer to work, in the hyperparameters at the start, the saveoutput hyperparameter can be changed to save the relevant model outputs.
 
-```
+```r
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
                        number_of_personas = 6,
@@ -215,7 +215,7 @@ model_management(model,hyperparameters)
 #### Output Layer Example 1 
 The output layer takes the output of the model segment and abstraction layer and produces the output table.
 
-```
+```r
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
                        number_of_personas = 6,
@@ -231,7 +231,7 @@ output <- output_table(citrus::preprocessed_data,model)
 
 ### Pair-plot vizualisation
 
-```
+```r
 formatted <- preprocess(citrus::transactional_data,
                         categories = c('country'), 
                         numeric_operation_list = c('min', 'sd'),
@@ -250,7 +250,7 @@ plot <- citrus_pair_plot(data = formatted, segments = output$segments, vars = c(
 ### Full Workflow
 **CITRUS** can be run simply with the `segment` function or can be more advanced, using each module by line as below.
 
-```
+```r
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
                        number_of_personas = 6,
