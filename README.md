@@ -43,6 +43,17 @@ hyperparameters = list(dependent_variable = 'response',
                        number_of_personas = 6,
                        print_safety_check=20)
 ```
+or for unsupervised
+
+```r
+hyperparameters = list(centers = 'auto',
+                                 iter_max = 50,
+                                 nstart = 5,
+                                 max_centers = 5, 
+                                 segmentation_variables = NULL,
+                                 standardize = TRUE)
+```
+
 
 <center>
 
@@ -174,7 +185,9 @@ MVP segmentation for unsupervised learning
 Uses both the default preprocess step and the default model step
 
 ```r
-output <- segment(citrus::transactional_data %>% select(-desc_chars), modeltype = 'unsupervised', prettify = TRUE)
+output <- segment(citrus::transactional_data %>% select(-desc_chars), 
+                  modeltype = 'unsupervised', 
+                  prettify = TRUE)
 ```
 
 ### Model Abstraction
