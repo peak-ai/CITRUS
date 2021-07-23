@@ -80,7 +80,7 @@ segment <- function(data,
         if(verbose == TRUE) {message('Unsupervised model chosen')}
   
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = FALSE, force = force)
+        validate(data, supervised = FALSE, force = force, hyperparameters)
   
         # Default hyperparameters
         if(is.null(hyperparameters)){

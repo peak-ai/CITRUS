@@ -4,7 +4,7 @@
 \alias{validate}
 \title{Validation function}
 \usage{
-validate(df, supervised = TRUE, force = FALSE)
+validate(df, supervised = TRUE, force, hyperparameters)
 }
 \arguments{
 \item{df}{data.frame, the data to validate}
@@ -12,6 +12,8 @@ validate(df, supervised = TRUE, force = FALSE)
 \item{supervised}{logical, TRUE for supervised learning, FALSE for unsupervised}
 
 \item{force}{logical, TRUE to ignore error on categorical columns}
+
+\item{hyperparameters}{list of hyperparameters used in the model}
 }
 \description{
 Validates that the input data adheres to the expected format for modelling.

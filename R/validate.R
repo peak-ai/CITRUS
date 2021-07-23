@@ -4,6 +4,7 @@
 #' @param df data.frame, the data to validate
 #' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
 #' @param force logical, TRUE to ignore error on categorical columns
+#' @param hyperparameters list of hyperparameters used in the model
 #' @importFrom dplyr n_distinct
 #' @export
 
@@ -13,7 +14,12 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
   toomanylevels_columns <- c()
   categorical_columns <- df %>% select(-customerid) %>% select_if(is.character) %>% summarise_all(n_distinct)
   
-  if (!(hyperparameters$dependent_variable %in% names(df)) & (supervised == TRUE)) {
+  if(supervised == TRUE) {
+    index <- which(colnames(df) == hyperparameters$dependent_variable)
+    colnames(df)[index] <- "response"
+  }
+  
+  if (!('response' %in% names(df)) & (supervised == TRUE)) {
     missing_columns <- c(missing_columns, hyperparameters$dependent_variable)
   }
   
@@ -26,7 +32,7 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
     }
   }
   
-  if (sum(!(names(df) %in% c('customerid', hyperparameters$dependent_variable))) == 0) {
+  if (sum(!(names(df) %in% c('customerid', 'response'))) == 0) {
     error_message <- 'The dataframe does not contain any feature columns.'
     other_errors <- c(other_errors, error_message)
   }
