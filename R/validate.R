@@ -6,14 +6,15 @@
 #' @param force logical, TRUE to ignore error on categorical columns
 #' @importFrom dplyr n_distinct
 #' @export
-validate <- function(df, supervised = TRUE, force) {
+
+validate <- function(df, supervised = TRUE, force, hyperparameters) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
   categorical_columns <- df %>% select(-customerid) %>% select_if(is.character) %>% summarise_all(n_distinct)
   
-  if (!('response' %in% names(df)) & (supervised == TRUE)) {
-    missing_columns <- c(missing_columns, 'response')
+  if (!(hyperparameters$dependent_variable %in% names(df)) & (supervised == TRUE)) {
+    missing_columns <- c(missing_columns, hyperparameters$dependent_variable)
   }
   
   if (!('customerid' %in% names(df))) {
@@ -25,7 +26,7 @@ validate <- function(df, supervised = TRUE, force) {
     }
   }
   
-  if (sum(!(names(df) %in% c('customerid', 'response'))) == 0) {
+  if (sum(!(names(df) %in% c('customerid', hyperparameters$dependent_variable))) == 0) {
     error_message <- 'The dataframe does not contain any feature columns.'
     other_errors <- c(other_errors, error_message)
   }
