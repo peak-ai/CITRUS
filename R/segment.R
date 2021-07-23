@@ -47,13 +47,12 @@ segment <- function(data,
       # Tree Model
       if (modeltype == 'tree') {
         if(verbose == TRUE) {message('Tree based model chosen')}
-
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = TRUE, force = force)
+        validate(data, supervised = TRUE, force = force, hyperparameters)
         # Default hyperparameters
         if(is.null(hyperparameters)){
           if(verbose == TRUE) {message('Using default hyper-parameters')}
-
+          
           hyperparameters = list(dependent_variable = 'response',
                                  min_segmentation_fraction = 0.05,
                                  number_of_personas = 6,

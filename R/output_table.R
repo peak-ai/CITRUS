@@ -12,13 +12,15 @@ output_table <- function(data, model) {
                        customerid = as.character(model$predicted_values$customerid), 
                        stringsAsFactors = FALSE)
   
+  response <- model$model_hyperparameters$dependent_variable
+  
   df <- left_join(data, output, by = 'customerid')
   
   segmentation_vars <- model$model_hyperparameters$segmentation_variables
   
   if(is.null(segmentation_vars)){
     allcolumnnames <- colnames(df)
-    segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('customerid', 'response', 'segment')]  
+    segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('customerid', response , 'segment')]  
   }
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
@@ -42,10 +44,10 @@ output_table <- function(data, model) {
   df_agg <- df_agg %>% left_join(df_agg2, by = 'segment') 
   df_agg <- df_agg[,c(1,order(colnames(df_agg)[-1])+1)]
   
-  if('response' %in% names(df)) {
+  if(response %in% names(df)) {
     df <- df %>%
       group_by(.data$segment)%>%
-      summarise(n = n(), mean_value = mean(as.numeric(as.character(.data$response)),na.rm=T)) %>%
+      summarise(n = n(), mean_value = mean(as.numeric(as.character(.data[[response]])),na.rm=T)) %>%
       mutate(percentage = .data$n/sum(.data$n)) %>% 
         left_join(df_agg, by = 'segment')
 
