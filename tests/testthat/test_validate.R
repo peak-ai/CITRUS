@@ -14,7 +14,7 @@ test_that("Supervised without response variable", {
   expect_error(citrus::validate(output_preprocess), regexp = "Columns missing: response")
 })
 
-test_that("Throw error when too many categorical levels", {
+test_that("Correct error when customerid is missing.", {
   expect_error(citrus::validate(preprocess_no_customerid), regexp = "Columns missing: customerid")
 })
 
