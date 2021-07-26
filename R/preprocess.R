@@ -53,25 +53,31 @@ preprocess <- function(df,
               frequency = n_distinct(.data$transactionid),
               monetary = sum(.data$transactionvalue, na.rm = TRUE)) %>%
     ungroup()
-
+  
   # Filters numeric columns and performs aggregations defined by input
   # numeric_operation_list parameter.
   if (any(!(is.null(numeric_operation_list) | is.na(numeric_operation_list)))) {
     function_vector <- strings_to_functions(numeric_operation_list)
     names(function_vector) <- numeric_operation_list
     
-    numeric_df <- df %>% 
-      select(-target) %>%
+    if (!is.na(target)) {
+      numeric_df <- select(df, -target)
+    } else {
+      numeric_df <- df
+    }
+    
+    numeric_df <- numeric_df %>% 
       group_by(.data$customerid) %>% 
       summarise_if(is.numeric, function_vector) %>% 
       ungroup()
-
+    
     if (is.na(target)) {
       evaluated_columns <- names(df)[sapply(df, is.numeric) & names(df) != 'customerid']
     } else {
       evaluated_columns <- names(df)[sapply(df, is.numeric) & names(df) != 'customerid' & names(df) != target]
     }
-
+    
+    
     if (length(evaluated_columns) == 1) {
       adjusted_name <- paste0(evaluated_columns, '_', names(numeric_df)[!(names(numeric_df) %in% c('customerid', target))])
       names(numeric_df) <- c('customerid', adjusted_name)
@@ -118,7 +124,6 @@ preprocess <- function(df,
   
   return(final_df)
 }
-
 strings_to_functions <- function(string_vector) {
   function_vector <- c()
   for (obj_name in string_vector) {
