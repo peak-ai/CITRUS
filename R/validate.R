@@ -5,11 +5,17 @@
 #' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
 #' @importFrom dplyr n_distinct
 #' @export
-validate <- function(df, supervised = TRUE) {
+validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
-  categorical_columns <- df %>% select(-customerid) %>% select_if(is.character) %>% summarise_all(n_distinct)
+  categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
+  
+  
+  
+  if (!is.null(hyperparameters$segmentation_variables)) {
+    df <- df[,names(df) %in% hyperparameters$segmentation_variables]
+  }
   
   if (!('response' %in% names(df)) & (supervised == TRUE)) {
     missing_columns <- c(missing_columns, 'response')
@@ -42,7 +48,7 @@ validate <- function(df, supervised = TRUE) {
     toomanylevels_columns <- names(categorical_columns)[categorical_columns>(nrow(df)*0.5)]
     stop(paste0('\n\nCategorical Columns have too many levels: ', paste(toomanylevels_columns, collapse = ', ')))
   }
-    
+  
   return (TRUE)
 }
 
