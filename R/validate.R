@@ -11,6 +11,8 @@ validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
   toomanylevels_columns <- c()
   categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
   
+  
+  
   if (!is.null(hyperparameters$segmentation_variables)) {
     df <- df[,names(df) %in% hyperparameters$segmentation_variables]
   }
