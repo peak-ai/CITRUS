@@ -4,22 +4,22 @@ Title: Customer Intelligence Tool for Rapid Understandable Segmentation
 Version: 1.0.0
 Author: Dom Clarke, Joash Rey Alonso, Cinzia Braglia, Leo McCarthy, Oskar Nummendal
 Maintainer: Dom Clarke <dom.clarke@peak.ai>
-Description: This descriptions field needs to be filled out.
+Description: A tool to easily run and visualise supervised and unsupervised state of the art customer segmentation.
 License: MIT + file LICENSE
 Suggests: testthat
-Depends: 
+Depends:
     R (>= 3.5.0)
 Imports:
     ggplot2,
-    GGally, 
-    clustMixType (>= 0.1-16), 
-    treeClust, 
-    rpart, 
-    tibble, 
-    rpart.plot, 
-    rpart.utils, 
-    stringr, 
-    dplyr, 
+    GGally,
+    clustMixType (>= 0.1-16),
+    treeClust,
+    rpart,
+    tibble,
+    rpart.plot,
+    rpart.utils,
+    stringr,
+    dplyr,
     RColorBrewer,
     rlang
 Encoding: UTF-8
