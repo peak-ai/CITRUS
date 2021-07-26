@@ -124,7 +124,6 @@ preprocess <- function(df,
   
   return(final_df)
 }
-
 strings_to_functions <- function(string_vector) {
   function_vector <- c()
   for (obj_name in string_vector) {
