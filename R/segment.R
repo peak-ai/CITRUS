@@ -50,16 +50,18 @@ segment <- function(data,
         if(verbose == TRUE) {message('Validating input data')}
         validate(data, supervised = TRUE)
         # Default hyperparameters
+        default_hyperparameters = list(dependent_variable = 'response',
+                                       min_segmentation_fraction = 0.05,
+                                       number_of_personas = 6,
+                                       print_plot = ifelse(prettify == FALSE, print_plot, FALSE),
+                                       print_safety_check=20)
         if(is.null(hyperparameters)){
           if(verbose == TRUE) {message('Using default hyper-parameters')}
-
-          hyperparameters = list(dependent_variable = 'response',
-                                 min_segmentation_fraction = 0.05,
-                                 number_of_personas = 6,
-                                 print_plot = ifelse(prettify == FALSE, print_plot, FALSE),
-                                 print_safety_check=20)
+          hyperparameters = default_hyperparameters
+        }else{
+          hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
-
+        
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$persona_table$persona, '\n')))}
@@ -83,14 +85,18 @@ segment <- function(data,
         validate(data, supervised = FALSE)
   
         # Default hyperparameters
+        default_hyperparameters = list(centers = 'auto',
+                                       iter_max = 50,
+                                       nstart = 5,
+                                       max_centers = 5, 
+                                       segmentation_variables = NULL,
+                                       standardize = TRUE)
+        
         if(is.null(hyperparameters)){
           if(verbose == TRUE) {message('Using default hyper-parameters')}
-          hyperparameters = list(centers = 'auto',
-                                 iter_max = 50,
-                                 nstart = 5,
-                                 max_centers = 5, 
-                                 segmentation_variables = NULL,
-                                 standardize = TRUE)
+          hyperparameters = default_hyperparameters
+        }else{
+          hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
   
         if(verbose == TRUE) {message('Training model')}
