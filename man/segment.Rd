@@ -4,22 +4,14 @@
 \alias{segment}
 \title{Segment Function}
 \usage{
-segment(
-  data,
-  modeltype = "tree",
-  FUN = NULL,
-  FUN_preprocess = NULL,
-  steps = c("preprocess", "model"),
-  prettify = F,
-  print_plot = F,
-  hyperparameters = NULL,
-  verbose = TRUE
-)
+segment(data, modeltype = "tree", FUN = NULL, FUN_preprocess = NULL,
+  steps = c("preprocess", "model"), prettify = F, print_plot = F,
+  hyperparameters = NULL, force = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{data}{data.frame, the data to segment}
 
-\item{modeltype}{character, the type of model to use to segment choices are: 'tree'}
+\item{modeltype}{character, the type of model to use to segment choices are: 'tree', 'unsupervised'}
 
 \item{FUN}{function, A user specified function to segment, if the standard methods are not wanting to be used}
 
@@ -32,6 +24,8 @@ segment(
 \item{print_plot}{logical, TRUE if want to print the plot}
 
 \item{hyperparameters}{list of hyperparameters to use in the model.}
+
+\item{force}{logical, TRUE to ignore errors in validation step and force model execution.}
 
 \item{verbose}{logical whether information about the segmentation pipeline should be given.}
 }

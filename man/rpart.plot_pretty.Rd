@@ -4,16 +4,8 @@
 \alias{rpart.plot_pretty}
 \title{Plot a prettified rpart model}
 \usage{
-rpart.plot_pretty(
-  model,
-  main = "",
-  sub,
-  caption,
-  palettes,
-  type = 2,
-  fontfamily = "sans",
-  ...
-)
+rpart.plot_pretty(model, main = "", sub, caption, palettes, type = 2,
+  fontfamily = "sans", ...)
 }
 \arguments{
 \item{model}{an rpart model object}

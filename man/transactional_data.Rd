@@ -4,9 +4,7 @@
 \name{transactional_data}
 \alias{transactional_data}
 \title{Segmentation transactional data}
-\format{
-Data frame on a transactional level. Contains 10,000 rows and 6 columns.
-}
+\format{Data frame on a transactional level. Contains 10,000 rows and 6 columns.}
 \usage{
 data(transactional_data)
 }

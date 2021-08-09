@@ -11,6 +11,11 @@ output_table <- function(data, model) {
   output <- data.frame(segment = model$predicted_values$persona,
                        customerid = as.character(model$predicted_values$customerid), 
                        stringsAsFactors = FALSE)
+  if(!is.null(model$model_hyperparameters$dependent_variable)) {
+    response <- model$model_hyperparameters$dependent_variable
+  } else {
+    response <- "response"
+  }
   
   df <- left_join(data, output, by = 'customerid')
   
@@ -18,7 +23,7 @@ output_table <- function(data, model) {
   
   if(is.null(segmentation_vars)){
     allcolumnnames <- colnames(df)
-    segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('customerid', 'response', 'segment')]  
+    segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('customerid', response , 'segment')]  
   }
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
@@ -42,7 +47,7 @@ output_table <- function(data, model) {
   df_agg <- df_agg %>% left_join(df_agg2, by = 'segment') 
   df_agg <- df_agg[,c(1,order(colnames(df_agg)[-1])+1)]
   
-  if('response' %in% names(df)) {
+  if(response %in% names(df)) {
     df <- df %>%
       group_by(.data$segment)%>%
       summarise(n = n(), mean_value = mean(as.numeric(as.character(.data$response)),na.rm=T)) %>%
