@@ -4,7 +4,7 @@
 
 Customer segmentation is the process of dividing customers into groups based on common characteristics so companies can market to each group effectively and appropriately. **CITRUS** is a package developed by Peak to provide easy and understable segmentation utilities.
 
-## Contributing
+## Contributing 
 
 If you are interested in contributing to the package, please follow guidelines found [here](https://github.com/PeakBI/citrus/blob/main/.github/CONTRIBUTING.md) 
 
