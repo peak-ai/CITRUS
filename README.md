@@ -8,7 +8,7 @@ Customer segmentation is the process of dividing customers into groups based on 
 
 If you are interested in contributing to the package, please follow guidelines found [here](https://github.com/PeakBI/citrus/blob/main/.github/CONTRIBUTING.md) 
 
-## Installation
+## Installation  
 
 ```r
 # install.packages("devtools")
