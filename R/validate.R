@@ -3,7 +3,7 @@
 #' Validates that the input data adheres to the expected format for modelling.
 #' @param df data.frame, the data to validate
 #' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
-#' @importFrom dplyr n_distinct
+#' @importFrom dplyr n_distinct select_if summarise_all
 #' @export
 validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
   missing_columns <- c()

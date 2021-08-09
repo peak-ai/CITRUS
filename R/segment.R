@@ -10,6 +10,7 @@
 #' @param print_plot logical, TRUE if want to print the plot
 #' @param hyperparameters list of hyperparameters to use in the model.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @importFrom utils modifyList
 #' @export
 segment <- function(data,
                     modeltype = 'tree',
