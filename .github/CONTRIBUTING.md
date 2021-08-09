@@ -1,4 +1,4 @@
-## Contributing
+# Contributing
 
 Thanks for getting involved! Here is some information we'd like you to read and understand before you make your mark as a valued contributor.
 
