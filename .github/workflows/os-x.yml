@@ -20,23 +20,18 @@ jobs:
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.r-version }}
+      
+      - uses: r-lib/actions/setup-pandoc@v1
           
       - name: "Install curl and pandoc for Linux"
         if: runner.os == 'Linux'
         run: |
           sudo apt install libcurl4-openssl-dev
           sudo apt-get install pandoc
-      - name: "Install pandoc for macOS"
-        if: runner.os == 'macOS'
-        run: |
-          install.packages('installr')
-          installr::install.pandoc()
-        shell: Rscript {0}
           
       - name: Query dependencies
         run: |
-          stop()
-          install.packages('remotes')
+          install.packages('remotes', repo = 'https://mac.R-project.org')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -50,6 +45,7 @@ jobs:
         
       - name: Install dependencies
         run: |
+          stop()
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
