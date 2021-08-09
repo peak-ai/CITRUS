@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        r-version: ['devel']
+        r-version: ['release']
 
     steps:
       - uses: actions/checkout@v2
