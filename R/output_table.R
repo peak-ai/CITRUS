@@ -11,8 +11,11 @@ output_table <- function(data, model) {
   output <- data.frame(segment = model$predicted_values$persona,
                        customerid = as.character(model$predicted_values$customerid), 
                        stringsAsFactors = FALSE)
-  
-  response <- model$model_hyperparameters$dependent_variable
+  if(!is.null(model$model_hyperparameters$dependent_variable)) {
+    response <- model$model_hyperparameters$dependent_variable
+  } else {
+    response <- "response"
+  }
   
   df <- left_join(data, output, by = 'customerid')
   
