@@ -3,9 +3,12 @@
 #' Validates that the input data adheres to the expected format for modelling.
 #' @param df data.frame, the data to validate
 #' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
+#' @param force logical, TRUE to ignore error on categorical columns
+#' @param hyperparameters list of hyperparameters used in the model
 #' @importFrom dplyr n_distinct
 #' @export
-validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
+
+validate <- function(df, supervised = TRUE, force, hyperparameters) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
@@ -17,8 +20,13 @@ validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
     df <- df[,names(df) %in% hyperparameters$segmentation_variables]
   }
   
+  if(supervised == TRUE) {
+    index <- which(colnames(df) == hyperparameters$dependent_variable)
+    colnames(df)[index] <- "response"
+  }
+  
   if (!('response' %in% names(df)) & (supervised == TRUE)) {
-    missing_columns <- c(missing_columns, 'response')
+    missing_columns <- c(missing_columns, hyperparameters$dependent_variable)
   }
   
   if (!('customerid' %in% names(df))) {
@@ -46,7 +54,9 @@ validate <- function(df, supervised = TRUE, hyperparameters = NULL) {
   
   if((nrow(df)>50)&(sum(categorical_columns>(nrow(df)*0.5))>0)){
     toomanylevels_columns <- names(categorical_columns)[categorical_columns>(nrow(df)*0.5)]
-    stop(paste0('\n\nCategorical Columns have too many levels: ', paste(toomanylevels_columns, collapse = ', ')))
+    if(force == FALSE) {
+      stop(paste0('\n\nCategorical Columns have too many levels: ', paste(toomanylevels_columns, collapse = ', ')))
+    } 
   }
     
   return (TRUE)
