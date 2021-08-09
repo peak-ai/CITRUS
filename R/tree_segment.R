@@ -16,7 +16,7 @@
 tree_segment <- function(data, hyperparameters, verbose = TRUE){
   
   if(is.null(hyperparameters$segmentation_variables)){
-    segmentation_variables <- colnames(data)[colnames(data)!='response' & colnames(data)!='customerid']
+    segmentation_variables <- colnames(data)[colnames(data)!= hyperparameters$dependent_variable & colnames(data)!='customerid']
   }else{
     segmentation_variables <- hyperparameters$segmentation_variables
   }
@@ -24,18 +24,18 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
                         dependent_variable=hyperparameters$dependent_variable,
                         min_segmentation_fraction=hyperparameters$min_segmentation_fraction,
                         number_of_personas=hyperparameters$number_of_personas)
-
+  
   int_colnames <- names(data)[unname(sapply(data, typeof)) == 'integer']
-
+  
   types <- unname(sapply(data, typeof))
-
+  
   if(sum(as.character(types) == 'logical')>0) {
-
+    
     indices <- which(types == 'logical')
-
+    
     data[,indices] <- data[,indices] %>%
       mutate_all(as.character)
-
+    
   }
   
   first_tree  <- decision_tree_user_defined_leafs.make(df=data,
@@ -53,12 +53,12 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
     persona_predicted <- left_join(persona_predicted,persona_tree_df %>% select(.data$orig_row,.data$persona), by = "orig_row") %>% select(.data$customerid, .data$persona)
     
     if(hyperparameters$print_plot&(hyperparameters$number_of_personas<hyperparameters$print_safety_check)){rpart.plot(first_tree)}
-
+    
     return(
-        list(persona_model = persona_tree,
-             persona_table = persona_table,
-             persona_predicted = persona_predicted,
-             model_inputs = inputs_params)
+      list(persona_model = persona_tree,
+           persona_table = persona_table,
+           persona_predicted = persona_predicted,
+           model_inputs = inputs_params)
     )
   }
 }
@@ -68,13 +68,13 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
 #' @importFrom tibble rownames_to_column 
 #' @importFrom rlang .data
 decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,dependent_variable='response',min_segmentation_fraction=0.05,number_of_leafs=6){
-
+  
   minbucket = floor(nrow(df)*min_segmentation_fraction)
   minsplit=2*minbucket
   f <- paste(dependent_variable, paste(segmentation_variables,collapse = ' + '),sep=' ~ ')
   control <- rpart.control(cp=-1,minbucket = minbucket,minsplit = minsplit)
   tree <- rpart(f,data=df,method='anova',control = control)
-
+  
   if(nrow(tree$frame %>% filter(.data$var=='<leaf>'))<number_of_leafs){
     print('WARNING: Output number of personas is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
     pruned_tree <- tree
@@ -84,7 +84,7 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
       cp_adjusted_tree$frame$complexity[cp_adjusted_tree$frame$var!='<leaf>']-
       cp_adjusted_tree$frame$complexity[cp_adjusted_tree$frame$var!='<leaf>']*0.001*
       (cp_adjusted_tree$frame %>% rownames_to_column() %>% filter(.data$var!='<leaf>') %>% mutate(rowname=as.numeric(.data$rowname)))$rowname
-
+    
     min_cp <- 0;            max_cp <- 1
     number_check <- FALSE;  stopcount <- 0
     while (number_check == FALSE){
@@ -137,13 +137,13 @@ tree_table.make <- function(tree, integer_columns){
       }
       
       categories <- suppressWarnings(rule_vals %>% 
-        group_by(.data$Variable,.data$Value) %>% 
-        filter(is.na(.data$Less),is.na(.data$Greater)) %>% 
-        summarise(count=n()) %>% 
-        ungroup() %>%
-        group_by(.data$Variable) %>% 
-        filter(.data$count==max(.data$count),!is.na(.data$Value)) %>%
-        summarise(Value=paste(.data$Value,collapse=', ')))
+                                       group_by(.data$Variable,.data$Value) %>% 
+                                       filter(is.na(.data$Less),is.na(.data$Greater)) %>% 
+                                       summarise(count=n()) %>% 
+                                       ungroup() %>%
+                                       group_by(.data$Variable) %>% 
+                                       filter(.data$count==max(.data$count),!is.na(.data$Value)) %>%
+                                       summarise(Value=paste(.data$Value,collapse=', ')))
       together <- full_join(less_n_greater, categories %>% filter(!is.na(.data$Variable)), by='Variable') %>% 
         group_by(.data$Variable) %>%
         mutate(out=paste(ifelse(!is.na(.data$Value),.data$Value,''),
@@ -163,9 +163,9 @@ tree_table.make <- function(tree, integer_columns){
     # Ensures that the conditions for integer columns in the table remain formatted as integers.
     # Without this step, a condition for an integer column could be, e.g., > 1.5.
     # With this step, this condition gets changed to >= 2.
-
+    
     # Select the columns in the persona table that are integers in the raw DF
-
+    
     if (sum(names(df3) %in% integer_columns) == 1) {
       df_to_change <- data.frame(df3[, names(df3) %in% integer_columns], stringsAsFactors = FALSE)
       names(df_to_change)[1] <- names(df3)[names(df3) %in% integer_columns]
@@ -175,23 +175,23 @@ tree_table.make <- function(tree, integer_columns){
     else if (sum(names(df3) %in% integer_columns) == 0) {
       df_to_change <- df3[, names(df3) %in% integer_columns]
     }
-
+    
     if(length(df_to_change) != 0){
       # Loops through all occurrences of integer conditions and ensures they are floored or ceilinged appropriately
       for (i in 1:length(names(df_to_change))) {
         for (k in 1:nrow(df_to_change)) {
           if (df_to_change[k, i] != 'All') {
             if (grepl('>', df_to_change[k, i])) {
-
+              
               value <- as.numeric(str_split(df_to_change[k, i], '> ')[[1]][2])
               new_value <- ceiling(value)
-
+              
               df_to_change[k, i] <- paste0('>= ', new_value)
-
+              
             } else if (grepl('<', df_to_change[k, i])) {
               value <- as.numeric(str_split(df_to_change[k, i], '< ')[[1]][2])
               new_value <- floor(value)
-
+              
               df_to_change[k, i] <- paste0('<= ', new_value)
             }
           }
@@ -200,7 +200,7 @@ tree_table.make <- function(tree, integer_columns){
       # Replaces the decimal conditions with the new integer formatted conditions instead
       df3[, names(df3) %in% integer_columns] <- df_to_change
     }
-
+    
     return(df3)
   }else{print("Only one node! This isn't a tree - it's a stump!")}
 }
@@ -257,7 +257,7 @@ dynamic_binning <-
 rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfamily='sans',...){
   
   if (!inherits(model, "rpart"))
-
+    
     stop("The model object must be an rpart object. ",
          "Instead we found: ", paste(class(model), collapse=", "), ".")
   
@@ -381,19 +381,19 @@ rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfami
   }
   
   prp(model, type=type, extra=extra,
-                  box.col=pals[col.index],
-                  nn=TRUE,
-                  varlen=0, faclen=0,
-                  # shadow.col="grey",
-                  fallen.leaves=TRUE,
-                  branch.lty=3,
-                  roundint=roundint,
-                  split.fun=split.fun,node.fun = node.fun,digits=-2,
-                  split.family = fontfamily,
-                  split.font = 1,
-                  split.yshift = -1,
-                  shadow.col = 0,
-                  ...)
+      box.col=pals[col.index],
+      nn=TRUE,
+      varlen=0, faclen=0,
+      # shadow.col="grey",
+      fallen.leaves=TRUE,
+      branch.lty=3,
+      roundint=roundint,
+      split.fun=split.fun,node.fun = node.fun,digits=-2,
+      split.family = fontfamily,
+      split.font = 1,
+      split.yshift = -1,
+      shadow.col = 0,
+      ...)
 }
 
 
@@ -407,13 +407,13 @@ rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfami
 #' @importFrom stringr str_remove_all str_remove str_split
 #' @export
 tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
-
+  
   if(print_plot){rpart.plot_pretty(tree$persona_model)}
-
+  
   features_used <- names(tree$persona_table)
   features_used <- features_used[!features_used %in% c("persona","mean_value","percentage","n")]
   split_data <- tree$persona_table %>% select(features_used)
-
+  
   character_check <- function(x){
     words <- unique(x)
     words <- str_remove_all(str_remove_all(str_remove_all(string = words,pattern = 'c\\('),'\\\\'),'\\"')
@@ -425,19 +425,19 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
   exceeding_words <- suppressWarnings(lapply(str_split(split_data,pattern = ', '),character_check))
   column_names <- names(split_data)
   for(col_number in 1:ncol(split_data)){
-
+    
     exceeding_word <- exceeding_words[[col_number]]
-
+    
     if(length(exceeding_word)>0){
-
+      
       message(paste0("Column (", column_names[col_number], ") has entries with too many characters: ", paste0(exceeding_word, collapse = ', '),'\n\rChange this for easier interpretation'))
-
+      
     }
     split_data[,col_number] <- sapply(split_data[,col_number],dynamic_binning)
   }
-
+  
   tree$persona_table[,features_used] <- split_data
-
+  
   return(tree)
 }
 
@@ -451,11 +451,11 @@ tree_abstract <- function(model, inputdata){
   #TODO: add performance statistics
   #tree_performance()
   structure(
-        list(persona_model = model$persona_model,
-             model_hyperparameters = model$model_inputs,
-             persona_table = model$persona_table,
-             predicted_values = model$persona_predicted,
-             input_data = inputdata),
-
-        class = "tree_model")
+    list(persona_model = model$persona_model,
+         model_hyperparameters = model$model_inputs,
+         persona_table = model$persona_table,
+         predicted_values = model$persona_predicted,
+         input_data = inputdata),
+    
+    class = "tree_model")
 }

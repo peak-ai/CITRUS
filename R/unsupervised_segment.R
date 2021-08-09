@@ -191,6 +191,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
       # if character tranform into factor
       cols.to.factor <-sapply( data, function(col) class(col) == "character")
       data[cols.to.factor] <- lapply(data[cols.to.factor], factor)
+      data <- data.frame(data)
     }
     
     if(hyperparameters$centers == 'auto') {
