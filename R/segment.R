@@ -11,6 +11,7 @@
 #' @param hyperparameters list of hyperparameters to use in the model.
 #' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @importFrom utils modifyList
 #' @export
 segment <- function(data,
                     modeltype = 'tree',
