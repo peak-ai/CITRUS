@@ -1,1 +1,79 @@
+---
+title: "Tree"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tree}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(citrus)
+library(dplyr)
+library(rpart.plot)
+```
+The `CITRUS` package has several different approaches to running segmentation. The approach discussed here is based around the tree based modelling. 
+
+This approach is a supervised machine learning approach that takes a customer level data frame with a response and features as the columns. A decision tree splits the data frame into n many leaves by a process called recursive partitioning using gini impurity as a splitting metric for each step in the tree. To understand more about decision trees see here (https://towardsdatascience.com/decision-trees-explained-3ec41632ceb6). The r package used to run the decision trees in this context is `rpart`.  
+
+## Some Examples
+
+One approach to run this type of segmentation can be called by using the `segment` function. Within the `segment` function there is a hyperparameter called `modeltype` that can be set to `tree`. Depending on what is defined in `steps` (see https://peak-ai.github.io/CITRUS/articles/segment.html), this will run the pipeline and the tree functions to produce the output table, predicted values and the model object. The `segment` function requires a data frame to segment upon, and also some hyperparameters that provide a prettified output and a plot of the `rpart.plot` object. More details on visualisation can be seen in the section below.        
+
+```{r}
+output <- segment(citrus::preprocessed_data, 
+                  modeltype = 'tree',
+                  steps = c('model'),
+                  prettify = T,
+                  print_plot = TRUE)
+```
+
+Another approach can be called by using the `tree_segment` function. Within the `tree_segment` function there are hyperparameters that require to be passed as a list object and the dataframe that will be used to segment. The output provided is a list containing the tree object (`persona_model`), a summary table (`persona_tree`), the predicted values (`persona_predicted`) and the model input parameters (`model_inputs`).
+
+```{r}
+hyperparameters <- list(dependent_variable = 'response',
+                       min_segmentation_fraction = 0.05,
+                       number_of_personas = 6,
+                       print_plot = FALSE,
+                       print_safety_check=20)
+model <- tree_segment(citrus::preprocessed_data, hyperparameters)
+```
+
+## Hyperparameters
+
+This algorithm typically uses certain hyperparameters that help prevent over/underfitting. As an adaptation, the hyperparameters have been tuned to prune the tree in order to provide an understandable set of segments. The hyperparameters for this approach can be seen below. 
+
+<center>
+
+| Type   | Method       | Hyperparameter Name    | Description                                                   |
+|--------|--------------|------------------------|---------------------------------------------------------------|
+| Global |              | segmentation_variables | `array`, names of all variables to segment on                   |
+| Method | tree         | dependent_variable     | `character`, name of the variable to be used as dependent variable |
+| Method | tree         | min_segmentation_fraction     | `numeric`, the maximum size of the smallest possible segment (0.05 is 5% of the number of customers passed) |
+| Method | tree         | number_of_personas     | `numeric`, the number of segments to be produced |
+
+</center>
+
+## Visualisations
+
+Following the use of the `tree_segment` function, the `rpart` object can be visualised. However, the standard plotting functionality has some problems with certain data so there is prettify functionality added that provides nicer visualisations.
+
+```{r}
+#model <- tree_segment(citrus::preprocessed_data, hyperparameters)
+rpart.plot(model$persona_model)
+``` 
+
+### Prettify 
+
+The prettify functionality, not only produces a nicer decision tree plot, it also provides a nicer summary table too. The input required for the function is the output of the `tree_segment` function. 
+```{r}
+#model <- tree_segment(citrus::preprocessed_data, hyperparameters)
+model <- tree_segment_prettify(model,print_plot = T)
+```
