@@ -9,10 +9,10 @@ name: CI-CD
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     strategy:
       matrix:
-        r-version: ['devel']
+        r-version: ['release']
 
     steps:
       - uses: actions/checkout@v2
@@ -20,13 +20,15 @@ jobs:
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.r-version }}
+      
+      - uses: r-lib/actions/setup-pandoc@v1
           
-      - name: "Install curl"
+      - name: "Install curl and pandoc for Linux"
         if: runner.os == 'Linux'
         run: |
           sudo apt install libcurl4-openssl-dev
           sudo apt-get install pandoc
-
+          
       - name: Query dependencies
         run: |
           install.packages('remotes')

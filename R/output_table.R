@@ -25,7 +25,7 @@ output_table <- function(data, model) {
   characterlevel <- lapply(df_agg,is.character)==T
   df_agg <- df_agg %>% 
     group_by(.data$segment) %>% 
-    summarise_each(funs(if(is.numeric(.data$.)) mean(.data$., na.rm = TRUE) else mode(.data$.)))
+    summarise_each(funs(if(is.numeric(.data$.)) round(mean(.data$., na.rm = TRUE),2) else mode(.data$.)))
   names(df_agg)[characterlevel] <- paste0(names(df_agg)[characterlevel],'_mode')
   names(df_agg)[!characterlevel] <- paste0(names(df_agg)[!characterlevel],'_mean')
   names(df_agg)[1] <- 'segment'
@@ -34,8 +34,8 @@ output_table <- function(data, model) {
   df_agg2 <- 
     df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) %>% 
     group_by(.data$segment) %>% 
-    summarise_each(funs(if(is.numeric(.data$.)) range_output(.data$.) else mode(.data$.,max =F)))
-  names(df_agg2)[characterlevel] <- paste0(names(df_agg2)[characterlevel],'_min')
+    summarise_each(funs(if(is.numeric(.data$.)) range_output(.data$.) else top5categories(.data$.)))
+  names(df_agg2)[characterlevel] <- paste0(names(df_agg2)[characterlevel],'_top5')
   names(df_agg2)[!characterlevel] <- paste0(names(df_agg2)[!characterlevel],'_range')
   names(df_agg2)[1] <- 'segment'
   
@@ -46,14 +46,14 @@ output_table <- function(data, model) {
     df <- df %>%
       group_by(.data$segment)%>%
       summarise(n = n(), mean_value = mean(as.numeric(as.character(.data$response)),na.rm=T)) %>%
-      mutate(percentage = .data$n/sum(.data$n)) %>% 
+      mutate(percentage = paste0(100*round((.data$n/sum(.data$n)),3),'%')) %>% 
         left_join(df_agg, by = 'segment')
 
   } else {
     df <- df %>%
       group_by(.data$segment)%>%
       summarise(n = n()) %>%
-      mutate(mean_value = NULL, percentage = 100*round(.data$n/sum(.data$n),3)) %>% 
+      mutate(mean_value = NULL, percentage = paste0(100*round(.data$n/sum(.data$n),3),'%')) %>% 
         left_join(df_agg, by = 'segment')
     
   }
@@ -62,6 +62,18 @@ output_table <- function(data, model) {
 
 }
 
+top5categories <- function(codes){
+  codes <- as.factor(codes)
+  codes_table <- tabulate(codes)
+  top5categories_input <- round(100*codes_table/sum(codes_table),2)
+  top5categories_input_values <- top5categories_input[order(top5categories_input,decreasing = T)[1:5]]
+  top5categories_input_names <- levels(codes)[order(top5categories_input,decreasing = T)[1:5]]
+  top5categories_input_values <- top5categories_input_values[!is.na(top5categories_input_values)]
+  top5categories_input_names <- top5categories_input_names[!is.na(top5categories_input_names)]
+  top5categories_output <- paste0(top5categories_input_names, ' - ',top5categories_input_values,'%',collapse = '; ')
+  return(top5categories_output)
+}
+  
 mode <- function(codes, max = T){
   codes <- as.factor(codes)
   if(max == T){
@@ -71,8 +83,8 @@ mode <- function(codes, max = T){
   }
 }
 range_output <- function(codes){
-  min_codes <- min(codes)
-  max_codes <- max(codes)
+  min_codes <- round(min(codes,na.rm = T),2)
+  max_codes <- round(max(codes,na.rm = T),2)
   output <- paste0(min_codes,' - ',max_codes)
   return(output)
 }
