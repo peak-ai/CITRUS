@@ -226,7 +226,7 @@ dynamic_binning <-
     if (nchar(x) > maxchar_length){
       comma_index <- str_locate_all(x,',')[[1]][,1]
       nchar_diff <- comma_index - maxchar_length
-      nchar_diff <- nchar_diff[nchar_diff<0]
+      #nchar_diff <- nchar_diff[nchar_diff<0]
       maxcomma_index <- comma_index[which.min(abs(nchar_diff))]
       x <- paste0(substr(x, 1, maxcomma_index), ' Other')
     }

@@ -12,7 +12,13 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
-  categorical_columns <- df %>% select(-customerid) %>% select_if(is.character) %>% summarise_all(n_distinct)
+  categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
+  
+  
+  
+  if (!is.null(hyperparameters$segmentation_variables)) {
+    df <- df[,names(df) %in% hyperparameters$segmentation_variables]
+  }
   
   if(supervised == TRUE) {
     index <- which(colnames(df) == hyperparameters$dependent_variable)
