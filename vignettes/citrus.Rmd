@@ -110,7 +110,7 @@ DF invalid because the 'customerid' column is missing
 invalid_df <- formatted %>% 
   select(-customerid)
 
-validate(invalid_df, supervised = TRUE)
+validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
 ```
 
 #### Data Validation Example 2 
@@ -121,7 +121,7 @@ invalid_df <- formatted %>%
   rbind(formatted[rep(1, 5), ]) %>%
   select(-response)
 
-validate(invalid_df, supervised = TRUE)
+validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
 ```
 
 #### Data Validation Example 3 
@@ -131,14 +131,14 @@ DF invalid because only the customerid, and response column exists, there are no
 invalid_df <- formatted %>% 
   select(customerid, response)
 
-validate(invalid_df, supervised = TRUE)
+validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
 ```
 
 #### Data Validation Example 4
 Successful validation
 
 ```{r}
-validate(formatted, supervised = TRUE)
+validate(formatted, supervised = TRUE, hyperparameters = hyperparameters)
 ```
 ### Segment
 #### Segment Example 1
@@ -282,7 +282,7 @@ formatted <- preprocess(citrus::transactional_data,
                        numeric_operation_list = c('min', 'sd'),
                        target = 'desc_chars', 
                        target_agg = 'mean')
-validate(formatted, supervised = TRUE)
+validate(formatted, supervised = TRUE, hyperparameters = hyperparameters)
 model <- tree_segment(formatted, hyperparameters)
 model <- tree_segment_prettify(model,print_plot = T)
 model <- tree_abstract(model, citrus::preprocessed_data)
