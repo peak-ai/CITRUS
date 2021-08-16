@@ -15,11 +15,6 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
   categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
   
   
-  
-  if (!is.null(hyperparameters$segmentation_variables)) {
-    df <- df[,names(df) %in% hyperparameters$segmentation_variables]
-  }
-  
   if(supervised == TRUE) {
     index <- which(colnames(df) == hyperparameters$dependent_variable)
     colnames(df)[index] <- "response"
@@ -35,6 +30,10 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
     if (n_distinct(df$customerid) != nrow(df)) {
       error_message <- 'Customer observations are not unique. nrow(df) > n_distinct(df$customerid).'
       other_errors <- c(other_errors, error_message)
+    }
+    if (!is.null(hyperparameters$segmentation_variables)) {
+      variables <- c("customerid", hyperparameters$segmentation_variables)
+      df <- df[, variables]
     }
   }
   
