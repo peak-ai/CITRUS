@@ -2,7 +2,13 @@ Package: citrus
 Type: Package
 Title: Customer Intelligence Tool for Rapid Understandable Segmentation
 Version: 1.0.0
-Author: Dom Clarke, Joash Rey Alonso, Cinzia Braglia, Leo McCarthy, Oskar Nummendal
+Authors@R: c(
+    person("Dom","Clarke", email = "dom.clarke@peak.ai", role = c("aut", "cre")),
+    person("Cinzia","Braglia",email = "cinzia.braglia@peak.ai",role = "aut"),
+    person("Oskar","Nummedal",email = "oskar.nummadel@peak.ai",role = "aut"),
+    person("Leo", "McCarthy",email = "leo.mccarthy@peak.ai", role = "aut"),
+    person("Joash","Alonso",role = "aut")
+  )
 Maintainer: Dom Clarke <dom.clarke@peak.ai>
 Description: A tool to easily run and visualise supervised and unsupervised state of the art customer segmentation.
 License: MIT + file LICENSE
