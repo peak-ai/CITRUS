@@ -1,8 +1,8 @@
 ---
-title: "Output Layer"
+title: "Output Table"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Output Layer}
+  %\VignetteIndexEntry{Output Table}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,3 +17,35 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(citrus)
 ```
+
+The `CITRUS` package is built in a modular fashion, where the last module of the pipeline is the output table. The purpose of this module is to produce an understandable output from the segmentation models that explains how the input data has been divided.   
+
+Currently the output table takes the input data and a segmentation model object as inputs and produces a table displaying the segment number and some summary statistics. The summary statistics are dependent on the variables used to segment that are defined in the `segmentation_variables` section of the model object, all variables in that list will be aggregated by segment. Depending on the column type, different aggregations are used, for categorical columns, the mode and top 5 categories are calculated for each segment, for numeric columns, the mean and range by segment are provided. 
+
+There are visualisations that explain the different segments in a similar way to the table that can be seen in https://peak-ai.github.io/CITRUS/articles/Visualisations.html
+
+## An Example
+
+In order to run the output table, a segmentation model output is required. The below code creates the segmentation model output that is run through the output table function to produce the table displayed.
+
+```{r}
+hyperparameters <- list(dependent_variable = 'response',
+                       min_segmentation_fraction = 0.05,
+                       number_of_personas = 6,
+                       print_plot = FALSE,
+                       print_safety_check=20)
+
+formatted <- preprocess(citrus::transactional_data,
+                       categories = c('country'), 
+                       numeric_operation_list = c('min', 'sd'),
+                       target = 'desc_chars', 
+                       target_agg = 'mean')
+validate(formatted, supervised = TRUE, hyperparameters = hyperparameters)
+model <- tree_segment(formatted, hyperparameters)
+model <- tree_segment_prettify(model,print_plot = T)
+model <- tree_abstract(model, citrus::preprocessed_data)
+model_management(model,hyperparameters)
+output_table(citrus::preprocessed_data,model)
+```
+
+Currently, the output function is set to produce the above outputs only. Functionality could be added in to customise the output table and provide more default functions or even add custom functions to aggregate on.
