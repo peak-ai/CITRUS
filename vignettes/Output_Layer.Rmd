@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(citrus)
+library(dplyr)
 ```
 
 The `CITRUS` package is built in a modular fashion, where the last module of the pipeline is the output table. The purpose of this module is to produce an understandable output from the segmentation models that explains how the input data has been divided.   
