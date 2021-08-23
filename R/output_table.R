@@ -19,6 +19,7 @@ output_table <- function(data, model) {
   
   df <- left_join(data, output, by = 'customerid')
   
+  
   segmentation_vars <- model$model_hyperparameters$segmentation_variables
   
   if(is.null(segmentation_vars)){
