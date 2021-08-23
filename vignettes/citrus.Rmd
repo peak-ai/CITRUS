@@ -126,6 +126,7 @@ invalid_df <- formatted %>%
   select(-response)
 
 validate(invalid_df, supervised = TRUE,hyperparameters = hyperparameters)
+
 ```
 
 #### Data Validation Example 3 
