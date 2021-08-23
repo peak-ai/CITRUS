@@ -54,6 +54,7 @@ hyperparameters <- list(centers = 'auto',
                                        segmentation_variables = NULL,
                                        standardize = TRUE)
 model <- unsupervised_segment(citrus::preprocessed_data %>% select(-top_country, -response, -transactionvalue_sd), hyperparameters)
+
 ```
 
 
@@ -97,4 +98,5 @@ It is possible to visualise the segmented data in a pairplot.
 
 ```{r}
 citrus_pair_plot(model)
+
 ```

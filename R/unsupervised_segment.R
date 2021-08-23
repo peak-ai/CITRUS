@@ -26,7 +26,8 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     
   }else{
     segmentation_variables <- hyperparameters$segmentation_variables
-    data <- data[, segmentation_variables]
+    variables <- c("customerid", segmentation_variables)
+    data <- data[, variables]
 
   }
   input_params <- list(centers = hyperparameters$centers,
@@ -160,7 +161,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
         scores[i,"withinss"] <-kk$tot.withinss
         
       }else{
-        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = TRUE)
+        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = FALSE)
         scores[i,"withinss"] <-kk$tot.withinss
         
       }
@@ -322,9 +323,9 @@ lambdaestimation <- function(x, num.method = 1, fac.method = 1, outtype = "numer
             Rather use kmeans() instead of kprotos().")
     anyfact <- FALSE
   } 
-  if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
-  if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
-  print(vnum)
+  # if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
+  # if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
+  # print(vnum)
   if(num.method == 1 & verbose == TRUE) cat("Average numeric variance:", mean(vnum), "\n\n")
   if(num.method == 2& verbose == TRUE) cat("Average numeric standard deviation:", mean(vnum), "\n\n")
   
