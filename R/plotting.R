@@ -22,4 +22,4 @@ citrus_pair_plot <- function(model,vars = NULL) {
 }
 
 
-
+    
