@@ -51,7 +51,7 @@ model_management <- function(model,hyperparameters){
         #   save(model$persona_table,
         #        file=paste0(directory_path,'/persona_table.RData'), ascii=TRUE)
         # }
-        if(class(model) == 'unsupervised'){
+        if(class(model) == 'k-clusters'){
           outliers <- model$outliers_table
           if(nrow(outliers) > 0) {
             save(outliers,

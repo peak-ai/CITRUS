@@ -2,7 +2,7 @@
 #'
 #' Validates that the input data adheres to the expected format for modelling.
 #' @param df data.frame, the data to validate
-#' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
+#' @param supervised logical, TRUE for supervised learning, FALSE for k-clusters
 #' @param force logical, TRUE to ignore error on categorical columns
 #' @param hyperparameters list of hyperparameters used in the model
 #' @importFrom dplyr n_distinct summarise_all
