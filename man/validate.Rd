@@ -9,7 +9,7 @@ validate(df, supervised = TRUE, force, hyperparameters)
 \arguments{
 \item{df}{data.frame, the data to validate}
 
-\item{supervised}{logical, TRUE for supervised learning, FALSE for unsupervised}
+\item{supervised}{logical, TRUE for supervised learning, FALSE for k-clusters}
 
 \item{force}{logical, TRUE to ignore error on categorical columns}
 

@@ -4,14 +4,23 @@
 \alias{segment}
 \title{Segment Function}
 \usage{
-segment(data, modeltype = "tree", FUN = NULL, FUN_preprocess = NULL,
-  steps = c("preprocess", "model"), prettify = F, print_plot = F,
-  hyperparameters = NULL, force = FALSE, verbose = TRUE)
+segment(
+  data,
+  modeltype = "tree",
+  FUN = NULL,
+  FUN_preprocess = NULL,
+  steps = c("preprocess", "model"),
+  prettify = F,
+  print_plot = F,
+  hyperparameters = NULL,
+  force = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data}{data.frame, the data to segment}
 
-\item{modeltype}{character, the type of model to use to segment choices are: 'tree', 'unsupervised'}
+\item{modeltype}{character, the type of model to use to segment choices are: 'tree', 'k-clusters'}
 
 \item{FUN}{function, A user specified function to segment, if the standard methods are not wanting to be used}
 

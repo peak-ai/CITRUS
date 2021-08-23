@@ -58,7 +58,7 @@ test_that("k-clusters default output object check", {
   expect_true(all(!is.na(output_kclust$segments$customerid)))
 })
 
-test_that("Supervised custom output object check", {
+test_that("k-clusters custom output object check", {
   
   output_kclust <- segment(data, modeltype = 'k-clusters', hyperparameters = list(centers = 'auto',
                                                                                           iter_max = 35,
