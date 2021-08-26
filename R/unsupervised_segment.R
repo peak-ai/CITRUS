@@ -311,13 +311,13 @@ lambdaestimation <- function(x, num.method = 1, fac.method = 1, outtype = "numer
   
   if(anyfact & fac.method == 1) vcat <- sapply(x[,catvars, drop = FALSE], function(z) return(1-sum((table(z)/sum(!is.na(z)))^2)))
   if(anyfact & fac.method == 2) vcat <- sapply(x[,catvars, drop = FALSE], function(z) return(1-max(table(z)/sum(!is.na(z)))))
-  if (mean(vnum) == 0){
+  if (mean(vnum, na.rm = TRUE) == 0){
     warning("All numerical variables have zero variance.\n
             No meaninful estimation for lambda.\n
             Rather use kmodes{klaR} instead of kprotos().")
     anynum <- FALSE
   } 
-  if (mean(vcat) == 0){
+  if (mean(vcat, na.rm = TRUE) == 0){
     warning("All categorical variables have zero variance.\n
             No meaninful estimation for lambda!\n
             Rather use kmeans() instead of kprotos().")
