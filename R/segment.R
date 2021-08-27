@@ -49,7 +49,7 @@ segment <- function(data,
       if (modeltype == 'tree') {
         if(verbose == TRUE) {message('Tree based model chosen')}
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = TRUE, force = force, hyperparameters)
+        
         # Default hyperparameters
         default_hyperparameters = list(dependent_variable = 'response',
                                        min_segmentation_fraction = 0.05,
@@ -62,6 +62,8 @@ segment <- function(data,
         }else{
           hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
+        
+        validate(data, supervised = TRUE, force = force, hyperparameters)
         
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
@@ -83,7 +85,6 @@ segment <- function(data,
         if(verbose == TRUE) {message('Unsupervised model chosen')}
   
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = FALSE, force = force, hyperparameters)
   
         # Default hyperparameters
         default_hyperparameters = list(centers = 'auto',
@@ -99,6 +100,8 @@ segment <- function(data,
         }else{
           hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
+        
+        validate(data, supervised = FALSE, force = force, hyperparameters)
   
         if(verbose == TRUE) {message('Training model')}
         model = unsupervised_segment(data, hyperparameters, verbose = verbose)
