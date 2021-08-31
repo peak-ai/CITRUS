@@ -10,16 +10,22 @@ preprocess_too_many_categories <- citrus::preprocessed_data %>%
 preprocess_no_customerid <- citrus::preprocessed_data %>%
   select(-customerid)
 
+hyperparameters_tree = list(dependent_variable = 'response',
+                            min_segmentation_fraction = 0.05,
+                            number_of_personas = 6,
+                            print_plot = FALSE,
+                            print_safety_check=20)
+
 test_that("Supervised without response variable", {
-  expect_error(citrus::validate(output_preprocess), regexp = "Columns missing: response")
+  expect_error(citrus::validate(output_preprocess, force = TRUE, hyperparameters = hyperparameters_tree), regexp = "Columns missing: response")
 })
 
 test_that("Correct error when customerid is missing.", {
-  expect_error(citrus::validate(preprocess_no_customerid), regexp = "Columns missing: customerid")
+  expect_error(citrus::validate(preprocess_no_customerid, force = TRUE, hyperparameters = hyperparameters_tree), regexp = "Columns missing: customerid")
 })
 
 test_that("Throw error when too many categorical levels", {
-  expect_error(citrus::validate(preprocess_too_many_categories), regexp = "Categorical Columns have too many levels: faulty_feature")
+  expect_error(citrus::validate(preprocess_too_many_categories, force = FALSE, hyperparameters = hyperparameters_tree), regexp = "Categorical Columns have too many levels: faulty_feature")
 })
 
 test_that("Unique customer count", {
