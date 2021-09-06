@@ -117,11 +117,16 @@ validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
 DF invalid because the 'response' column is missing and the customerid column is not unique
 
 ```{r, error=TRUE}
+hyperparameters = list(dependent_variable = 'response',
+                       min_segmentation_fraction = 0.05,
+                       number_of_personas = 6,
+                       print_safety_check=20)
+
 invalid_df <- formatted %>% 
-  rbind(formatted[rep(1, 5), ]) %>%
   select(-response)
 
-validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
+validate(invalid_df, supervised = TRUE,hyperparameters = hyperparameters)
+
 ```
 
 #### Data Validation Example 3 

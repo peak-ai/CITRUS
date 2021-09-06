@@ -75,7 +75,7 @@ It is possible to change the value of any of the hyperparameters and pass the ne
 | max_centers    | `numeric`, maximum number of clusters when 'auto' option is selected for the centers |
 | segmentation_variables | `array`, the columns to use to segment on |
 | standardized | `boolean`, whether to standardize numeric columns |
- 
+
 </center>
 
 

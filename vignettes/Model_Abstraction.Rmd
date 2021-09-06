@@ -1,8 +1,8 @@
 ---
-title: "Data Validation"
+title: "Model Abstraction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data Validation}
+  %\VignetteIndexEntry{Model Abstraction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
