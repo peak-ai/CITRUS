@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r,include = FALSE}
-# install.packages("devtools")
 devtools::install_github("peak-ai/citrus")
 library(citrus)
 library(dplyr)
