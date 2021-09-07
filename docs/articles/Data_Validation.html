@@ -57,6 +57,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Customisation.html">Customisation</a>
+    </li>
+    <li>
       <a href="../articles/Data_Validation.html">Data Validation</a>
     </li>
     <li>
@@ -120,7 +123,7 @@
 <p>The DF must have a column called <code>customerid</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
-  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">customerid</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">customerid</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
@@ -146,7 +149,7 @@
 <p>If the supervised model is selected a response column is required. The name of the response column can be arbitrary but needs to be specified in the <code>dependent_variable</code> hyperparameter. If not specified the validate function searches for a column called <code>response</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
-  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">response</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">response</span><span class="op">)</span>
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
 <span class="co">#&gt; </span>
@@ -158,7 +161,7 @@
 <p>If <code>customerid</code>, and <code>response</code> column exist but there are no feature columns to predict over, an error is raised.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
-  <span class="fu">select</span><span class="op">(</span><span class="va">customerid</span>, <span class="va">response</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">customerid</span>, <span class="va">response</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
