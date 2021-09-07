@@ -106,8 +106,65 @@
 
     
     
+<p>The <code>validate</code> function checks if the input data adheres to the expected format for modelling. Both unsupervised and supervised methods require a customer level data frame with one row per customer.</p>
+<p>This verification step is particularly important if the user skips the preprocessing step and passes their own preprocessed table.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">citrus</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span>, 
+                  modeltype <span class="op">=</span> <span class="st">'tree'</span>,
+                  steps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'model'</span><span class="op">)</span>,
+                  prettify <span class="op">=</span> <span class="cn">TRUE</span>,
+                  print_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div id="data-validation-example-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#data-validation-example-1" class="anchor"></a>Data Validation Example 1</h4>
+<p>The DF must have a column called <code>customerid</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
+  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">customerid</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Columns missing: customerid</span></code></pre></div>
+</div>
+<div id="data-validation-example-2" class="section level4">
+<h4 class="hasAnchor">
+<a href="#data-validation-example-2" class="anchor"></a>Data Validation Example 2</h4>
+<p>The DF must have one observation per customer.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">formatted</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Customer observations are not unique. nrow(df) &gt; n_distinct(df$customerid).</span></code></pre></div>
+</div>
+<div id="data-validation-example-3" class="section level4">
+<h4 class="hasAnchor">
+<a href="#data-validation-example-3" class="anchor"></a>Data Validation Example 3</h4>
+<p>If the supervised model is selected a response column is required. The name of the response column can be arbitrary but needs to be specified in the <code>dependent_variable</code> hyperparameter. If not specified the validate function searches for a column called <code>response</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
+  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">response</span><span class="op">)</span>
+<span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Columns missing: response</span></code></pre></div>
+</div>
+<div id="data-validation-example-3-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#data-validation-example-3-1" class="anchor"></a>Data Validation Example 3</h4>
+<p>If <code>customerid</code>, and <code>response</code> column exist but there are no feature columns to predict over, an error is raised.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
+  <span class="fu">select</span><span class="op">(</span><span class="va">customerid</span>, <span class="va">response</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; The dataframe does not contain any feature columns.</span></code></pre></div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
