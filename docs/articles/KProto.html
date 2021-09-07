@@ -57,6 +57,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Customisation.html">Customisation</a>
+    </li>
+    <li>
       <a href="../articles/Data_Validation.html">Data Validation</a>
     </li>
     <li>
@@ -112,7 +115,7 @@
 <a href="#some-examples" class="anchor"></a>Some Examples</h2>
 <p>One approach to run this type of segmentation is by using the <code>segment</code> function. Within the <code>segment</code> function there is a parameter called <code>modeltype</code> that can be set to <code>unsupervised</code>. Depending on what is defined in <code>steps</code> (see <a href="https://peak-ai.github.io/CITRUS/articles/segment.html" class="uri">https://peak-ai.github.io/CITRUS/articles/segment.html</a>), this will run the pipeline and the unsupervised functions to produce the output table, predicted values and the model object. The <code>segment</code> function requires a data frame to segment upon, and also some parameters that provide a prettified output and a pair plot.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">response</span>, <span class="op">-</span><span class="va">transactionvalue_sd</span>, <span class="op">-</span><span class="va">top_country</span><span class="op">)</span>, 
+<code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">response</span>, <span class="op">-</span><span class="va">transactionvalue_sd</span>, <span class="op">-</span><span class="va">top_country</span><span class="op">)</span>, 
                   modeltype <span class="op">=</span> <span class="st">'unsupervised'</span>,
                   steps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'model'</span><span class="op">)</span>,
                   prettify <span class="op">=</span> <span class="cn">T</span>,
@@ -156,7 +159,7 @@
                                        max_centers <span class="op">=</span> <span class="fl">5</span>, 
                                        segmentation_variables <span class="op">=</span> <span class="cn">NULL</span>,
                                        standardize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/unsupervised_segment.html">unsupervised_segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">top_country</span>, <span class="op">-</span><span class="va">response</span>, <span class="op">-</span><span class="va">transactionvalue_sd</span><span class="op">)</span>, <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/unsupervised_segment.html">unsupervised_segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">top_country</span>, <span class="op">-</span><span class="va">response</span>, <span class="op">-</span><span class="va">transactionvalue_sd</span><span class="op">)</span>, <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Checking for NAs in variables</span>
 <span class="co">#&gt; Variables have 0 NAs</span>
 <span class="co">#&gt; Data contain only numeric feautures: using kmeans algorithm</span>
@@ -214,7 +217,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">hyperparameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>centers <span class="op">=</span> <span class="fl">3</span>,
                         segmentation_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"frequency"</span>, <span class="st">"recency"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">response</span>, <span class="op">-</span><span class="va">top_country</span>, <span class="op">-</span><span class="va">transactionvalue_sd</span><span class="op">)</span>, 
+<span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">response</span>, <span class="op">-</span><span class="va">top_country</span>, <span class="op">-</span><span class="va">transactionvalue_sd</span><span class="op">)</span>, 
                   modeltype <span class="op">=</span> <span class="st">'unsupervised'</span>,
                   steps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'model'</span><span class="op">)</span>,
                   prettify <span class="op">=</span> <span class="cn">T</span>,

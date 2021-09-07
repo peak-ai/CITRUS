@@ -57,6 +57,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Customisation.html">Customisation</a>
+    </li>
+    <li>
       <a href="../articles/Data_Validation.html">Data Validation</a>
     </li>
     <li>
@@ -106,8 +109,48 @@
 
     
     
+<p>The CITRUS package contains a module that saves the relevant outputs from the segmentation model to the working directory. As default, this module is set not to run, however if you would like to have the outputs saved, some entries within the hyperparameters needs to be added.</p>
+<p>When <code>saveoutput</code> is set to true in the hyperparameters, a directory is created within the current working directory called <code>segmentationoutputs</code>. Within this the model, hyperparameters, predicted values and some method specific files are saved (outliers for unsupervised, <code>rpart.plot</code> image for tree). If <code>saveinputdata</code> is also set to true in the hyperparameters, the input data is also saved within this directory.</p>
+<p>Further development on this module would involve saving the outputs to different places (eg. cloud storage such as s3)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">citrus</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">citrus</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'dplyr'</span>
+<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter, lag</span>
+<span class="co">#&gt; The following objects are masked from 'package:base':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
+
+<span class="va">hyperparameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>dependent_variable <span class="op">=</span> <span class="st">'response'</span>,
+                       min_segmentation_fraction <span class="op">=</span> <span class="fl">0.05</span>,
+                       number_of_personas <span class="op">=</span> <span class="fl">6</span>,
+                       print_plot <span class="op">=</span> <span class="cn">FALSE</span>,
+                       print_safety_check<span class="op">=</span><span class="fl">20</span>,
+                       saveoutput <span class="op">=</span> <span class="cn">T</span>,
+                       saveinputdata <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+
+<span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/preprocess.html">preprocess</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/transactional_data.html">transactional_data</a></span>,
+                       categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'country'</span><span class="op">)</span>, 
+                       numeric_operation_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'min'</span>, <span class="st">'sd'</span><span class="op">)</span>,
+                       target <span class="op">=</span> <span class="st">'desc_chars'</span>, 
+                       target_agg <span class="op">=</span> <span class="st">'mean'</span><span class="op">)</span>
+<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
+<span class="co">#&gt; [1] "Customer Identifier: customerid"</span>
+<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
+<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
+<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
+<span class="co">#&gt; [1] "Target column: desc_chars (mean)"</span>
+<span class="co">#&gt; Calculating target values</span>
+<span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">formatted</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="co">#&gt; [1] TRUE</span>
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tree_segment.html">tree_segment</a></span><span class="op">(</span><span class="va">formatted</span>, <span class="va">hyperparameters</span><span class="op">)</span>
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tree_abstract.html">tree_abstract</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span><span class="op">)</span>
+<span class="fu"><a href="../reference/model_management.html">model_management</a></span><span class="op">(</span><span class="va">model</span>,<span class="va">hyperparameters</span><span class="op">)</span>
+<span class="co">#&gt; agg_png </span>
+<span class="co">#&gt;       2</span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

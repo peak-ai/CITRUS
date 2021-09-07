@@ -57,6 +57,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Customisation.html">Customisation</a>
+    </li>
+    <li>
       <a href="../articles/Data_Validation.html">Data Validation</a>
     </li>
     <li>
@@ -106,8 +109,77 @@
 
     
     
+<p>The <code>preprocess</code> function transforms a transactional table into a customer aggregated table with custom options for aggregation methods for numeric and categorical columns.</p>
+<p>In the current state we assume that the input data is a transaction table with 4 columns required (transactionid, customerid, orderdate, transactionvalue). The function will raise an error if these column names are not found.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">citrus</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/preprocess.html">preprocess</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/transactional_data.html">transactional_data</a></span><span class="op">)</span>
+<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
+<span class="co">#&gt; [1] "Customer Identifier: customerid"</span>
+<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
+<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
+<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
+<span class="co">#&gt; [1] "Target column: NA (mean)"</span></code></pre></div>
+<div id="example-1-numeric-columns" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example-1-numeric-columns" class="anchor"></a>Example 1: numeric columns</h3>
+<p>If nothing other than numeric_operation_list = NA, the function will default to RFM preprocessing. It can be used in e.g. unsupervised learning.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/preprocess.html">preprocess</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/transactional_data.html">transactional_data</a></span>, 
+                        numeric_operation_list <span class="op">=</span> <span class="cn">NA</span>
+                        <span class="op">)</span>
+<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
+<span class="co">#&gt; [1] "Customer Identifier: customerid"</span>
+<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
+<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
+<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
+<span class="co">#&gt; [1] "Target column: NA (mean)"</span></code></pre></div>
+<p>The numeric columns can be aggregated using various aggregation methods like e.g. the ‘min’ and standard deviation ‘sd’.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/preprocess.html">preprocess</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/transactional_data.html">transactional_data</a></span>, 
+                        numeric_operation_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'min'</span>, <span class="st">'sd'</span><span class="op">)</span>
+                        <span class="op">)</span>
+<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
+<span class="co">#&gt; [1] "Customer Identifier: customerid"</span>
+<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
+<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
+<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
+<span class="co">#&gt; [1] "Target column: NA (mean)"</span></code></pre></div>
+</div>
+<div id="example-2-categorical-columns" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example-2-categorical-columns" class="anchor"></a>Example 2: categorical columns</h3>
+<p>When the table contains categorical columns, it is possible to pass a list of categorical columns to include in the final table. The function will filter on those columns and assign the most common category for each column to each user. In this example the function uses the most common category for each user in the column ‘country’.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/preprocess.html">preprocess</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/transactional_data.html">transactional_data</a></span>, 
+                        categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"country"</span><span class="op">)</span>, 
+                        target <span class="op">=</span> <span class="st">"transactionvalue"</span>
+                        <span class="op">)</span>
+<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
+<span class="co">#&gt; [1] "Customer Identifier: customerid"</span>
+<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
+<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
+<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
+<span class="co">#&gt; [1] "Target column: transactionvalue (mean)"</span>
+<span class="co">#&gt; Calculating target values</span></code></pre></div>
+</div>
+<div id="example-3-target-column" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example-3-target-column" class="anchor"></a>Example 3: target column</h3>
+<p>Specify the target variable and the aggregation function to perform on it if you want to run a supervised model. In the example the target column is the mean of the transactionvalue column.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/preprocess.html">preprocess</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/transactional_data.html">transactional_data</a></span>,
+                        categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'country'</span><span class="op">)</span>, 
+                        numeric_operation_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'min'</span>, <span class="st">'sd'</span><span class="op">)</span>,
+                        target <span class="op">=</span> <span class="st">'transactionvalue'</span>, 
+                        target_agg <span class="op">=</span> <span class="st">'mean'</span><span class="op">)</span>
+<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
+<span class="co">#&gt; [1] "Customer Identifier: customerid"</span>
+<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
+<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
+<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
+<span class="co">#&gt; [1] "Target column: transactionvalue (mean)"</span>
+<span class="co">#&gt; Calculating target values</span></code></pre></div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

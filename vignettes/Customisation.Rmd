@@ -1,0 +1,47 @@
+---
+title: "Customisation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Customisation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `CITRUS` package has been built in a modular way, so that new approaches can be added easily. There are 2 ways to run a new approach, within segments or by creating a new approach for a current module that follows the same structure as the module that you are looking to add/change. 
+
+To begin, customising within segments has been made possible by the addition of function arguments in the function calls for the modules. Currently, there is the option to add a custom function for the model step and the preprocessing step only, future development could involve addition of new custom functionality. 
+
+Below is an example of a custom function being added to modelling layer of the pipeline. This uses a user defined function to classify the customers, it skips the 'preprocess' step and goes straight from the 'model' step and onwards.
+
+```{r}
+library(citrus)
+library(dplyr)
+
+my_custom_function <- function(df) {
+  
+  final_df <- df %>%
+    mutate(first_letter = substring(top_country, 1, 1)) %>%
+    mutate(persona = ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 8, 'Segment A',
+                                      ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 17, 'Segment B', 'Segment C'))) %>%
+    arrange(desc(customerid))
+  
+  #output <- list('predicted_values' = final_df[,c('persona')])
+  output <- list('predicted_values' = final_df[,c('customerid', 'persona')])
+  
+  return(output)
+}
+output <- segment(citrus::preprocessed_data, 
+                  modeltype = 'tree',
+                  FUN = my_custom_function,
+                  FUN_preprocess = NULL,
+                  steps = c('model'))                  
+```
+
+There is scope for new approaches to be created within the pre-processing, modelling and output layer steps. For example, a DBScan approach could be added to the modelling section as an alternative segmentation approach.
