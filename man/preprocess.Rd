@@ -4,15 +4,9 @@
 \alias{preprocess}
 \title{Preprocess Function}
 \usage{
-preprocess(
-  df,
-  samplesize = NA,
-  numeric_operation_list = c("mean"),
-  categories = NULL,
-  target = NA,
-  target_agg = "mean",
-  verbose = TRUE
-)
+preprocess(df, samplesize = NA, numeric_operation_list = c("mean"),
+  categories = NULL, target = NA, target_agg = "mean",
+  verbose = TRUE)
 }
 \arguments{
 \item{df}{data.frame, the data to preprocess}

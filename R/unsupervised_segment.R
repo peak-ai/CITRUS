@@ -25,8 +25,8 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     segmentation_variables <- colnames(data)
     
   }else{
-    segmentation_variables <- hyperparameters$segmentation_variables
-    data <- data[, segmentation_variables]
+    variables <- c("customerid", hyperparameters$segmentation_variables)
+    data <- data[, variables]
 
   }
   input_params <- list(centers = hyperparameters$centers,
@@ -191,6 +191,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
       # if character tranform into factor
       cols.to.factor <-sapply( data, function(col) class(col) == "character")
       data[cols.to.factor] <- lapply(data[cols.to.factor], factor)
+      data <- data.frame(data)
     }
     
     if(hyperparameters$centers == 'auto') {
@@ -310,21 +311,21 @@ lambdaestimation <- function(x, num.method = 1, fac.method = 1, outtype = "numer
   
   if(anyfact & fac.method == 1) vcat <- sapply(x[,catvars, drop = FALSE], function(z) return(1-sum((table(z)/sum(!is.na(z)))^2)))
   if(anyfact & fac.method == 2) vcat <- sapply(x[,catvars, drop = FALSE], function(z) return(1-max(table(z)/sum(!is.na(z)))))
-  if (mean(vnum) == 0){
+  if (mean(vnum, na.rm = TRUE) == 0){
     warning("All numerical variables have zero variance.\n
             No meaninful estimation for lambda.\n
             Rather use kmodes{klaR} instead of kprotos().")
     anynum <- FALSE
   } 
-  if (mean(vcat) == 0){
+  if (mean(vcat, na.rm = TRUE) == 0){
     warning("All categorical variables have zero variance.\n
             No meaninful estimation for lambda!\n
             Rather use kmeans() instead of kprotos().")
     anyfact <- FALSE
   } 
-  if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
-  if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
-  print(vnum)
+  # if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
+  # if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
+  # print(vnum)
   if(num.method == 1 & verbose == TRUE) cat("Average numeric variance:", mean(vnum), "\n\n")
   if(num.method == 2& verbose == TRUE) cat("Average numeric standard deviation:", mean(vnum), "\n\n")
   

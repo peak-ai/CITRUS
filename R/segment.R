@@ -2,14 +2,16 @@
 #'
 #' Segments the data by running all steps in the segmentation pipeline, including output table
 #' @param data data.frame, the data to segment
-#' @param modeltype character, the type of model to use to segment choices are: 'tree'
+#' @param modeltype character, the type of model to use to segment choices are: 'tree', 'unsupervised'
 #' @param FUN function, A user specified function to segment, if the standard methods are not wanting to be used
 #' @param FUN_preprocess function, A user specified function to preprocess, if the standard methods are not wanting to be used
 #' @param steps list, names of the steps the user want to run the data on. Options are 'preprocess' and 'model'
 #' @param prettify logical, TRUE if want cleaned up outputs, FALSE for raw output
 #' @param print_plot logical, TRUE if want to print the plot
 #' @param hyperparameters list of hyperparameters to use in the model.
+#' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @importFrom utils modifyList
 #' @export
 segment <- function(data,
                     modeltype = 'tree',
@@ -18,7 +20,7 @@ segment <- function(data,
                     steps = c('preprocess', 'model'),
                     prettify = F,
                     print_plot = F,
-                    hyperparameters = NULL, verbose = TRUE) {
+                    hyperparameters = NULL, force = FALSE, verbose = TRUE) {
 
   # Data processing layer
   # returns data in appropriate format called 'data'
@@ -46,20 +48,23 @@ segment <- function(data,
       # Tree Model
       if (modeltype == 'tree') {
         if(verbose == TRUE) {message('Tree based model chosen')}
-
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = TRUE)
+        
         # Default hyperparameters
+        default_hyperparameters = list(dependent_variable = 'response',
+                                       min_segmentation_fraction = 0.05,
+                                       number_of_personas = 6,
+                                       print_plot = ifelse(prettify == FALSE, print_plot, FALSE),
+                                       print_safety_check=20)
         if(is.null(hyperparameters)){
           if(verbose == TRUE) {message('Using default hyper-parameters')}
-
-          hyperparameters = list(dependent_variable = 'response',
-                                 min_segmentation_fraction = 0.05,
-                                 number_of_personas = 6,
-                                 print_plot = ifelse(prettify == FALSE, print_plot, FALSE),
-                                 print_safety_check=20)
+          hyperparameters = default_hyperparameters
+        }else{
+          hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
-
+        
+        validate(data, supervised = TRUE, force = force, hyperparameters)
+        
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$persona_table$persona, '\n')))}
@@ -80,18 +85,23 @@ segment <- function(data,
         if(verbose == TRUE) {message('Unsupervised model chosen')}
   
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = FALSE)
   
         # Default hyperparameters
+        default_hyperparameters = list(centers = 'auto',
+                                       iter_max = 50,
+                                       nstart = 5,
+                                       max_centers = 5, 
+                                       segmentation_variables = NULL,
+                                       standardize = TRUE)
+        
         if(is.null(hyperparameters)){
           if(verbose == TRUE) {message('Using default hyper-parameters')}
-          hyperparameters = list(centers = 'auto',
-                                 iter_max = 50,
-                                 nstart = 5,
-                                 max_centers = 5, 
-                                 segmentation_variables = NULL,
-                                 standardize = TRUE)
+          hyperparameters = default_hyperparameters
+        }else{
+          hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
+        
+        validate(data, supervised = FALSE, force = force, hyperparameters)
   
         if(verbose == TRUE) {message('Training model')}
         model = unsupervised_segment(data, hyperparameters, verbose = verbose)

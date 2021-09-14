@@ -82,23 +82,25 @@ preprocess <- function(df,
         ungroup()
     }
 
+
     if (is.na(target)) {
       evaluated_columns <- names(df)[sapply(df, is.numeric) & names(df) != 'customerid']
     } else {
       evaluated_columns <- names(df)[sapply(df, is.numeric) & names(df) != 'customerid' & names(df) != target]
     }
+    
 
     if (length(evaluated_columns) == 1) {
       adjusted_name <- paste0(evaluated_columns, '_', names(numeric_df)[!(names(numeric_df) %in% c('customerid', target))])
       names(numeric_df) <- c('customerid', adjusted_name)
     }
-    
+
     # Filters categorical columns and grabs the top n category for each
     # categorical column
     final_df <- inner_join(final_df, numeric_df, by = 'customerid')
   }
   
-  
+
   if (!is.null(categories)) {
     for (col_name in categories) {
       if(!is.na(target)) {
@@ -148,7 +150,6 @@ preprocess <- function(df,
   
   return(final_df)
 }
-
 strings_to_functions <- function(string_vector) {
   function_vector <- c()
   for (obj_name in string_vector) {
