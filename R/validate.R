@@ -12,8 +12,9 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
+
   categorical_columns <- df[,names(df) != 'id'] %>% select_if(is.character) %>% summarise_all(n_distinct)
-  
+
   
   if(supervised == TRUE) {
     index <- which(colnames(df) == hyperparameters$dependent_variable)
@@ -57,7 +58,12 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
       stop(paste0('\n\nCategorical Columns have too many levels: ', paste(toomanylevels_columns, collapse = ', ')))
     } 
   }
-    
+  
+  if(sum(infinitecounts>0) > 0){
+    infinitecolumns <- names(infinitecounts)[which(infinitecounts> 0 )]
+    stop(paste0('\n\ Columns have infinite values (remove Inf to continue): ', paste(infinitecolumns, collapse = ', ')))
+  }                                                                   
+                                                                     
   return (TRUE)
 }
 
