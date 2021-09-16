@@ -7,9 +7,9 @@
 
 citrus_pair_plot <- function(model,vars = NULL) {
  
-  segments <- model$predicted_values$segment
+  segments <- model$predicted_values$persona
   data <- model$input_data
-  data <- data[ , -which(names(data) == "id")]
+  data <- data[ , -which(names(data) == "customerid")]
   if(!is.null(vars)){
     data <- data[,vars]
   }

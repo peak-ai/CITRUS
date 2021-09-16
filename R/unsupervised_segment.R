@@ -25,7 +25,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     segmentation_variables <- colnames(data)
     
   }else{
-    variables <- c("id", hyperparameters$segmentation_variables)
+    variables <- c("customerid", hyperparameters$segmentation_variables)
     data <- data[, variables]
 
   }
@@ -50,8 +50,8 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
   # remove missings
   data <- data[!miss,]
   
-  ids <- data[,'id']
-  data <- data[,(names(data) != 'id')]
+  ids <- data[,'customerid']
+  data <- data[,(names(data) != 'customerid')]
   
   #Standardize
   zscore <- function(x){
@@ -254,12 +254,12 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     elbow_plot <-  NULL
   }
   if(verbose == TRUE) { message(paste0("Number of rows: ", nrow(data)))}
-  out <- list(segment_model = km,
-              input_data = cbind("id" = ids,data),
+  out <- list(persona_model = km,
+              input_data = cbind("customerid" = ids,data),
               model_hyperparameters =input_params,
               outliers_table = data_outliers,
               elbow_plot = elbow_plot,
-              predicted_values = data.frame("id" = ids,"segment" = km$cluster)
+              predicted_values = data.frame("customerid" = ids,"persona" = km$cluster)
   )
   
   class(out) <- 'unsupervised'
@@ -272,7 +272,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
 
 #' @importFrom stats predict
 predict.unsupervised <- function(object,newdata,...){
-  object <-  object$segment_model
+  object <-  object$persona_model
   if (class(object) == "kmeans") {
     list(cluster = apply(newdata, 1, function(r) which.min(colSums((t(object$centers) - r)^2))),
          dists = t(apply(newdata, 1, function(r) colSums((t(object$centers) - r)^2))))

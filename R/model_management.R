@@ -17,9 +17,9 @@ model_management <- function(model,hyperparameters){
         directory_path <- paste0('~/segmentationoutputs/',format(Sys.time(),format = '%Y-%m-%d-%H-%M-%S'))
         dir.create(directory_path)
         #Save model
-        segment_model <- model$segment_model
-        save(segment_model,
-             file=paste0(directory_path,'/segment_model.RData'), ascii=TRUE)
+        persona_model <- model$persona_model
+        save(persona_model,
+             file=paste0(directory_path,'/persona_model.RData'), ascii=TRUE)
         #Save hyperparameters
         model_hyperparameters <- model$model_hyperparameters
         save(model_hyperparameters,
@@ -46,10 +46,10 @@ model_management <- function(model,hyperparameters){
           }
         }
         #Bespoke management layers - if(class(model) == 'abc'){...}
-        #TODO: Save segment_table?
+        #TODO: Save persona_table?
         # if(class(model) == 'abc'){
-        #   save(model$segment_table,
-        #        file=paste0(directory_path,'/segment_table.RData'), ascii=TRUE)
+        #   save(model$persona_table,
+        #        file=paste0(directory_path,'/persona_table.RData'), ascii=TRUE)
         # }
         if(class(model) == 'unsupervised'){
           outliers <- model$outliers_table
@@ -62,7 +62,7 @@ model_management <- function(model,hyperparameters){
         #Save rpart.plot
         if(class(model) == 'tree_model'){
            pdf(paste0(directory_path,'/tree.pdf'))
-           rpart.plot_pretty(segment_model)
+           rpart.plot_pretty(persona_model)
            dev.off()
         }
       }
