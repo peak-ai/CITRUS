@@ -3,7 +3,7 @@ library(testthat)
 library(dplyr)
 
 transactional_data <- citrus::transactional_data
-data <- transactional_data %>% select(c('transactionid', 'transactionvalue', 'customerid', 'orderdate'))
+data <- transactional_data %>% select(c('transactionid', 'transactionvalue', 'id', 'orderdate'))
 
 test_that("Supervised default output object check", {
   output_supervised <- segment(data, modeltype = 'tree')
@@ -15,8 +15,8 @@ test_that("Supervised default output object check", {
   # No nulls allowed in the output table
   expect_equal(ncol(output_supervised$OutputTable[complete.cases(output_supervised$OutputTable), ]), 10)
   # The segment lookup should not contain any NAs
-  expect_true(all(!is.na(output_supervised$segments$persona)))
-  expect_true(all(!is.na(output_supervised$segments$customerid)))
+  expect_true(all(!is.na(output_supervised$segments$segment)))
+  expect_true(all(!is.na(output_supervised$segments$id)))
 })
 
 test_that("Supervised custom output object check", {
@@ -24,7 +24,7 @@ test_that("Supervised custom output object check", {
   output_supervised <- segment(data, modeltype = 'tree', hyperparameters = list(dependent_variable = 'response',
                                                                                 min_segmentation_fraction = 0.1,
                                                                                 print_safety_check = 20,
-                                                                                number_of_personas = 4,
+                                                                                number_of_segments = 4,
                                                                                 print_plot = FALSE))
   
   # Should contain all the right variables
@@ -36,12 +36,12 @@ test_that("Supervised custom output object check", {
   # There shouldn't be segments smaller than 10% of the total population
   expect_true(all(output_supervised$OutputTable$percentage >= 0.1))
   # The segment lookup should not contain any NAs
-  expect_true(all(!is.na(output_supervised$segments$persona)))
-  expect_true(all(!is.na(output_supervised$segments$customerid)))
+  expect_true(all(!is.na(output_supervised$segments$segment)))
+  expect_true(all(!is.na(output_supervised$segments$id)))
   # The model hyperparameters should agree with the custom ones
   expect_true(output_supervised$CitrusModel$model_hyperparameters$dependent_variable == 'response')
   expect_true(output_supervised$CitrusModel$model_hyperparameters$min_segmentation_fraction == 0.1)
-  expect_true(output_supervised$CitrusModel$model_hyperparameters$number_of_personas == 4)
+  expect_true(output_supervised$CitrusModel$model_hyperparameters$number_of_segments == 4)
 })
 
 test_that("Unsupervised default output object check", {
@@ -54,8 +54,8 @@ test_that("Unsupervised default output object check", {
   # No nulls allowed in the output table
   expect_equal(ncol(output_unsupervised$OutputTable[complete.cases(output_unsupervised$OutputTable), ]), 3)
   # The segment lookup should not contain any NAs
-  expect_true(all(!is.na(output_unsupervised$segments$persona)))
-  expect_true(all(!is.na(output_unsupervised$segments$customerid)))
+  expect_true(all(!is.na(output_unsupervised$segments$segment)))
+  expect_true(all(!is.na(output_unsupervised$segments$id)))
 })
 
 test_that("Supervised custom output object check", {
@@ -74,8 +74,8 @@ test_that("Supervised custom output object check", {
   # No nulls allowed in the output table
   expect_equal(ncol(output_unsupervised$OutputTable[complete.cases(output_unsupervised$OutputTable), ]), 3)
   # The segment lookup should not contain any NAs
-  expect_true(all(!is.na(output_unsupervised$segments$persona)))
-  expect_true(all(!is.na(output_unsupervised$segments$customerid)))
+  expect_true(all(!is.na(output_unsupervised$segments$segment)))
+  expect_true(all(!is.na(output_unsupervised$segments$id)))
   # The model hyperparameters should agree with the custom ones
   expect_true(output_unsupervised$CitrusModel$model_hyperparameters$centers == 'auto')
   expect_true(output_unsupervised$CitrusModel$model_hyperparameters$iter_max == 35)

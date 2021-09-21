@@ -2,14 +2,14 @@
 #'
 #' Generates the output table for model and data
 #' @param data A dataframe generated from the pre-processing step
-#' @param model A model object used to classify customers with, generated from the model selection layer
+#' @param model A model object used to classify ids with, generated from the model selection layer
 #' @importFrom dplyr left_join select mutate group_by summarise summarise_each funs
 #' @importFrom rlang .data
 #' @export
 output_table <- function(data, model) {
   #TODO: Add summary stats for the predictors
-  output <- data.frame(segment = model$predicted_values$persona,
-                       customerid = as.character(model$predicted_values$customerid), 
+  output <- data.frame(segment = model$predicted_values$segment,
+                       id = as.character(model$predicted_values$id), 
                        stringsAsFactors = FALSE)
   if(!is.null(model$model_hyperparameters$dependent_variable)) {
     response <- model$model_hyperparameters$dependent_variable
@@ -17,14 +17,14 @@ output_table <- function(data, model) {
     response <- "response"
   }
   
-  df <- left_join(data, output, by = 'customerid')
+  df <- left_join(data, output, by = 'id')
   
   
   segmentation_vars <- model$model_hyperparameters$segmentation_variables
   
   if(is.null(segmentation_vars)){
     allcolumnnames <- colnames(df)
-    segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('customerid', response , 'segment')]  
+    segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('id', response , 'segment')]  
   }
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
