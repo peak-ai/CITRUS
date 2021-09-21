@@ -161,7 +161,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
         scores[i,"withinss"] <-kk$tot.withinss
         
       }else{
-        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = TRUE)
+        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = verbose)
         scores[i,"withinss"] <-kk$tot.withinss
         
       }
