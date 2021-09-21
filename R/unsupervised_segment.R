@@ -23,6 +23,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
   
   if(is.null(hyperparameters$segmentation_variables)){
     segmentation_variables <- colnames(data)
+    segmentation_variables <- segmentation_variables[segmentation_variables != "customerid"]
     
   }else{
     variables <- c("customerid", hyperparameters$segmentation_variables)
@@ -32,7 +33,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
   input_params <- list(centers = hyperparameters$centers,
                        iter_max = hyperparameters$iter_max,
                        nstart = hyperparameters$nstart,
-                       segmentation_variables = hyperparameters$segmentation_variables)
+                       segmentation_variables = segmentation_variables)
   
   # treatment of missings
   if(verbose == TRUE) {message("Checking for NAs in variables")}
