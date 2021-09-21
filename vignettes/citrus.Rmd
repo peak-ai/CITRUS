@@ -83,8 +83,8 @@ Modularity was a primary design consideration when building **CITRUS**. This all
 
 ### Preprocessing
 #### Preprocessing Example 1 
-MVP preprocessing. If nothing other than numeric_operation_list = NA, the preprocessing will default to RFM preprocessing
-Can be used in e.g. unsupervised learning
+MVP preprocessing. If nothing other than numeric_operation_list = NA, the preprocessing will default to RFM preprocessing if no categorical columns exist in the data set. 
+It can be used in e.g. unsupervised learning.
 ```{r}
 formatted <- preprocess(citrus::transactional_data, numeric_operation_list = NA)
 ```
