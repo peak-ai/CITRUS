@@ -30,16 +30,13 @@ formatted <- preprocess(citrus::transactional_data)
 ```
 
 ### Example 1: numeric columns 
-If nothing other than numeric_operation_list = NA, the function will default to RFM preprocessing.
+If nothing other than numeric_operation_list = NA, the preprocessing will default to RFM preprocessing if no categorical columns exist in the data set. 
 It can be used in e.g. unsupervised learning.
-
 ```{r}
-formatted <- preprocess(citrus::transactional_data, 
-                        numeric_operation_list = NA
-                        )
+formatted <- preprocess(citrus::transactional_data, numeric_operation_list = NA)
 ```
 
-The numeric columns can be aggregated using various aggregation methods like e.g. the 'min' and standard deviation 'sd'.
+The numeric columns can be aggregated using various aggregation methods like e.g. 'min' and standard deviation 'sd'.
 
 ```{r}
 formatted <- preprocess(citrus::transactional_data, 
@@ -49,7 +46,15 @@ formatted <- preprocess(citrus::transactional_data,
 
 ### Example 2: categorical columns 
 
-When the table contains categorical columns, it is possible to pass a list of categorical columns to include in the final table. The function will filter on those columns and assign the most common category for each column to each user.
+When the table contains categorical columns, the preprocess function check if any categorical column exists and assign the most common category for each column to each user.
+
+```{r}
+formatted <- preprocess(citrus::transactional_data, 
+                        target = "transactionvalue"
+                        )
+```
+
+It is possible to pass a list of categorical columns to include in the final table. 
 In this example the function uses the most common category for each user in the column 'country'.
 
 ```{r}
