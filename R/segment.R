@@ -22,7 +22,6 @@ segment <- function(data,
                     print_plot = F,
                     hyperparameters = NULL, force = FALSE, verbose = TRUE) {
   
-  #steps <- match.arg(steps)
   modeltype <- match.arg(modeltype)
   
   if (!(all(steps %in% c('preprocess', 'model')))) {
@@ -36,9 +35,7 @@ segment <- function(data,
     if (is.null(FUN_preprocess)) {
       if(verbose == TRUE) {message('Using default preprocessing')}
       if (modeltype == 'tree') {
-        message('here')
         data <- preprocess(data, target = 'transactionvalue', target_agg = 'mean', verbose = verbose)
-        print(data)
       } else if (modeltype == 'k-clusters') {
         data <- preprocess(data, verbose = verbose)
       }
