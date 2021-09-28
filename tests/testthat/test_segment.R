@@ -52,7 +52,7 @@ test_that("k-clusters default output object check", {
   # Output table should be 3 rows
   expect_equal(nrow(output_kclust$OutputTable), 3)
   # No nulls allowed in the output table
-  expect_equal(ncol(output_kclust$OutputTable[complete.cases(output_kclust$OutputTable), ]), 3)
+  expect_equal(ncol(output_kclust$OutputTable[complete.cases(output_kclust$OutputTable), ]), 11)
   # The segment lookup should not contain any NAs
   expect_true(all(!is.na(output_kclust$segments$segment)))
   expect_true(all(!is.na(output_kclust$segments$id)))
@@ -72,7 +72,7 @@ test_that("k-clusters custom output object check", {
   # Output table should be 2 rows
   expect_equal(nrow(output_kclust$OutputTable), 2)
   # No nulls allowed in the output table
-  expect_equal(ncol(output_kclust$OutputTable[complete.cases(output_kclust$OutputTable), ]), 3)
+  expect_equal(ncol(output_kclust$OutputTable[complete.cases(output_kclust$OutputTable), ]), 11)
   # The segment lookup should not contain any NAs
   expect_true(all(!is.na(output_kclust$segments$segment)))
   expect_true(all(!is.na(output_kclust$segments$id)))
