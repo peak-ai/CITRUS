@@ -13,10 +13,10 @@ tree_segment(data, hyperparameters, verbose = TRUE)
 segmentation_variables: a vector or list with variable names that will be used as segmentation variables; 
 dependent_variable: a string with the name of the dependent variable that is used in the clustering;
 min_segmentation_fraction: integer, the minimum segment size as a proportion of the total data set;
-number_of_personas: integer, number of leaves you want the decision tree to have.}
+number_of_segments: integer, number of leaves you want the decision tree to have.}
 
 \item{verbose}{logical whether information about the segmentation procedure should be given.}
 }
 \description{
-Runs decision tree optimisation on the data to segment customers.
+Runs decision tree optimisation on the data to segment ids.
 }

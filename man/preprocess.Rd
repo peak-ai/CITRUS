@@ -17,7 +17,7 @@ preprocess(
 \arguments{
 \item{df}{data.frame, the data to preprocess}
 
-\item{samplesize}{numeric, the fraction of customers used to create a sub-sample of the input df}
+\item{samplesize}{numeric, the fraction of ids used to create a sub-sample of the input df}
 
 \item{numeric_operation_list}{list, a list of the aggregation functions to apply to numeric columns}
 
@@ -30,5 +30,5 @@ preprocess(
 \item{verbose}{logical whether information about the preprocessing should be given}
 }
 \description{
-Transforms a transactional table into a customer aggregated table with custom options for aggregation methods for numeric and categorical columns.
+Transforms a transactional table into an id aggregated table with custom options for aggregation methods for numeric and categorical columns.
 }
