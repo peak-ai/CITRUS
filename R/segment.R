@@ -2,7 +2,7 @@
 #'
 #' Segments the data by running all steps in the segmentation pipeline, including output table
 #' @param data data.frame, the data to segment
-#' @param modeltype character, the type of model to use to segment choices are: 'tree', 'unsupervised'
+#' @param modeltype character, the type of model to use to segment choices are: 'tree', 'k-clusters'
 #' @param FUN function, A user specified function to segment, if the standard methods are not wanting to be used
 #' @param FUN_preprocess function, A user specified function to preprocess, if the standard methods are not wanting to be used
 #' @param steps list, names of the steps the user want to run the data on. Options are 'preprocess' and 'model'
@@ -31,7 +31,7 @@ segment <- function(data,
       if (modeltype == 'tree') {
         data <- preprocess(data, target = 'transactionvalue', target_agg = 'mean', verbose = verbose)
         #print(data)
-      } else if (modeltype == 'unsupervised') {
+      } else if (modeltype == 'k-clusters') {
         data <- preprocess(data, verbose = verbose)
       }
     } else {
@@ -81,8 +81,8 @@ segment <- function(data,
       }
 
       # Model B
-      if (modeltype == 'unsupervised') {
-        if(verbose == TRUE) {message('Unsupervised model chosen')}
+      if (modeltype == 'k-clusters') {
+        if(verbose == TRUE) {message('k-clusters model chosen')}
   
         if(verbose == TRUE) {message('Validating input data')}
   
@@ -104,7 +104,7 @@ segment <- function(data,
         validate(data, supervised = FALSE, force = force, hyperparameters)
   
         if(verbose == TRUE) {message('Training model')}
-        model = unsupervised_segment(data, hyperparameters, verbose = verbose)
+        model = k_clusters(data, hyperparameters, verbose = verbose)
   
         # Prettify layer
         if(prettify == T){

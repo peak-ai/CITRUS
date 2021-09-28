@@ -32,6 +32,15 @@ preprocess <- function(df,
     stop('Missing need to haves')
   }
   
+  if(is.null(categories)){
+    othercols <- names(df)[!names(df) %in% need_to_have]
+    df_other <- df[,othercols]
+    characterlevel <- lapply(df_other,is.character)==T
+    if(sum(characterlevel)>=1){
+      categories <- names(df_other)[characterlevel]
+    }
+  }
+  
   # Sampling
   if (!is.na(samplesize) & samplesize <= 1) {
     n_samples <- as.integer(round(nrow(df)*samplesize))
@@ -60,16 +69,18 @@ preprocess <- function(df,
     function_vector <- strings_to_functions(numeric_operation_list)
     names(function_vector) <- numeric_operation_list
     
-    if (!is.na(target)) {
-      numeric_df <- select(df, -target)
+    if(!is.na(target)) {
+      numeric_df <- df %>% 
+        select(-target) %>%
+        group_by(.data$id) %>% 
+        summarise_if(is.numeric, function_vector) %>% 
+        ungroup()
     } else {
-      numeric_df <- df
+      numeric_df <- df %>% 
+        group_by(.data$id) %>% 
+        summarise_if(is.numeric, function_vector) %>% 
+        ungroup()
     }
-    
-    numeric_df <- numeric_df %>% 
-      group_by(.data$id) %>% 
-      summarise_if(is.numeric, function_vector) %>% 
-      ungroup()
 
     if (is.na(target)) {
       evaluated_columns <- names(df)[sapply(df, is.numeric) & names(df) != 'id']
@@ -91,20 +102,33 @@ preprocess <- function(df,
 
   if (!is.null(categories)) {
     for (col_name in categories) {
-      
-      temp_df <- df %>%
-        select(-target) %>%
-        group_by(.data$id, !!as.symbol(col_name)) %>%
-        summarise(n = n()) %>%
-        ungroup() %>%
-        group_by(.data$id) %>%
-        arrange(desc(n)) %>%
-        filter(row_number() == 1) %>%
-        ungroup() %>%
-        select(-n)
-      var <- paste0('top_', col_name)
-      temp_df[var] <- temp_df[col_name]
-      
+      if(!is.na(target)) {
+        temp_df <- df %>%
+          select(-target) %>%
+          group_by(.data$id, !!as.symbol(col_name)) %>%
+          summarise(n = n()) %>%
+          ungroup() %>%
+          group_by(.data$id) %>%
+          arrange(desc(n)) %>%
+          filter(row_number() == 1) %>%
+          ungroup() %>%
+          select(-n)
+        var <- paste0('top_', col_name)
+        temp_df[var] <- temp_df[col_name]
+
+      } else {
+        temp_df <- df %>%
+          group_by(.data$id, !!as.symbol(col_name)) %>%
+          summarise(n = n()) %>%
+          ungroup() %>%
+          group_by(.data$id) %>%
+          arrange(desc(n)) %>%
+          filter(row_number() == 1) %>%
+          ungroup() %>%
+          select(-n)
+        var <- paste0('top_', col_name)
+        temp_df[var] <- temp_df[col_name]
+      }      
       final_df <- inner_join(final_df, temp_df, by = 'id')
     }
     

@@ -1,6 +1,6 @@
-#' Unsupervised model
+#' k-clusters model
 #'
-#' Unsupervised method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm 
+#' k-clusters method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm 
 #' @param data data.frame, the data to segment
 #' @param hyperparameters list of hyperparameters to pass. They include
 #' centers: number of clusters or a set of initial (distinct) cluster centers, or 'auto'. When 'auto' is chosen, the number of clusters is optimised; \cr
@@ -18,7 +18,7 @@
 #' @param verbose logical whether information about the clustering procedure should be given.
 #' @export
 #'
-unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
+k_clusters <- function(data, hyperparameters, verbose = TRUE){
   
   
   if(is.null(hyperparameters$segmentation_variables)){
@@ -161,7 +161,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
         scores[i,"withinss"] <-kk$tot.withinss
         
       }else{
-        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = TRUE)
+        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = verbose)
         scores[i,"withinss"] <-kk$tot.withinss
         
       }
@@ -182,7 +182,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
 
   
   if(all(grepl('factor|character', sapply(data,class)))) {
-    stop("Data contain only categorical variables: cannot run the unsupervised model")
+    stop("Data contain only categorical variables: cannot run the k-clusters model")
   }
   
   if(any(grepl('factor|character', sapply(data,class)))) {
@@ -263,7 +263,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
               predicted_values = data.frame("id" = ids,"segment" = km$cluster)
   )
   
-  class(out) <- 'unsupervised'
+  class(out) <- 'k-clusters'
   
   
   
@@ -272,7 +272,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
 }
 
 #' @importFrom stats predict
-predict.unsupervised <- function(object,newdata,...){
+predict.k_clusters <- function(object,newdata,...){
   object <-  object$segment_model
   if (class(object) == "kmeans") {
     list(cluster = apply(newdata, 1, function(r) which.min(colSums((t(object$centers) - r)^2))),
