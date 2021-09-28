@@ -33,7 +33,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
   input_params <- list(centers = hyperparameters$centers,
                        iter_max = hyperparameters$iter_max,
                        nstart = hyperparameters$nstart,
-                       segmentation_variables = segmentation_variables)
+                       segmentation_variables = hyperparameters$segmentation_variables)
   
   # treatment of missings
   if(verbose == TRUE) {message("Checking for NAs in variables")}

@@ -29,18 +29,33 @@ output_table <- function(data, model) {
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
   characterlevel <- lapply(df_agg,is.character)==T
-  df_agg <- df_agg %>% 
-    group_by(.data$segment) %>% 
-    summarise_each(funs(if(is.numeric(.data$.)) round(mean(.data$., na.rm = TRUE),2) else mode(.data$.)))
+  
+  df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
+    group_by(.data$segment) %>%
+    summarise(across(everything(), ~round(mean(.data$., na.rm = TRUE), 2)))
+  
+  df_agg_character <- df_agg[, !unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
+    group_by(.data$segment) %>%
+    summarise(across(everything(), ~mode(.data$.)))
+  
+  df_agg <- full_join(df_agg_numeric, df_agg_character, by = 'segment')
+  
   names(df_agg)[characterlevel] <- paste0(names(df_agg)[characterlevel],'_mode')
   names(df_agg)[!characterlevel] <- paste0(names(df_agg)[!characterlevel],'_mean')
   names(df_agg)[1] <- 'segment'
   
   
-  df_agg2 <- 
-    df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) %>% 
+  seg_vars <- model$model_hyperparameters$segmentation_variables
+  df_agg2_numeric <- df[, (unlist(lapply(df, is.numeric)) & names(df) %in% seg_vars) | names(df) == 'segment'] %>%
     group_by(.data$segment) %>% 
-    summarise_each(funs(if(is.numeric(.data$.)) range_output(.data$.) else top5categories(.data$.)))
+    summarise(across(everything(), ~range_output(.data$.)))
+  
+  df_agg2_character <- df[, (!unlist(lapply(df, is.numeric)) & names(df) %in% seg_vars) | names(df) == 'segment'] %>%
+    group_by(.data$segment) %>% 
+    summarise(across(everything(), ~top5categories(.data$.)))
+  
+  df_agg2 <- full_join(df_agg2_numeric, df_agg2_character, by = 'segment')
+  
   names(df_agg2)[characterlevel] <- paste0(names(df_agg2)[characterlevel],'_top5')
   names(df_agg2)[!characterlevel] <- paste0(names(df_agg2)[!characterlevel],'_range')
   names(df_agg2)[1] <- 'segment'
