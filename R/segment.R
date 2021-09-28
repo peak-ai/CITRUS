@@ -53,7 +53,7 @@ segment <- function(data,
         # Default hyperparameters
         default_hyperparameters = list(dependent_variable = 'response',
                                        min_segmentation_fraction = 0.05,
-                                       number_of_personas = 6,
+                                       number_of_segments = 6,
                                        print_plot = ifelse(prettify == FALSE, print_plot, FALSE),
                                        print_safety_check=20)
         if(is.null(hyperparameters)){
@@ -67,7 +67,7 @@ segment <- function(data,
         
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
-        if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$persona_table$persona, '\n')))}
+        if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
 
         # Prettify layer
         if(prettify == T){
