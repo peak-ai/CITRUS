@@ -14,13 +14,16 @@
 #' @importFrom utils modifyList
 #' @export
 segment <- function(data,
-                    modeltype = 'tree',
+                    modeltype = c('tree', 'k-clusters'),
                     FUN = NULL,
                     FUN_preprocess = NULL,
                     steps = c('preprocess', 'model'),
                     prettify = F,
                     print_plot = F,
                     hyperparameters = NULL, force = FALSE, verbose = TRUE) {
+  
+  steps <- match.arg(steps)
+  modeltype <- match.arg(modeltype)
 
   # Data processing layer
   # returns data in appropriate format called 'data'

@@ -6,7 +6,7 @@
 \usage{
 segment(
   data,
-  modeltype = "tree",
+  modeltype = c("tree", "k-clusters"),
   FUN = NULL,
   FUN_preprocess = NULL,
   steps = c("preprocess", "model"),
