@@ -44,23 +44,23 @@ test_that("Supervised custom output object check", {
   expect_true(output_supervised$CitrusModel$model_hyperparameters$number_of_personas == 4)
 })
 
-test_that("Unsupervised default output object check", {
-  output_unsupervised <- segment(data, modeltype = 'unsupervised')
+test_that("k-clusters default output object check", {
+  output_kclust <- segment(data, modeltype = 'k-clusters')
   
   # Should contain all the right variables
-  expect_true(all(names(output_unsupervised) %in% c('OutputTable', 'segments', 'CitrusModel')))
+  expect_true(all(names(output_kclust) %in% c('OutputTable', 'segments', 'CitrusModel')))
   # Output table should be 3 rows
-  expect_equal(nrow(output_unsupervised$OutputTable), 3)
+  expect_equal(nrow(output_kclust$OutputTable), 3)
   # No nulls allowed in the output table
-  expect_equal(ncol(output_unsupervised$OutputTable[complete.cases(output_unsupervised$OutputTable), ]), 3)
+  expect_equal(ncol(output_kclust$OutputTable[complete.cases(output_kclust$OutputTable), ]), 3)
   # The segment lookup should not contain any NAs
-  expect_true(all(!is.na(output_unsupervised$segments$persona)))
-  expect_true(all(!is.na(output_unsupervised$segments$customerid)))
+  expect_true(all(!is.na(output_kclust$segments$persona)))
+  expect_true(all(!is.na(output_kclust$segments$customerid)))
 })
 
-test_that("Supervised custom output object check", {
+test_that("k-clusters custom output object check", {
   
-  output_unsupervised <- segment(data, modeltype = 'unsupervised', hyperparameters = list(centers = 'auto',
+  output_kclust <- segment(data, modeltype = 'k-clusters', hyperparameters = list(centers = 'auto',
                                                                                           iter_max = 35,
                                                                                           nstart = 2,
                                                                                           max_centers = 3, 
@@ -68,16 +68,16 @@ test_that("Supervised custom output object check", {
                                                                                           standardize = TRUE))
   
   # Should contain all the right variables
-  expect_true(all(names(output_unsupervised) %in% c('OutputTable', 'segments', 'CitrusModel')))
+  expect_true(all(names(output_kclust) %in% c('OutputTable', 'segments', 'CitrusModel')))
   # Output table should be 2 rows
-  expect_equal(nrow(output_unsupervised$OutputTable), 2)
+  expect_equal(nrow(output_kclust$OutputTable), 2)
   # No nulls allowed in the output table
-  expect_equal(ncol(output_unsupervised$OutputTable[complete.cases(output_unsupervised$OutputTable), ]), 3)
+  expect_equal(ncol(output_kclust$OutputTable[complete.cases(output_kclust$OutputTable), ]), 3)
   # The segment lookup should not contain any NAs
-  expect_true(all(!is.na(output_unsupervised$segments$persona)))
-  expect_true(all(!is.na(output_unsupervised$segments$customerid)))
+  expect_true(all(!is.na(output_kclust$segments$persona)))
+  expect_true(all(!is.na(output_kclust$segments$customerid)))
   # The model hyperparameters should agree with the custom ones
-  expect_true(output_unsupervised$CitrusModel$model_hyperparameters$centers == 'auto')
-  expect_true(output_unsupervised$CitrusModel$model_hyperparameters$iter_max == 35)
-  expect_true(output_unsupervised$CitrusModel$model_hyperparameters$nstart == 2)
+  expect_true(output_kclust$CitrusModel$model_hyperparameters$centers == 'auto')
+  expect_true(output_kclust$CitrusModel$model_hyperparameters$iter_max == 35)
+  expect_true(output_kclust$CitrusModel$model_hyperparameters$nstart == 2)
 })
