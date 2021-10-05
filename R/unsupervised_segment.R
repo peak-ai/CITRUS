@@ -26,7 +26,6 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
     segmentation_variables <- segmentation_variables[segmentation_variables != "id"]
     
   }else{
-
     variables <- c("id", hyperparameters$segmentation_variables)
     data <- data[, variables]
 
