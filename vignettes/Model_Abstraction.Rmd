@@ -1,0 +1,41 @@
+---
+title: "Model Abstraction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model Abstraction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The CITRUS package contains several different approaches to segmentation, in order to keep the approaches consistent to produce the same outputs, we require a module that extracts the relevant information from the specific approach. This module is called the model abstraction layer, this provides consistency across the different approaches and ensures the same output is produced moving into the next module.
+
+The model abstraction layer varies for each type of approach as it pulls different information from different approaches. The standard input that it takes is the segmentation model object and the input data that is converted into a list object containing the model, hyperparameters, predicted values and the input data.
+
+```{r setup}
+library(citrus)
+library(dplyr)
+
+hyperparameters <- list(dependent_variable = 'response',
+                       min_segmentation_fraction = 0.05,
+                       number_of_segments = 6,
+                       print_plot = FALSE,
+                       print_safety_check=20)
+
+formatted <- preprocess(citrus::transactional_data,
+                       categories = c('country'), 
+                       numeric_operation_list = c('min', 'sd'),
+                       target = 'desc_chars', 
+                       target_agg = 'mean')
+validate(formatted, supervised = TRUE, hyperparameters = hyperparameters)
+model <- tree_segment(formatted, hyperparameters)
+model <- tree_abstract(model, citrus::preprocessed_data)
+
+str(model)
+```

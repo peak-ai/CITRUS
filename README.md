@@ -13,3 +13,4 @@ Customer segmentation is the process of dividing customers into groups based on 
 install.packages("devtools")
 devtools::install_github("peak-ai/citrus")
 ```
+

@@ -1,0 +1,78 @@
+---
+title: "Preprocessing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Preprocessing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r include = FALSE}
+devtools::install_github("peak-ai/citrus")
+library(citrus)
+library(dplyr)
+```
+
+The `preprocess` function transforms a transactional table into a customer aggregated table with custom options for aggregation methods for numeric and categorical columns.
+
+In the current state we assume that the input data is a transaction table with 4 columns required (transactionid, id, orderdate, transactionvalue). The function will raise an error if these column names are not found.
+
+
+```{r}
+formatted <- preprocess(citrus::transactional_data)
+```
+
+### Example 1: numeric columns 
+If nothing other than numeric_operation_list = NA, the preprocessing will default to RFM preprocessing if no categorical columns exist in the data set. 
+It can be used in e.g. unsupervised learning.
+```{r}
+formatted <- preprocess(citrus::transactional_data, numeric_operation_list = NA)
+```
+
+The numeric columns can be aggregated using various aggregation methods like e.g. 'min' and standard deviation 'sd'.
+
+```{r}
+formatted <- preprocess(citrus::transactional_data, 
+                        numeric_operation_list = c('min', 'sd')
+                        )
+```
+
+### Example 2: categorical columns 
+
+When the table contains categorical columns, the preprocess function check if any categorical column exists and assign the most common category for each column to each user.
+
+```{r}
+formatted <- preprocess(citrus::transactional_data, 
+                        target = "transactionvalue"
+                        )
+```
+
+It is possible to pass a list of categorical columns to include in the final table. 
+In this example the function uses the most common category for each user in the column 'country'.
+
+```{r}
+formatted <- preprocess(citrus::transactional_data, 
+                        categories = c("country"), 
+                        target = "transactionvalue"
+                        )
+```
+
+### Example 3: target column
+
+Specify the target variable and the aggregation function to perform on it if you want to run a supervised model. 
+In the example the target column is the mean of the transactionvalue column.
+
+```{r}
+formatted <- preprocess(citrus::transactional_data,
+                        categories = c('country'), 
+                        numeric_operation_list = c('min', 'sd'),
+                        target = 'transactionvalue', 
+                        target_agg = 'mean')
+```

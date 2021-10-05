@@ -1,0 +1,16 @@
+pandoc: 2.11.4
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  Customisation: Customisation.html
+  Data_Validation: Data_Validation.html
+  KProto: KProto.html
+  Model_Abstraction: Model_Abstraction.html
+  Model_Management: Model_Management.html
+  Output_Layer: Output_Layer.html
+  Preprocessing: Preprocessing.html
+  Tree: Tree.html
+  Visualisations: Visualisations.html
+  citrus: citrus.html
+last_built: 2021-09-07T10:08Z
+

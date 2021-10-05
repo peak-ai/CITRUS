@@ -1,0 +1,45 @@
+---
+title: "Model Management"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model Management}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The CITRUS package contains a module that saves the relevant outputs from the segmentation model to the working directory. As default, this module is set not to run, however if you would like to have the outputs saved, some entries within the hyperparameters needs to be added. 
+
+When `saveoutput` is set to true in the hyperparameters, a directory is created within the current working directory called `segmentationoutputs`. Within this the model, hyperparameters, predicted values and some method specific files are saved (outliers for unsupervised, `rpart.plot` image for tree). If `saveinputdata` is also set to true in the hyperparameters, the input data is also saved within this directory.
+
+Further development on this module would involve saving the outputs to different places (eg. cloud storage such as s3)
+
+```{r setup}
+library(citrus)
+library(dplyr)
+
+hyperparameters <- list(dependent_variable = 'response',
+                       min_segmentation_fraction = 0.05,
+                       number_of_segments = 6,
+                       print_plot = FALSE,
+                       print_safety_check=20,
+                       saveoutput = T,
+                       saveinputdata = T)
+
+formatted <- preprocess(citrus::transactional_data,
+                       categories = c('country'), 
+                       numeric_operation_list = c('min', 'sd'),
+                       target = 'desc_chars', 
+                       target_agg = 'mean')
+validate(formatted, supervised = TRUE, hyperparameters = hyperparameters)
+model <- tree_segment(formatted, hyperparameters)
+model <- tree_abstract(model, citrus::preprocessed_data)
+model_management(model,hyperparameters)
+
+```
