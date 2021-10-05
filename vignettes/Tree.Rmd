@@ -35,12 +35,12 @@ output <- segment(citrus::preprocessed_data,
                  print_plot = TRUE)
 ```
 
-Another approach can be called by using the `tree_segment` function. Within the `tree_segment` function there are hyperparameters that require to be passed as a list object and the dataframe that will be used to segment. The output provided is a list containing the tree object (`persona_model`), a summary table (`persona_tree`), the predicted values (`persona_predicted`) and the model input parameters (`model_inputs`).
+Another approach can be called by using the `tree_segment` function. Within the `tree_segment` function there are hyperparameters that require to be passed as a list object and the dataframe that will be used to segment. The output provided is a list containing the tree object (`segment_model`), a summary table (`segment_tree`), the predicted values (`segment_predicted`) and the model input parameters (`model_inputs`).
 
 ```{r}
 hyperparameters <- list(dependent_variable = 'response',
                         min_segmentation_fraction = 0.05,
-                        number_of_personas = 6,
+                        number_of_segments = 6,
                         print_plot = FALSE,
                         print_safety_check=20)
 model <- tree_segment(citrus::preprocessed_data, hyperparameters)
@@ -57,7 +57,7 @@ This algorithm typically uses certain hyperparameters that help prevent over/und
 | Global |              | segmentation_variables | `array`, names of all variables to segment on                   |
 | Method | tree         | dependent_variable     | `character`, name of the variable to be used as dependent variable |
 | Method | tree         | min_segmentation_fraction     | `numeric`, the maximum size of the smallest possible segment (0.05 is 5% of the number of customers passed) |
-| Method | tree         | number_of_personas     | `numeric`, the number of segments to be produced |
+| Method | tree         | number_of_segments     | `numeric`, the number of segments to be produced |
 
 </center>
 
@@ -67,7 +67,7 @@ Following the use of the `tree_segment` function, the `rpart` object can be visu
 
 ```{r}
 # model <- tree_segment(citrus::preprocessed_data, hyperparameters)
-rpart.plot(model$persona_model)
+rpart.plot(model$segment_model)
 ``` 
 
 ### Prettify 

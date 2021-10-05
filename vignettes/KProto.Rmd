@@ -23,28 +23,28 @@ library(dplyr)
 ```
 
 The `CITRUS` package also offers the option to perform segmentation using unsupervised learning. 
-The `unsupervised_segment` function will perform either k-means or k-prototypes clustering based on the data types present in the input data frame.
+The `k_clusters` function will perform either k-means or k-prototypes clustering based on the data types present in the input data frame.
 Both methods take a customer level data frame and cluster the data into segments based on a distance parameter between data points.
 If any categorical columns are detected then k-prototypes will be implemented, otherwise k-means.
 Use this model if you want to create clusters without using a target variable to segment on. This model is particularly good at handling mixed data types.
 
 ## Some Examples
 
-One approach to run this type of segmentation is by using the `segment` function. Within the `segment` function there is a parameter called `modeltype` that can be set to `unsupervised`. Depending on what is defined in `steps` (see https://peak-ai.github.io/CITRUS/articles/segment.html), this will run the pipeline and the unsupervised functions to produce the output table, predicted values and the model object. The `segment` function requires a data frame to segment upon, and also some parameters that provide a prettified output and a pair plot.
+One approach to run this type of segmentation is by using the `segment` function. Within the `segment` function there is a parameter called `modeltype` that can be set to `k-clusters`. Depending on what is defined in `steps` (see https://peak-ai.github.io/CITRUS/articles/segment.html), this will run the pipeline and the unsupervised functions to produce the output table, predicted values and the model object. The `segment` function requires a data frame to segment upon, and also some parameters that provide a prettified output and a pair plot.
 
 ```{r, include=FALSE}
-data <- citrus::preprocessed_data %>% select(-top_country, -transactionvalue_sd)
+data <- citrus::preprocessed_data %>% select(-response, -transactionvalue_sd, -top_country)
 ```
 
 ```{r}
 output <- segment(citrus::preprocessed_data %>% select(-response, -transactionvalue_sd, -top_country), 
-                  modeltype = 'unsupervised',
+                  modeltype = 'k-clusters',
                   steps = c('model'),
                   prettify = T,
                   print_plot = TRUE)
 ```
 
-Another approach can be called by using the `unsupervised_segment` function. Within the `unsupervised_segment` function there are hyperparameters that require to be passed as a list object and the dataframe that will be used to segment. The output provided is a list containing the segmentation object (`persona_model`), the input data (`input_data`), the predicted values (`predicted_values`) a table with any outliers (`outliers_table`), the model input parameters (`model_hyperparameters`) and, in case k-means is used, an elbow-plot showing the optimised number of clusters (`elbow_plot`).
+Another approach can be called by using the `k_clusters` function. Within the `k_clusters` function there are hyperparameters that require to be passed as a list object and the dataframe that will be used to segment. The output provided is a list containing the segmentation object (`segment_model`), the input data (`input_data`), the predicted values (`predicted_values`) a table with any outliers (`outliers_table`), the model input parameters (`model_hyperparameters`) and, in case k-means is used, an elbow-plot showing the optimised number of clusters (`elbow_plot`).
 
 ```{r}
 hyperparameters <- list(centers = 'auto',
@@ -53,7 +53,7 @@ hyperparameters <- list(centers = 'auto',
                                        max_centers = 5, 
                                        segmentation_variables = NULL,
                                        standardize = TRUE)
-model <- unsupervised_segment(citrus::preprocessed_data %>% select(-top_country, -response, -transactionvalue_sd), hyperparameters)
+model <- k_clusters(citrus::preprocessed_data %>% select(-top_country, -response, -transactionvalue_sd), hyperparameters)
 
 ```
 
@@ -83,7 +83,7 @@ It is possible to change the value of any of the hyperparameters and pass the ne
 hyperparameters <- list(centers = 3,
                         segmentation_variables = c("frequency", "recency"))
 output <- segment(citrus::preprocessed_data %>% select(-response, -top_country, -transactionvalue_sd), 
-                  modeltype = 'unsupervised',
+                  modeltype = 'k-clusters',
                   steps = c('model'),
                   prettify = T,
                   hyperparameters = hyperparameters,
