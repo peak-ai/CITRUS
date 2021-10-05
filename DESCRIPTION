@@ -33,9 +33,6 @@ Imports:
     rlang
 Encoding: UTF-8
 LazyData: true
-<<<<<<< HEAD
-RoxygenNote: 7.1.1
-VignetteBuilder: knitr
-=======
 RoxygenNote: 7.1.2
->>>>>>> 8a4d8e0dada18167f4ced0e7defbe652c6c26e51
+VignetteBuilder: knitr
+
