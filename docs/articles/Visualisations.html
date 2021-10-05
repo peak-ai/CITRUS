@@ -96,7 +96,7 @@
 
       
 
-      </header><script src="Visualisations_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="Visualisations_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Visualisations</h1>
@@ -109,8 +109,94 @@
 
     
     
+<p>CITRUS offers different visualization options, depending on model selected.</p>
+<div id="decision-tree" class="section level3">
+<h3 class="hasAnchor">
+<a href="#decision-tree" class="anchor"></a>Decision Tree</h3>
+<p>If the tree model is used the rpart object can be easily visualised.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">citrus</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">hyperparameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>dependent_variable <span class="op">=</span> <span class="st">'response'</span>,
+                        min_segmentation_fraction <span class="op">=</span> <span class="fl">0.05</span>,
+                        number_of_segments <span class="op">=</span> <span class="fl">6</span>,
+                        print_plot <span class="op">=</span> <span class="cn">FALSE</span>,
+                        print_safety_check<span class="op">=</span><span class="fl">20</span><span class="op">)</span>
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tree_segment.html">tree_segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span>, <span class="va">hyperparameters</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/rpart.plot/man/rpart.plot.html">rpart.plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">segment_model</span>, roundint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><img src="Visualisations_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p>However, the standard plotting functionality has some limitations with certain data so there is a prettify functionality added that provides nicer visualisations.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tree_segment_prettify.html">tree_segment_prettify</a></span><span class="op">(</span><span class="va">model</span>,print_plot <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
+<p><img src="Visualisations_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p>When using the <code>segment</code> function it is possible to choose to visualise and/or prettify the plot.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span>,
+                    modeltype <span class="op">=</span> <span class="st">'tree'</span>,
+                    FUN <span class="op">=</span> <span class="cn">NULL</span>,
+                    FUN_preprocess <span class="op">=</span> <span class="cn">NULL</span>,
+                    steps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'model'</span><span class="op">)</span>,
+                    prettify <span class="op">=</span> <span class="cn">T</span>,
+                    print_plot <span class="op">=</span> <span class="cn">T</span>,
+                    hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; Setting up model</span>
+<span class="co">#&gt; Tree based model chosen</span>
+<span class="co">#&gt; Validating input data</span>
+<span class="co">#&gt; Training model</span>
+<span class="co">#&gt; Number of segments: 6</span>
+<span class="co">#&gt; Prettifying output data</span>
+<span class="co">#&gt; Abstracting model</span>
+<span class="co">#&gt; Generating output table</span>
+<span class="co">#&gt; Finished!</span></code></pre></div>
+<p><img src="Visualisations_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+</div>
+<div id="pair-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#pair-plot" class="anchor"></a>Pair Plot</h3>
+<p>The pair plot is useful for visualizing the segments generated by the model, their distribution in the features’ space and their correlation.</p>
+<p>At the moment if unsupervised model is used, it is possible to pass the model straight to the <code>citrus_pair_plot</code> function.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">hyperparameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>centers <span class="op">=</span> <span class="st">'auto'</span>,
+                                       iter_max <span class="op">=</span> <span class="fl">50</span>,
+                                       nstart <span class="op">=</span> <span class="fl">5</span>,
+                                       max_centers <span class="op">=</span> <span class="fl">5</span>, 
+                                       segmentation_variables <span class="op">=</span> <span class="cn">NULL</span>,
+                                       standardize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+
+<span class="va">preprocessed</span> <span class="op">&lt;-</span> <span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">recency</span>, <span class="va">frequency</span>, <span class="va">monetary</span><span class="op">)</span>
+
+<span class="va">unuspervised_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/k_clusters.html">k_clusters</a></span><span class="op">(</span><span class="va">preprocessed</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/citrus_pair_plot.html">citrus_pair_plot</a></span><span class="op">(</span><span class="va">unuspervised_model</span><span class="op">)</span></code></pre></div>
+<p><img src="Visualisations_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p>In order to visualise the segments generated by the tree model, the model first needs to be processed in the <code>model management</code> layer. This step is automatically done when using the segment function.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">hyperparameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>dependent_variable <span class="op">=</span> <span class="st">'response'</span>,
+                        min_segmentation_fraction <span class="op">=</span> <span class="fl">0.05</span>,
+                        number_of_segments <span class="op">=</span> <span class="fl">6</span>,
+                        print_plot <span class="op">=</span> <span class="cn">FALSE</span>,
+                        print_safety_check<span class="op">=</span><span class="fl">20</span><span class="op">)</span>
+
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/segment.html">segment</a></span><span class="op">(</span><span class="fu">citrus</span><span class="fu">::</span><span class="va"><a href="../reference/preprocessed_data.html">preprocessed_data</a></span>,
+                    modeltype <span class="op">=</span> <span class="st">'tree'</span>,
+                    FUN <span class="op">=</span> <span class="cn">NULL</span>,
+                    FUN_preprocess <span class="op">=</span> <span class="cn">NULL</span>,
+                    steps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'model'</span><span class="op">)</span>,
+                    prettify <span class="op">=</span> <span class="cn">F</span>,
+                    print_plot <span class="op">=</span> <span class="cn">F</span>,
+                    hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; Setting up model</span>
+<span class="co">#&gt; Tree based model chosen</span>
+<span class="co">#&gt; Validating input data</span>
+<span class="co">#&gt; Training model</span>
+<span class="co">#&gt; Number of segments: 6</span>
+<span class="co">#&gt; Abstracting model</span>
+<span class="co">#&gt; Generating output table</span>
+<span class="co">#&gt; Finished!</span>
+
+<span class="fu"><a href="../reference/citrus_pair_plot.html">citrus_pair_plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">CitrusModel</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"recency"</span>, <span class="st">"frequency"</span>, <span class="st">"monetary"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="Visualisations_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -122,7 +208,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Dom Clarke, Leo McCarthy.</p>
+  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Joash Alonso.</p>
 </div>
 
 <div class="pkgdown">

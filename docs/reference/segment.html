@@ -153,13 +153,14 @@
 
     <pre class="usage"><span class='fu'>segment</span><span class='op'>(</span>
   <span class='va'>data</span>,
-  modeltype <span class='op'>=</span> <span class='st'>"tree"</span>,
+  modeltype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"tree"</span>, <span class='st'>"k-clusters"</span><span class='op'>)</span>,
   FUN <span class='op'>=</span> <span class='cn'>NULL</span>,
   FUN_preprocess <span class='op'>=</span> <span class='cn'>NULL</span>,
   steps <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"preprocess"</span>, <span class='st'>"model"</span><span class='op'>)</span>,
   prettify <span class='op'>=</span> <span class='cn'>F</span>,
   print_plot <span class='op'>=</span> <span class='cn'>F</span>,
   hyperparameters <span class='op'>=</span> <span class='cn'>NULL</span>,
+  force <span class='op'>=</span> <span class='cn'>FALSE</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
@@ -172,7 +173,7 @@
     </tr>
     <tr>
       <th>modeltype</th>
-      <td><p>character, the type of model to use to segment choices are: 'tree'</p></td>
+      <td><p>character, the type of model to use to segment choices are: 'tree', 'k-clusters'</p></td>
     </tr>
     <tr>
       <th>FUN</th>
@@ -199,6 +200,10 @@
       <td><p>list of hyperparameters to use in the model.</p></td>
     </tr>
     <tr>
+      <th>force</th>
+      <td><p>logical, TRUE to ignore errors in validation step and force model execution.</p></td>
+    </tr>
+    <tr>
       <th>verbose</th>
       <td><p>logical whether information about the segmentation pipeline should be given.</p></td>
     </tr>
@@ -216,7 +221,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Dom Clarke, Leo McCarthy.</p>
+  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Joash Alonso.</p>
 </div>
 
 <div class="pkgdown">

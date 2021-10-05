@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tree Segment Prettify Function — tree_segment_prettify • citrus</title>
+<title>k-clusters model — k_clusters • citrus</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Tree Segment Prettify Function — tree_segment_prettify" />
-<meta property="og:description" content="Returns a prettier version of the decision tree." />
+<meta property="og:title" content="k-clusters model — k_clusters" />
+<meta property="og:description" content="k-clusters method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm" />
 
 
 
@@ -142,31 +142,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Tree Segment Prettify Function</h1>
+    <h1>k-clusters model</h1>
     
-    <div class="hidden name"><code>tree_segment_prettify.Rd</code></div>
+    <div class="hidden name"><code>k_clusters.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Returns a prettier version of the decision tree.</p>
+    <p>k-clusters method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tree_segment_prettify</span><span class='op'>(</span><span class='va'>tree</span>, char_length <span class='op'>=</span> <span class='fl'>20</span>, print_plot <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>k_clusters</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>hyperparameters</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tree</th>
-      <td><p>The decision tree model to prettify</p></td>
+      <th>data</th>
+      <td><p>data.frame, the data to segment</p></td>
     </tr>
     <tr>
-      <th>char_length</th>
-      <td><p>integer, the character limit before truncating categories and putting them into an "other" group</p></td>
+      <th>hyperparameters</th>
+      <td><p>list of hyperparameters to pass. They include
+centers: number of clusters or a set of initial (distinct) cluster centers, or 'auto'. When 'auto' is chosen, the number of clusters is optimised; <br />
+iter_max: the maximum number of iterations allowed; 
+n_start: how many random sets of cluster centers should be tried;
+max_centers: maximum number of clusters when 'auto' option is selected for the centers; 
+segmentation_variables: the columns to use to segment on.
+standardize: whether to standardize numeric columns.</p></td>
     </tr>
     <tr>
-      <th>print_plot</th>
-      <td><p>logical, indicates whether to print the generated plot or not</p></td>
+      <th>verbose</th>
+      <td><p>logical whether information about the clustering procedure should be given.</p></td>
     </tr>
     </table>
 

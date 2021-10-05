@@ -96,7 +96,7 @@
 
       
 
-      </header><script src="Data_Validation_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="Data_Validation_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Data Validation</h1>
@@ -120,15 +120,15 @@
 <div id="data-validation-example-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#data-validation-example-1" class="anchor"></a>Data Validation Example 1</h4>
-<p>The DF must have a column called <code>customerid</code>.</p>
+<p>The DF must have a column called <code>id</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">customerid</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">id</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Columns missing: customerid</span></code></pre></div>
+<span class="co">#&gt; Columns missing: id</span></code></pre></div>
 </div>
 <div id="data-validation-example-2" class="section level4">
 <h4 class="hasAnchor">
@@ -141,7 +141,7 @@
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Customer observations are not unique. nrow(df) &gt; n_distinct(df$customerid).</span></code></pre></div>
+<span class="co">#&gt; ID observations are not unique. nrow(df) &gt; n_distinct(df$id).</span></code></pre></div>
 </div>
 <div id="data-validation-example-3" class="section level4">
 <h4 class="hasAnchor">
@@ -158,10 +158,10 @@
 <div id="data-validation-example-3-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#data-validation-example-3-1" class="anchor"></a>Data Validation Example 3</h4>
-<p>If <code>customerid</code>, and <code>response</code> column exist but there are no feature columns to predict over, an error is raised.</p>
+<p>If <code>id</code>, and <code>response</code> column exist but there are no feature columns to predict over, an error is raised.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">invalid_df</span> <span class="op">&lt;-</span> <span class="va">formatted</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">customerid</span>, <span class="va">response</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">response</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">invalid_df</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; Error in validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters): </span>
@@ -179,7 +179,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Dom Clarke, Leo McCarthy.</p>
+  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Joash Alonso.</p>
 </div>
 
 <div class="pkgdown">

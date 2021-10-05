@@ -96,7 +96,7 @@
 
       
 
-      </header><script src="Customisation_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="Customisation_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Customisation</h1>
@@ -128,12 +128,12 @@
   
   <span class="va">final_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>first_letter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span><span class="va">top_country</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>persona <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span><span class="va">first_letter</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">8</span>, <span class="st">'Segment A'</span>,
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>segment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span><span class="va">first_letter</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">8</span>, <span class="st">'Segment A'</span>,
                                       <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span><span class="va">first_letter</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">17</span>, <span class="st">'Segment B'</span>, <span class="st">'Segment C'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">customerid</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span><span class="op">)</span>
   
-  <span class="co">#output &lt;- list('predicted_values' = final_df[,c('persona')])</span>
-  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">'predicted_values'</span> <span class="op">=</span> <span class="va">final_df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'customerid'</span>, <span class="st">'persona'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+  <span class="co">#output &lt;- list('predicted_values' = final_df[,c('segment')])</span>
+  <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">'predicted_values'</span> <span class="op">=</span> <span class="va">final_df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'id'</span>, <span class="st">'segment'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
   
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span>
 <span class="op">}</span>
@@ -145,19 +145,6 @@
 <span class="co">#&gt; Setting up model</span>
 <span class="co">#&gt; Using custom model</span>
 <span class="co">#&gt; Generating output table</span>
-<span class="co">#&gt; Warning: `summarise_each_()` was deprecated in dplyr 0.7.0.</span>
-<span class="co">#&gt; Please use `across()` instead.</span>
-<span class="co">#&gt; Warning: `funs()` was deprecated in dplyr 0.8.0.</span>
-<span class="co">#&gt; Please use a list of either functions or lambdas: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   # Simple named list: </span>
-<span class="co">#&gt;   list(mean = mean, median = median)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   # Auto named with `tibble::lst()`: </span>
-<span class="co">#&gt;   tibble::lst(mean, median)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   # Using lambdas</span>
-<span class="co">#&gt;   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</span>
 <span class="co">#&gt; Finished!</span></code></pre></div>
 <p>There is scope for new approaches to be created within the pre-processing, modelling and output layer steps. For example, a DBScan approach could be added to the modelling section as an alternative segmentation approach.</p>
   </div>
@@ -171,7 +158,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Dom Clarke, Leo McCarthy.</p>
+  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Joash Alonso.</p>
 </div>
 
 <div class="pkgdown">
