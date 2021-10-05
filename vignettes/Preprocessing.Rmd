@@ -22,7 +22,7 @@ library(dplyr)
 
 The `preprocess` function transforms a transactional table into a customer aggregated table with custom options for aggregation methods for numeric and categorical columns.
 
-In the current state we assume that the input data is a transaction table with 4 columns required (transactionid, customerid, orderdate, transactionvalue). The function will raise an error if these column names are not found.
+In the current state we assume that the input data is a transaction table with 4 columns required (transactionid, id, orderdate, transactionvalue). The function will raise an error if these column names are not found.
 
 
 ```{r}

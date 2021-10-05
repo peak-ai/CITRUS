@@ -26,7 +26,7 @@ library(dplyr)
 
 ## Expected Data Model
 
-In its current state, we are assuming that the input data is a transactions table with 4 required columns (transactionid, customerid, orderdate, transactionvalue). The preprocess function requires that these fields (or equivalent fields) are named in that manner. The function will raise a warning if these column names are not found.
+In its current state, we are assuming that the input data is a transactions table with 4 required columns (transactionid, id, orderdate, transactionvalue). The preprocess function requires that these fields (or equivalent fields) are named in that manner. The function will raise a warning if these column names are not found.
 
 ## Usage
 
@@ -49,7 +49,7 @@ Hyperparameters can be passed into the functions at any time, most of the module
 ```{r}
 hyperparameters = list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_safety_check=20)
 ```
 
@@ -71,7 +71,7 @@ hyperparameters = list(centers = 'auto',
 | Global |              | saveoutput             | `boolean`, saves the output to local directory if TRUE          |
 | Method | tree         | dependent_variable     | `character`, name of the variable to be used as dependent variable |
 | Method | tree         | min_segmentation_fraction     | `numeric`, the maximum size of the smallest possible segment (0.05 is 5% of the number of customers passed) |
-| Method | tree         | number_of_personas     | `numeric`, the number of segments to be produced |
+| Method | tree         | number_of_segments     | `numeric`, the number of segments to be produced |
 | Method | unsupervised | centers                | `numeric` or `string`, either the number of clusters, or a set of initial (distinct) cluster centres, or 'auto'. When 'auto' is chosen, the number of clusters is optimised |
 | Method | unsupervised | iter_max               | `numeric`, the maximum number of iterations allowed                      |
 | Method | unsupervised | nstart                 | `numeric`, how many random sets of cluster centers should be tried       |
@@ -104,22 +104,22 @@ formatted <- preprocess(citrus::transactional_data,
 
 ### Data Validation 
 #### Data Validation Example 1
-DF invalid because the 'customerid' column is missing
+DF invalid because the 'id' column is missing
 
 ```{r, error=TRUE}
 invalid_df <- formatted %>% 
-  select(-customerid)
+  select(-id)
 
 validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
 ```
 
 #### Data Validation Example 2 
-DF invalid because the 'response' column is missing and the customerid column is not unique
+DF invalid because the 'response' column is missing and the id column is not unique
 
 ```{r, error=TRUE}
 hyperparameters = list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_safety_check=20)
 
 invalid_df <- formatted %>% 
@@ -130,11 +130,11 @@ validate(invalid_df, supervised = TRUE,hyperparameters = hyperparameters)
 ```
 
 #### Data Validation Example 3 
-DF invalid because only the customerid, and response column exists, there are no feature columns to predict over.
+DF invalid because only the id, and response column exists, there are no feature columns to predict over.
 
 ```{r,error=TRUE}
 invalid_df <- formatted %>% 
-  select(customerid, response)
+  select(id, response)
 
 validate(invalid_df, supervised = TRUE, hyperparameters = hyperparameters)
 ```
@@ -169,12 +169,12 @@ my_custom_function <- function(df) {
   
   final_df <- df %>%
     mutate(first_letter = substring(top_country, 1, 1)) %>%
-    mutate(persona = ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 8, 'Segment A',
+    mutate(segment = ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 8, 'Segment A',
                                       ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 17, 'Segment B', 'Segment C'))) %>%
-    arrange(desc(customerid))
+    arrange(desc(id))
   
-  #output <- list('predicted_values' = final_df[,c('persona')])
-  output <- list('predicted_values' = final_df[,c('customerid', 'persona')])
+  #output <- list('predicted_values' = final_df[,c('segment')])
+  output <- list('predicted_values' = final_df[,c('id', 'segment')])
   
   return(output)
 }
@@ -198,7 +198,7 @@ MVP segmentation for unsupervised learning
 Uses both the default preprocess step and the default model step
 
 ```{r}
-output <- segment(citrus::transactional_data %>% select(-desc_chars), modeltype = 'unsupervised', prettify = TRUE)
+output <- segment(citrus::transactional_data %>% select(-desc_chars), modeltype = 'k-clusters', prettify = TRUE)
 ```
 
 ### Model Abstraction
@@ -208,7 +208,7 @@ The model abstraction layer takes the output of the model segment layer and extr
 ```{r}
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_plot = FALSE,
                        print_safety_check=20)
 
@@ -224,7 +224,7 @@ The model management layer is used to store the model outputs and relevant metad
 ```{r}
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_plot = FALSE,
                        print_safety_check=20,
                        saveoutput = T)
@@ -242,7 +242,7 @@ The output layer takes the output of the model segment and abstraction layer and
 ```{r}
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_plot = FALSE,
                        print_safety_check=20)
 
@@ -278,7 +278,7 @@ citrus_pair_plot(output$CitrusModel, vars = c("frequency","monetary"))
 ```{r}
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_plot = FALSE,
                        print_safety_check=20)
 

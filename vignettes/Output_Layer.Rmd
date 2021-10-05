@@ -32,7 +32,7 @@ In order to run the output table, a segmentation model output is required. The b
 ```{r}
 hyperparameters <- list(dependent_variable = 'response',
                        min_segmentation_fraction = 0.05,
-                       number_of_personas = 6,
+                       number_of_segments = 6,
                        print_plot = FALSE,
                        print_safety_check=20)
 
