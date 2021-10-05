@@ -2,23 +2,28 @@
 #'
 #' Segments the data by running all steps in the segmentation pipeline, including output table
 #' @param data data.frame, the data to segment
-#' @param modeltype character, the type of model to use to segment choices are: 'tree'
+#' @param modeltype character, the type of model to use to segment choices are: 'tree', 'k-clusters'
 #' @param FUN function, A user specified function to segment, if the standard methods are not wanting to be used
 #' @param FUN_preprocess function, A user specified function to preprocess, if the standard methods are not wanting to be used
 #' @param steps list, names of the steps the user want to run the data on. Options are 'preprocess' and 'model'
 #' @param prettify logical, TRUE if want cleaned up outputs, FALSE for raw output
 #' @param print_plot logical, TRUE if want to print the plot
 #' @param hyperparameters list of hyperparameters to use in the model.
+#' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @importFrom utils modifyList
 #' @export
 segment <- function(data,
-                    modeltype = 'tree',
+                    modeltype = c('tree', 'k-clusters'),
                     FUN = NULL,
                     FUN_preprocess = NULL,
                     steps = c('preprocess', 'model'),
                     prettify = F,
                     print_plot = F,
-                    hyperparameters = NULL, verbose = TRUE) {
+                    hyperparameters = NULL, force = FALSE, verbose = TRUE) {
+  
+  steps <- match.arg(steps, several.ok = TRUE)
+  modeltype <- match.arg(modeltype)
 
   # Data processing layer
   # returns data in appropriate format called 'data'
@@ -29,7 +34,7 @@ segment <- function(data,
       if (modeltype == 'tree') {
         data <- preprocess(data, target = 'transactionvalue', target_agg = 'mean', verbose = verbose)
         #print(data)
-      } else if (modeltype == 'unsupervised') {
+      } else if (modeltype == 'k-clusters') {
         data <- preprocess(data, verbose = verbose)
       }
     } else {
@@ -46,13 +51,12 @@ segment <- function(data,
       # Tree Model
       if (modeltype == 'tree') {
         if(verbose == TRUE) {message('Tree based model chosen')}
-
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = TRUE)
+        
         # Default hyperparameters
         default_hyperparameters = list(dependent_variable = 'response',
                                        min_segmentation_fraction = 0.05,
-                                       number_of_personas = 6,
+                                       number_of_segments = 6,
                                        print_plot = ifelse(prettify == FALSE, print_plot, FALSE),
                                        print_safety_check=20)
         if(is.null(hyperparameters)){
@@ -62,9 +66,11 @@ segment <- function(data,
           hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
         
+        validate(data, supervised = TRUE, force = force, hyperparameters)
+        
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
-        if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$persona_table$persona, '\n')))}
+        if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
 
         # Prettify layer
         if(prettify == T){
@@ -78,11 +84,10 @@ segment <- function(data,
       }
 
       # Model B
-      if (modeltype == 'unsupervised') {
-        if(verbose == TRUE) {message('Unsupervised model chosen')}
+      if (modeltype == 'k-clusters') {
+        if(verbose == TRUE) {message('k-clusters model chosen')}
   
         if(verbose == TRUE) {message('Validating input data')}
-        validate(data, supervised = FALSE)
   
         # Default hyperparameters
         default_hyperparameters = list(centers = 'auto',
@@ -98,9 +103,11 @@ segment <- function(data,
         }else{
           hyperparameters = modifyList(default_hyperparameters, hyperparameters)
         }
+        
+        validate(data, supervised = FALSE, force = force, hyperparameters)
   
         if(verbose == TRUE) {message('Training model')}
-        model = unsupervised_segment(data, hyperparameters, verbose = verbose)
+        model = k_clusters(data, hyperparameters, verbose = verbose)
   
         # Prettify layer
         if(prettify == T){

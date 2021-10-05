@@ -3,10 +3,11 @@ Type: Package
 Title: Customer Intelligence Tool for Rapid Understandable Segmentation
 Version: 1.0.0
 Authors@R: c(
-    person("Dom","Clarke", email = "dom.clarke@peak.ai", role = c("aut", "cre")
-    ),
-    person("Leo", "McCarthy",email = "leo.mccarthy@peak.ai", role = "aut"
-    )
+    person("Dom","Clarke", email = "dom.clarke@peak.ai", role = c("aut", "cre")),
+    person("Cinzia","Braglia",email = "cinzia.braglia@peak.ai",role = "aut"),
+    person("Oskar","Nummedal",email = "oskar.nummadel@peak.ai",role = "aut"),
+    person("Leo", "McCarthy",email = "leo.mccarthy@peak.ai", role = "aut"),
+    person("Joash","Alonso",role = "aut")
   )
 Maintainer: Dom Clarke <dom.clarke@peak.ai>
 Description: A tool to easily run and visualise supervised and unsupervised state of the art customer segmentation.
@@ -32,5 +33,9 @@ Imports:
     rlang
 Encoding: UTF-8
 LazyData: true
+<<<<<<< HEAD
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
+=======
+RoxygenNote: 7.1.2
+>>>>>>> 8a4d8e0dada18167f4ced0e7defbe652c6c26e51

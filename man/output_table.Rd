@@ -9,7 +9,7 @@ output_table(data, model)
 \arguments{
 \item{data}{A dataframe generated from the pre-processing step}
 
-\item{model}{A model object used to classify customers with, generated from the model selection layer}
+\item{model}{A model object used to classify ids with, generated from the model selection layer}
 }
 \description{
 Generates the output table for model and data
