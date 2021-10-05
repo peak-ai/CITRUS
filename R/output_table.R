@@ -3,7 +3,7 @@
 #' Generates the output table for model and data
 #' @param data A dataframe generated from the pre-processing step
 #' @param model A model object used to classify ids with, generated from the model selection layer
-#' @importFrom dplyr left_join select mutate group_by summarise summarise_each funs
+#' @importFrom dplyr left_join select mutate group_by summarise summarise_each funs across
 #' @importFrom rlang .data
 #' @export
 output_table <- function(data, model) {
