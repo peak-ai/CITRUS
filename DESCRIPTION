@@ -1,7 +1,7 @@
 Package: citrus
 Type: Package
 Title: Customer Intelligence Tool for Rapid Understandable Segmentation
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person("Dom","Clarke", email = "dom.clarke@peak.ai", role = c("aut", "cre")),
     person("Cinzia","Braglia",email = "cinzia.braglia@peak.ai",role = "aut"),
