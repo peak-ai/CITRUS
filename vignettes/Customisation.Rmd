@@ -28,12 +28,12 @@ my_custom_function <- function(df) {
   
   final_df <- df %>%
     mutate(first_letter = substring(top_country, 1, 1)) %>%
-    mutate(persona = ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 8, 'Segment A',
+    mutate(segment = ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 8, 'Segment A',
                                       ifelse(match(tolower(first_letter), tolower(LETTERS)) <= 17, 'Segment B', 'Segment C'))) %>%
-    arrange(desc(customerid))
+    arrange(desc(id))
   
-  #output <- list('predicted_values' = final_df[,c('persona')])
-  output <- list('predicted_values' = final_df[,c('customerid', 'persona')])
+  #output <- list('predicted_values' = final_df[,c('segment')])
+  output <- list('predicted_values' = final_df[,c('id', 'segment')])
   
   return(output)
 }
