@@ -22,7 +22,7 @@ segment <- function(data,
                     print_plot = F,
                     hyperparameters = NULL, force = FALSE, verbose = TRUE) {
   
-  steps <- match.arg(steps)
+  steps <- match.arg(steps, several.ok = TRUE)
   modeltype <- match.arg(modeltype)
 
   # Data processing layer
