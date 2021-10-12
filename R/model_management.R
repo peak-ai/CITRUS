@@ -15,6 +15,8 @@ model_management <- function(model,hyperparameters){
           dir.create('~/segmentationoutputs')
           
           
+          
+          
         }
         directory_path <- paste0('~/segmentationoutputs/',format(Sys.time(),format = '%Y-%m-%d-%H-%M-%S'))
         dir.create(directory_path)
