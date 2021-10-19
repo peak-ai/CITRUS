@@ -18,8 +18,8 @@ segment <- function(data,
                     FUN = NULL,
                     FUN_preprocess = NULL,
                     steps = c('preprocess', 'model'),
-                    prettify = F,
-                    print_plot = F,
+                    prettify = FALSE,
+                    print_plot = FALSE,
                     hyperparameters = NULL, force = FALSE, verbose = TRUE) {
   
   steps <- match.arg(steps, several.ok = TRUE)
@@ -73,7 +73,7 @@ segment <- function(data,
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
 
         # Prettify layer
-        if(prettify == T){
+        if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
           model <- tree_segment_prettify(model, print_plot = print_plot)
         }
@@ -110,7 +110,7 @@ segment <- function(data,
         model = k_clusters(data, hyperparameters, verbose = verbose)
   
         # Prettify layer
-        if(prettify == T){
+        if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
           print(citrus_pair_plot(model))
 
