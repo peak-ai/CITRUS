@@ -35,7 +35,7 @@ preprocess <- function(df,
   if(is.null(categories)){
     othercols <- names(df)[!names(df) %in% need_to_have]
     df_other <- df[,othercols]
-    characterlevel <- lapply(df_other,is.character)==T
+    characterlevel <- lapply(df_other,is.character)==TRUE
     if(sum(characterlevel)>=1){
       categories <- names(df_other)[characterlevel]
     }

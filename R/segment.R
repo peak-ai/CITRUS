@@ -130,8 +130,6 @@ segment <- function(data,
   # Output
   if(verbose == TRUE) {message('Generating output table')}
   output <- output_table(data, model)
-  
-  
 
   if(verbose == TRUE) {message('Finished!')}
   return(list('OutputTable' = output,"segments" =  model$predicted_values ,"CitrusModel" = model))

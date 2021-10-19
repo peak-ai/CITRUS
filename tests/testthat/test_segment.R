@@ -61,11 +61,11 @@ test_that("k-clusters default output object check", {
 test_that("k-clusters custom output object check", {
   
   output_kclust <- segment(data, modeltype = 'k-clusters', hyperparameters = list(centers = 'auto',
-                                                                                          iter_max = 35,
-                                                                                          nstart = 2,
-                                                                                          max_centers = 3, 
-                                                                                          segmentation_variables = NULL,
-                                                                                          standardize = TRUE))
+                                                                                  iter_max = 35,
+                                                                                  nstart = 2,
+                                                                                  max_centers = 3, 
+                                                                                  segmentation_variables = NULL,
+                                                                                  standardize = TRUE))
   
   # Should contain all the right variables
   expect_true(all(names(output_kclust) %in% c('OutputTable', 'segments', 'CitrusModel')))
