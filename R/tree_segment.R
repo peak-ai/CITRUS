@@ -406,7 +406,7 @@ rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfami
 #' @importFrom dplyr select %>%
 #' @importFrom stringr str_remove_all str_remove str_split
 #' @export
-tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
+tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
   
   if(print_plot){rpart.plot_pretty(tree$segment_model)}
   

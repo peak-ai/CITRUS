@@ -99,7 +99,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
             probs <- apply(dists, 1, min)
             probs[center_ids] <- 0
             
-            center_ids[ii] <- sample(unique, 1, prob = probs[unique],replace = F)
+            center_ids[ii] <- sample(unique, 1, prob = probs[unique],replace = FALSE)
           }
         } else{
           center_ids = start
@@ -131,7 +131,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
     cl_sd <- ave(cluster_dist$distance, cluster_dist$cluster,FUN = function(x) sd(x, na.rm=TRUE))
     cluster_z_score <- (cl_d - cl_md)/cl_sd
     data_outliers <- data.frame(data, cluster =  km$cluster, c_dist = cl_d, cluster_z_score,
-                                cluster_outlier = ifelse(cluster_z_score > 2, T , F))
+                                cluster_outlier = ifelse(cluster_z_score > 2, TRUE , FALSE))
     #return table only for outliers
     return(data_outliers[data_outliers$cluster_z_score > 2,])
   }
@@ -144,7 +144,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
     csd <- ave(distances, km$cluster,FUN = function(x) sd(x, na.rm=TRUE))
     cluster_z_score <- (distances - cm)/csd
     data_outliers <- data.frame(data, cluster =  km$cluster, c_dist = distances, cluster_z_score,
-                                cluster_outlier = ifelse(cluster_z_score > 2, T , F))
+                                cluster_outlier = ifelse(cluster_z_score > 2, TRUE , FALSE))
     #return table only for outliers
     return(data_outliers[data_outliers$cluster_z_score > 2,])
   }
