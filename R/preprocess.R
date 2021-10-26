@@ -18,14 +18,6 @@ preprocess <- function(df,
                        target = NA,
                        target_agg = 'mean', verbose = TRUE) {
   
-  # Warning: Rename data
-  print('Please ensure columns are renamed accordingly:')
-  print('Unique Identifier: id')
-  print('Transaction Identifier: transactionid')
-  print('Transaction Date: orderdate')
-  print('Value Column: transactionvalue')
-  print(paste0('Target column: ', target, ' (', target_agg, ')'))
-  
   # Column name check
   need_to_have <- c('id', 'transactionid', 'orderdate', 'transactionvalue')
   if (!all(need_to_have %in% names(df))) {

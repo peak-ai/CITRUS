@@ -44,7 +44,9 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
                                                        min_segmentation_fraction=hyperparameters$min_segmentation_fraction,
                                                        number_of_leafs=hyperparameters$number_of_segments)
   
-  if(nrow(first_tree$frame)==1){print('Only 1 segment. Change parameters or inputs!')}else{
+  if(nrow(first_tree$frame)==1){
+    warning('Only 1 segment. Change parameters or inputs!')
+  } else {
     segment_table <- tree_table.make(first_tree, int_colnames)
     segment_tree  <- segment_tree.make(first_tree)
     segment_tree_df <- segment_tree$df
@@ -75,8 +77,8 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
   control <- rpart.control(cp=-1,minbucket = minbucket,minsplit = minsplit)
   tree <- rpart(f,data=df,method='anova',control = control)
   
-  if(nrow(tree$frame %>% filter(.data$var=='<leaf>'))<number_of_leafs){
-    print('WARNING: Output number of segments is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
+  if(nrow(tree$frame %>% filter(.data$var=='<leaf>')) < number_of_leafs) {
+    warning('Output number of segments is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
     pruned_tree <- tree
   } else{
     cp_adjusted_tree <- tree
@@ -103,7 +105,7 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
       }
       if(stopcount==1000){
         number_check <- TRUE
-        print(paste('Pruning was unable to converge. Number of leafs likely to not match what was requested. min_cp=',min_cp,'  max_cp=',max_cp))
+        warning(paste('Pruning was unable to converge. Number of leafs likely to not match what was requested. min_cp=',min_cp,'  max_cp=',max_cp))
       }
     }
     return(pruned_tree)
@@ -202,7 +204,9 @@ tree_table.make <- function(tree, integer_columns){
     }
     
     return(df3)
-  }else{print("Only one node! This isn't a tree - it's a stump!")}
+  } else {
+    warning("Only one node! This isn't a tree - it's a stump!")
+  }
 }
 
 #' @importFrom tibble rownames_to_column tibble
