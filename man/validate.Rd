@@ -15,6 +15,9 @@ validate(df, supervised = TRUE, force, hyperparameters)
 
 \item{hyperparameters}{list of hyperparameters used in the model}
 }
+\value{
+`TRUE` if all checks are passed. Otherwise an error is raised.
+}
 \description{
 Validates that the input data adheres to the expected format for modelling.
 }

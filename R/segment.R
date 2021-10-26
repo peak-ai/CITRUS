@@ -11,6 +11,8 @@
 #' @param hyperparameters list of hyperparameters to use in the model.
 #' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @return A list of three objects. A tibble providing high-level segment attributes, a lookup table (data frame)
+#' with the id and predicted segment number, and an rpart object defining the model.
 #' @importFrom utils modifyList
 #' @export
 segment <- function(data,
@@ -20,7 +22,9 @@ segment <- function(data,
                     steps = c('preprocess', 'model'),
                     prettify = FALSE,
                     print_plot = FALSE,
-                    hyperparameters = NULL, force = FALSE, verbose = TRUE) {
+                    hyperparameters = NULL, 
+                    force = FALSE, 
+                    verbose = FALSE) {
   
   steps <- match.arg(steps, several.ok = TRUE)
   modeltype <- match.arg(modeltype)
@@ -33,7 +37,6 @@ segment <- function(data,
       if(verbose == TRUE) {message('Using default preprocessing')}
       if (modeltype == 'tree') {
         data <- preprocess(data, target = 'transactionvalue', target_agg = 'mean', verbose = verbose)
-        #print(data)
       } else if (modeltype == 'k-clusters') {
         data <- preprocess(data, verbose = verbose)
       }
@@ -70,6 +73,7 @@ segment <- function(data,
         
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
+        View(model)
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
 
         # Prettify layer
@@ -112,8 +116,7 @@ segment <- function(data,
         # Prettify layer
         if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
-          print(citrus_pair_plot(model))
-
+          citrus_pair_plot(model)
         }
       }
 

@@ -326,14 +326,13 @@ lambdaestimation <- function(x, num.method = 1, fac.method = 1, outtype = "numer
   } 
   # if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
   # if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
-  # print(vnum)
   if(num.method == 1 & verbose == TRUE) cat("Average numeric variance:", mean(vnum), "\n\n")
   if(num.method == 2& verbose == TRUE) cat("Average numeric standard deviation:", mean(vnum), "\n\n")
   
   if(verbose == TRUE) {
-    cat(paste("Heuristic for categorical variables: (method = ",fac.method,") \n", sep = ""))
-    print(vcat)
-    cat("Average categorical variation:", mean(vcat), "\n\n")
+    message(paste("Heuristic for categorical variables: (method = ",fac.method,") \n", sep = ""))
+    message(vcat)
+    message("Average categorical variation:", mean(vcat), "\n\n")
   }
   
   if(anynum & anyfact) {

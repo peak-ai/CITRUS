@@ -11,6 +11,9 @@ citrus_pair_plot(model, vars = NULL)
 
 \item{vars}{data.frame, the data to segment}
 }
+\value{
+GGally object displaying the segment feature pair plots.
+}
 \description{
 Creates pair plot from data table
 }

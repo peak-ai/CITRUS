@@ -38,6 +38,9 @@ rpart.plot_pretty(
 
 \item{...}{Additional arguments.}
 }
+\value{
+
+}
 \description{
 Plot an rpart model and prettifies it. Wrap around the rpart.plot::prp function
 }

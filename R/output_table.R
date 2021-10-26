@@ -5,6 +5,8 @@
 #' @param model A model object used to classify ids with, generated from the model selection layer
 #' @importFrom dplyr left_join select mutate group_by summarise summarise_each funs across
 #' @importFrom rlang .data
+#' @return A tibble providing high-level segment attributes such as mean and max (numeric) or mode (categorical)
+#' for the segmentation features used.
 #' @export
 output_table <- function(data, model) {
   #TODO: Add summary stats for the predictors

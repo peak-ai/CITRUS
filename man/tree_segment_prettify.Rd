@@ -4,7 +4,7 @@
 \alias{tree_segment_prettify}
 \title{Tree Segment Prettify Function}
 \usage{
-tree_segment_prettify(tree, char_length = 20, print_plot = F)
+tree_segment_prettify(tree, char_length = 20, print_plot = FALSE)
 }
 \arguments{
 \item{tree}{The decision tree model to prettify}

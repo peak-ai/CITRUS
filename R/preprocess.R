@@ -10,6 +10,8 @@
 #' @importFrom dplyr group_by summarise n_distinct ungroup select summarise_if inner_join n arrange desc filter row_number left_join %>%
 #' @importFrom rlang .data
 #' @param verbose logical whether information about the preprocessing should be given
+#' @return An id attributes data frame, e.g. customer attributes if the id represents customer IDs. 
+#' A single row per unique id.
 #' @export
 preprocess <- function(df, 
                        samplesize = NA,
@@ -17,14 +19,6 @@ preprocess <- function(df,
                        categories = NULL,
                        target = NA,
                        target_agg = 'mean', verbose = TRUE) {
-  
-  # Warning: Rename data
-  print('Please ensure columns are renamed accordingly:')
-  print('Unique Identifier: id')
-  print('Transaction Identifier: transactionid')
-  print('Transaction Date: orderdate')
-  print('Value Column: transactionvalue')
-  print(paste0('Target column: ', target, ' (', target_agg, ')'))
   
   # Column name check
   need_to_have <- c('id', 'transactionid', 'orderdate', 'transactionvalue')
