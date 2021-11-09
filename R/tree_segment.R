@@ -259,6 +259,7 @@ dynamic_binning <-
 #' @return 
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rpart.plot prp
+#' @return An rpart.plot object. This plot object can be plotted using the rpart::prp function.
 #' @export
 
 rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfamily='sans',...){
@@ -412,6 +413,7 @@ rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfami
 #' @param print_plot logical, indicates whether to print the generated plot or not
 #' @importFrom dplyr select %>%
 #' @importFrom stringr str_remove_all str_remove str_split
+#' @return A formatted and "prettified" rpart.plot object. This plot object can be plotted using the rpart::prp function.
 #' @export
 tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
   
@@ -453,6 +455,9 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
 #' Organises the model outputs, predictions and settings in a general structure
 #' @param model The model to organise
 #' @param inputdata The data used to train the model
+#' @return A structure with the class name "tree_model" which contains a list of all the relevant model data, 
+#' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
+#' and the input data used to train the model.
 #' @export
 tree_abstract <- function(model, inputdata){
   #TODO: add performance statistics

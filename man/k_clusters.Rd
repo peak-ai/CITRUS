@@ -19,6 +19,11 @@ standardize: whether to standardize numeric columns.}
 
 \item{verbose}{logical whether information about the clustering procedure should be given.}
 }
+\value{
+A class called "k-clusters" containing a list of the model definition, the hyper-parameters,
+a table of outliers, the elbow plot (ggplot object) used to determine the optimal no. of clusters, and
+a lookup table containing segment predictions for customers.
+}
 \description{
 k-clusters method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm
 }

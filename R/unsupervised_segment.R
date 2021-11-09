@@ -16,8 +16,10 @@
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot geom_line geom_point geom_text scale_x_continuous xlab ylab
 #' @param verbose logical whether information about the clustering procedure should be given.
+#' @return A class called "k-clusters" containing a list of the model definition, the hyper-parameters,
+#' a table of outliers, the elbow plot (ggplot object) used to determine the optimal no. of clusters, and
+#' a lookup table containing segment predictions for customers.
 #' @export
-#'
 k_clusters <- function(data, hyperparameters, verbose = TRUE){
   
   

@@ -73,7 +73,6 @@ segment <- function(data,
         
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
-        View(model)
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
 
         # Prettify layer

@@ -40,6 +40,8 @@ rpart.plot_pretty(
 }
 \value{
 
+
+An rpart.plot object. This plot object can be plotted using the rpart::prp function.
 }
 \description{
 Plot an rpart model and prettifies it. Wrap around the rpart.plot::prp function
