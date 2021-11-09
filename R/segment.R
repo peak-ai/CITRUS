@@ -123,7 +123,6 @@ segment <- function(data,
       # User defined model
       if(verbose == TRUE) {message('Using custom model')}
       model <- FUN(data)
-      # Abstraction layer
     }
   }
   # Model management layer
