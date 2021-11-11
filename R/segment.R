@@ -115,6 +115,7 @@ segment <- function(data,
         # Prettify layer
         if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
+
           citrus_pair_plot(model)
         }
       }
