@@ -10,6 +10,8 @@
 #' @importFrom dplyr group_by summarise n_distinct ungroup select summarise_if inner_join n arrange desc filter row_number left_join %>%
 #' @importFrom rlang .data
 #' @param verbose logical whether information about the preprocessing should be given
+#' @return An id attributes data frame, e.g. customer attributes if the id represents customer IDs. 
+#' A single row per unique id.
 #' @export
 preprocess <- function(df, 
                        samplesize = NA,

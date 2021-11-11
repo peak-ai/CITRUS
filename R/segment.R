@@ -11,6 +11,8 @@
 #' @param hyperparameters list of hyperparameters to use in the model.
 #' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @return A list of three objects. A tibble providing high-level segment attributes, a lookup table (data frame)
+#' with the id and predicted segment number, and an rpart object defining the model.
 #' @importFrom utils modifyList
 #' @export
 segment <- function(data,
@@ -113,7 +115,7 @@ segment <- function(data,
         # Prettify layer
         if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
-          #print(citrus_pair_plot(model))
+
           citrus_pair_plot(model)
         }
       }
@@ -122,7 +124,6 @@ segment <- function(data,
       # User defined model
       if(verbose == TRUE) {message('Using custom model')}
       model <- FUN(data)
-      # Abstraction layer
     }
   }
   # Model management layer
