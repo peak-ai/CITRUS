@@ -20,7 +20,9 @@ segment <- function(data,
                     steps = c('preprocess', 'model'),
                     prettify = FALSE,
                     print_plot = FALSE,
-                    hyperparameters = NULL, force = FALSE, verbose = TRUE) {
+                    hyperparameters = NULL, 
+                    force = FALSE, 
+                    verbose = FALSE) {
   
   steps <- match.arg(steps, several.ok = TRUE)
   modeltype <- match.arg(modeltype)
@@ -33,7 +35,6 @@ segment <- function(data,
       if(verbose == TRUE) {message('Using default preprocessing')}
       if (modeltype == 'tree') {
         data <- preprocess(data, target = 'transactionvalue', target_agg = 'mean', verbose = verbose)
-        #print(data)
       } else if (modeltype == 'k-clusters') {
         data <- preprocess(data, verbose = verbose)
       }
@@ -112,8 +113,8 @@ segment <- function(data,
         # Prettify layer
         if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
-          print(citrus_pair_plot(model))
-
+          #print(citrus_pair_plot(model))
+          citrus_pair_plot(model)
         }
       }
 
