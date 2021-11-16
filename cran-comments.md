@@ -1,3 +1,20 @@
+### Third submission
+> If there are references describing the methods in your package, please add these in the description field of your DESCRIPTION file in the form
+authors (year) <doi:...>
+authors (year) <arXiv:...>
+authors (year, ISBN:...)
+or if those are not available: <https:...>
+with no space after 'doi:', 'arXiv:', 'https:' and angle brackets for auto-linking.
+(If you want to add a title as well please put it in quotes: "Title")
+
+> Please always add all authors, contributors and copyright holders in the Authors@R field with the appropriate roles.
+From CRAN policies you agreed to:
+"...
+Where copyrights are held by an entity other than the package authors, this should preferably be indicated via ‘cph’ roles in the ‘Authors@R’ field, or using a ‘Copyright’ field (if necessary referring to an inst/COPYRIGHTS file)."
+e.g.: Peak AI
+
+Have added an entry in the Authors@R field of the DESCRIPTIONS file referencing PEAK AI LIMITED as the copyright holder. Have also created an inst/COPYRIGHTS file with details of the copyright. The COPYRIGHTS file is also being referenced in the Copyright field of the the DESCRIPTIONS file.
+
 ### Second submission
 > Please add some more details about the package functionality and implemented methods in your Description text.
 
