@@ -12,6 +12,7 @@ Authors@R: c(
     person("PEAK AI LIMITED", role = "cph")
   )
 Maintainer: Dom Clarke <dom.clarke@peak.ai>
+Copyright: See the file COPYRIGHTS
 Description: A tool to easily run and visualise supervised and unsupervised state of the art customer segmentation. 
     It is built like a pipeline covering the 3 main steps in a segmentation project: pre-processing, modelling, and plotting.
     Users can either run the pipeline as a whole, or choose to run any one of the three individual steps.
