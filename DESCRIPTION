@@ -8,6 +8,7 @@ Authors@R: c(
     person("Oskar","Nummedal",email = "oskar.nummadel@peak.ai",role = "aut"),
     person("Leo", "McCarthy",email = "leo.mccarthy@peak.ai", role = "aut"),
     person("Rebekah", "Yates",email = "rebekah.yates@peak.ai", role = "aut"),
+    person("Stuart", "Davie", email = "stuart.davie@peak.ai", role = "aut"),
     person("Joash","Alonso",role = "aut"),
     person("PEAK AI LIMITED", role = "cph")
   )
