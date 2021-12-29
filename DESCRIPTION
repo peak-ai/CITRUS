@@ -31,7 +31,7 @@ Imports:
     rpart.plot,
     rpart.utils,
     stringr,
-    dplyr,
+    dplyr (>= 1.0.0),
     RColorBrewer,
     rlang
 Encoding: UTF-8
