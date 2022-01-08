@@ -30,7 +30,7 @@ Imports:
     tibble (>= 3.0.0),
     rpart.plot,
     rpart.utils,
-    stringr,
+    stringr (>= 1.3.0),
     dplyr (>= 1.0.0),
     RColorBrewer,
     rlang
