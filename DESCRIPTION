@@ -27,7 +27,7 @@ Imports:
     clustMixType (>= 0.1-16),
     treeClust,
     rpart,
-    tibble,
+    tibble (>= 3.0.0),
     rpart.plot,
     rpart.utils,
     stringr,
