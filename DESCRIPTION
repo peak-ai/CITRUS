@@ -25,7 +25,7 @@ Imports:
     ggplot2 (>= 3.3.0),
     GGally (>= 2.0.0),
     clustMixType (>= 0.1-16),
-    treeClust,
+    treeClust (>= 1.1-7),
     rpart (>= 4.1-15),
     tibble (>= 3.0.0),
     rpart.plot (>= 3.0.7),
