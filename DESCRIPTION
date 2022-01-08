@@ -26,7 +26,7 @@ Imports:
     GGally (>= 2.0.0),
     clustMixType (>= 0.1-16),
     treeClust,
-    rpart,
+    rpart (>= 4.1-15),
     tibble (>= 3.0.0),
     rpart.plot,
     rpart.utils,
