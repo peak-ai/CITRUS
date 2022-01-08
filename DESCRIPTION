@@ -23,7 +23,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     ggplot2,
-    GGally,
+    GGally (>= 2.0.0),
     clustMixType (>= 0.1-16),
     treeClust,
     rpart,
