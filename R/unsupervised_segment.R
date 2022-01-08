@@ -1,6 +1,6 @@
-#' Unsupervised model
+#' k-clusters model
 #'
-#' Unsupervised method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm 
+#' k-clusters method for segmentation. It can handle segmentation for both numerical data types only, by using k-means algorithm, and mixed data types (numerical and categorical) by using k-prototypes algorithm 
 #' @param data data.frame, the data to segment
 #' @param hyperparameters list of hyperparameters to pass. They include
 #' centers: number of clusters or a set of initial (distinct) cluster centers, or 'auto'. When 'auto' is chosen, the number of clusters is optimised; \cr
@@ -16,17 +16,20 @@
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot geom_line geom_point geom_text scale_x_continuous xlab ylab
 #' @param verbose logical whether information about the clustering procedure should be given.
+#' @return A class called "k-clusters" containing a list of the model definition, the hyper-parameters,
+#' a table of outliers, the elbow plot (ggplot object) used to determine the optimal no. of clusters, and
+#' a lookup table containing segment predictions for customers.
 #' @export
-#'
-unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
+k_clusters <- function(data, hyperparameters, verbose = TRUE){
   
   
   if(is.null(hyperparameters$segmentation_variables)){
     segmentation_variables <- colnames(data)
+    segmentation_variables <- segmentation_variables[segmentation_variables != "id"]
     
   }else{
-    segmentation_variables <- hyperparameters$segmentation_variables
-    data <- data[, segmentation_variables]
+    variables <- c("id", hyperparameters$segmentation_variables)
+    data <- data[, variables]
 
   }
   input_params <- list(centers = hyperparameters$centers,
@@ -50,8 +53,8 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
   # remove missings
   data <- data[!miss,]
   
-  ids <- data[,'customerid']
-  data <- data[,(names(data) != 'customerid')]
+  ids <- data[,'id']
+  data <- data[,(names(data) != 'id')]
   
   #Standardize
   zscore <- function(x){
@@ -98,7 +101,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
             probs <- apply(dists, 1, min)
             probs[center_ids] <- 0
             
-            center_ids[ii] <- sample(unique, 1, prob = probs[unique],replace = F)
+            center_ids[ii] <- sample(unique, 1, prob = probs[unique],replace = FALSE)
           }
         } else{
           center_ids = start
@@ -130,7 +133,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     cl_sd <- ave(cluster_dist$distance, cluster_dist$cluster,FUN = function(x) sd(x, na.rm=TRUE))
     cluster_z_score <- (cl_d - cl_md)/cl_sd
     data_outliers <- data.frame(data, cluster =  km$cluster, c_dist = cl_d, cluster_z_score,
-                                cluster_outlier = ifelse(cluster_z_score > 2, T , F))
+                                cluster_outlier = ifelse(cluster_z_score > 2, TRUE , FALSE))
     #return table only for outliers
     return(data_outliers[data_outliers$cluster_z_score > 2,])
   }
@@ -143,7 +146,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     csd <- ave(distances, km$cluster,FUN = function(x) sd(x, na.rm=TRUE))
     cluster_z_score <- (distances - cm)/csd
     data_outliers <- data.frame(data, cluster =  km$cluster, c_dist = distances, cluster_z_score,
-                                cluster_outlier = ifelse(cluster_z_score > 2, T , F))
+                                cluster_outlier = ifelse(cluster_z_score > 2, TRUE , FALSE))
     #return table only for outliers
     return(data_outliers[data_outliers$cluster_z_score > 2,])
   }
@@ -160,7 +163,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
         scores[i,"withinss"] <-kk$tot.withinss
         
       }else{
-        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = TRUE)
+        kk <- kproto(data, k=i, iter.max=hyperparameters$iter_max, nstart= hyperparameters$nstart, lambda = lambda, verbose = verbose)
         scores[i,"withinss"] <-kk$tot.withinss
         
       }
@@ -181,7 +184,7 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
 
   
   if(all(grepl('factor|character', sapply(data,class)))) {
-    stop("Data contain only categorical variables: cannot run the unsupervised model")
+    stop("Data contain only categorical variables: cannot run the k-clusters model")
   }
   
   if(any(grepl('factor|character', sapply(data,class)))) {
@@ -254,15 +257,15 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
     elbow_plot <-  NULL
   }
   if(verbose == TRUE) { message(paste0("Number of rows: ", nrow(data)))}
-  out <- list(persona_model = km,
-              input_data = cbind("customerid" = ids,data),
+  out <- list(segment_model = km,
+              input_data = cbind("id" = ids,data),
               model_hyperparameters =input_params,
               outliers_table = data_outliers,
               elbow_plot = elbow_plot,
-              predicted_values = data.frame("customerid" = ids,"persona" = km$cluster)
+              predicted_values = data.frame("id" = ids,"segment" = km$cluster)
   )
   
-  class(out) <- 'unsupervised'
+  class(out) <- 'k-clusters'
   
   
   
@@ -271,8 +274,8 @@ unsupervised_segment <- function(data, hyperparameters, verbose = TRUE){
 }
 
 #' @importFrom stats predict
-predict.unsupervised <- function(object,newdata,...){
-  object <-  object$persona_model
+predict.k_clusters <- function(object,newdata,...){
+  object <-  object$segment_model
   if (class(object) == "kmeans") {
     list(cluster = apply(newdata, 1, function(r) which.min(colSums((t(object$centers) - r)^2))),
          dists = t(apply(newdata, 1, function(r) colSums((t(object$centers) - r)^2))))
@@ -311,28 +314,27 @@ lambdaestimation <- function(x, num.method = 1, fac.method = 1, outtype = "numer
   
   if(anyfact & fac.method == 1) vcat <- sapply(x[,catvars, drop = FALSE], function(z) return(1-sum((table(z)/sum(!is.na(z)))^2)))
   if(anyfact & fac.method == 2) vcat <- sapply(x[,catvars, drop = FALSE], function(z) return(1-max(table(z)/sum(!is.na(z)))))
-  if (mean(vnum) == 0){
+  if (mean(vnum, na.rm = TRUE) == 0){
     warning("All numerical variables have zero variance.\n
             No meaninful estimation for lambda.\n
             Rather use kmodes{klaR} instead of kprotos().")
     anynum <- FALSE
   } 
-  if (mean(vcat) == 0){
+  if (mean(vcat, na.rm = TRUE) == 0){
     warning("All categorical variables have zero variance.\n
             No meaninful estimation for lambda!\n
             Rather use kmeans() instead of kprotos().")
     anyfact <- FALSE
   } 
-  if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
-  if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
-  print(vnum)
+  # if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
+  # if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
   if(num.method == 1 & verbose == TRUE) cat("Average numeric variance:", mean(vnum), "\n\n")
   if(num.method == 2& verbose == TRUE) cat("Average numeric standard deviation:", mean(vnum), "\n\n")
   
   if(verbose == TRUE) {
-    cat(paste("Heuristic for categorical variables: (method = ",fac.method,") \n", sep = ""))
-    print(vcat)
-    cat("Average categorical variation:", mean(vcat), "\n\n")
+    message(paste("Heuristic for categorical variables: (method = ",fac.method,") \n", sep = ""))
+    message(vcat)
+    message("Average categorical variation:", mean(vcat), "\n\n")
   }
   
   if(anynum & anyfact) {

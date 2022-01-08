@@ -4,8 +4,16 @@
 \alias{rpart.plot_pretty}
 \title{Plot a prettified rpart model}
 \usage{
-rpart.plot_pretty(model, main = "", sub, caption, palettes, type = 2,
-  fontfamily = "sans", ...)
+rpart.plot_pretty(
+  model,
+  main = "",
+  sub,
+  caption,
+  palettes,
+  type = 2,
+  fontfamily = "sans",
+  ...
+)
 }
 \arguments{
 \item{model}{an rpart model object}
@@ -29,6 +37,11 @@ rpart.plot_pretty(model, main = "", sub, caption, palettes, type = 2,
 \item{fontfamily}{Names of the font family to use for the text in the plots.}
 
 \item{...}{Additional arguments.}
+}
+\value{
+
+
+An rpart.plot object. This plot object can be plotted using the rpart::prp function.
 }
 \description{
 Plot an rpart model and prettifies it. Wrap around the rpart.plot::prp function

@@ -1,29 +1,31 @@
 #' Tree Segment Function
 #'
-#' Runs decision tree optimisation on the data to segment customers.
+#' Runs decision tree optimisation on the data to segment ids.
 #' @param data data.frame, the data to segment
 #' @param hyperparameters list, list of hyperparameters to pass. They include
 #' segmentation_variables: a vector or list with variable names that will be used as segmentation variables; 
 #' dependent_variable: a string with the name of the dependent variable that is used in the clustering;
 #' min_segmentation_fraction: integer, the minimum segment size as a proportion of the total data set;
-#' number_of_personas: integer, number of leaves you want the decision tree to have.
+#' number_of_segments: integer, number of leaves you want the decision tree to have.
 #' @importFrom dplyr mutate_all left_join select %>%
 #' @importFrom treeClust rpart.predict.leaves 
 #' @importFrom rpart.plot rpart.plot
 #' @importFrom rlang .data
 #' @param verbose logical whether information about the segmentation procedure should be given.
+#' @return List of 4 objects. The rpart object defining the model, a data frame providing high-level segment attributes,
+#' a lookup table (data frame) with the id and predicted segment number, and a list of the hyperparameters used.
 #' @export
 tree_segment <- function(data, hyperparameters, verbose = TRUE){
   
   if(is.null(hyperparameters$segmentation_variables)){
-    segmentation_variables <- colnames(data)[colnames(data)!= hyperparameters$dependent_variable & colnames(data)!='customerid']
+    segmentation_variables <- colnames(data)[colnames(data)!= hyperparameters$dependent_variable & colnames(data)!='id']
   }else{
     segmentation_variables <- hyperparameters$segmentation_variables
   }
   inputs_params <- list(segmentation_variables=segmentation_variables,
                         dependent_variable=hyperparameters$dependent_variable,
                         min_segmentation_fraction=hyperparameters$min_segmentation_fraction,
-                        number_of_personas=hyperparameters$number_of_personas)
+                        number_of_segments=hyperparameters$number_of_segments)
   
   int_colnames <- names(data)[unname(sapply(data, typeof)) == 'integer']
   
@@ -42,22 +44,24 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
                                                        segmentation_variables=segmentation_variables,
                                                        dependent_variable=hyperparameters$dependent_variable,
                                                        min_segmentation_fraction=hyperparameters$min_segmentation_fraction,
-                                                       number_of_leafs=hyperparameters$number_of_personas)
+                                                       number_of_leafs=hyperparameters$number_of_segments)
   
-  if(nrow(first_tree$frame)==1){print('Only 1 segment. Change parameters or inputs!')}else{
-    persona_table <- tree_table.make(first_tree, int_colnames)
-    persona_tree  <- persona_tree.make(first_tree)
-    persona_tree_df <- persona_tree$df
-    persona_tree <- persona_tree$tree
-    persona_predicted <- data.frame(customerid = data$customerid, orig_row=as.numeric(rpart.predict.leaves(persona_tree, data, type = "where")))
-    persona_predicted <- left_join(persona_predicted,persona_tree_df %>% select(.data$orig_row,.data$persona), by = "orig_row") %>% select(.data$customerid, .data$persona)
+  if(nrow(first_tree$frame)==1){
+    warning('Only 1 segment. Change parameters or inputs!')
+  } else {
+    segment_table <- tree_table.make(first_tree, int_colnames)
+    segment_tree  <- segment_tree.make(first_tree)
+    segment_tree_df <- segment_tree$df
+    segment_tree <- segment_tree$tree
+    segment_predicted <- data.frame(id = data$id, orig_row=as.numeric(rpart.predict.leaves(segment_tree, data, type = "where")))
+    segment_predicted <- left_join(segment_predicted,segment_tree_df %>% select(.data$orig_row,.data$segment), by = "orig_row") %>% select(.data$id, .data$segment)
     
-    if(hyperparameters$print_plot&(hyperparameters$number_of_personas<hyperparameters$print_safety_check)){rpart.plot(first_tree)}
+    if(hyperparameters$print_plot&(hyperparameters$number_of_segments<hyperparameters$print_safety_check)){rpart.plot(first_tree)}
     
     return(
-      list(persona_model = persona_tree,
-           persona_table = persona_table,
-           persona_predicted = persona_predicted,
+      list(segment_model = segment_tree,
+           segment_table = segment_table,
+           segment_predicted = segment_predicted,
            model_inputs = inputs_params)
     )
   }
@@ -75,8 +79,8 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
   control <- rpart.control(cp=-1,minbucket = minbucket,minsplit = minsplit)
   tree <- rpart(f,data=df,method='anova',control = control)
   
-  if(nrow(tree$frame %>% filter(.data$var=='<leaf>'))<number_of_leafs){
-    print('WARNING: Output number of personas is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
+  if(nrow(tree$frame %>% filter(.data$var=='<leaf>')) < number_of_leafs) {
+    warning('Output number of segments is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
     pruned_tree <- tree
   } else{
     cp_adjusted_tree <- tree
@@ -103,7 +107,7 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
       }
       if(stopcount==1000){
         number_check <- TRUE
-        print(paste('Pruning was unable to converge. Number of leafs likely to not match what was requested. min_cp=',min_cp,'  max_cp=',max_cp))
+        warning(paste('Pruning was unable to converge. Number of leafs likely to not match what was requested. min_cp=',min_cp,'  max_cp=',max_cp))
       }
     }
     return(pruned_tree)
@@ -120,7 +124,7 @@ tree_table.make <- function(tree, integer_columns){
   df1 <- rownames_to_column(tree$frame) %>% arrange(as.numeric(.data$rowname)) %>%
     bind_cols(tibble(rules=unlist(rpart.rules(tree))) %>% filter(nchar(.data$rules)>0)) %>%
     filter(.data$var=='<leaf>') %>%
-    transmute(persona=row_number(),n,.data$yval,.data$rules)
+    transmute(segment=row_number(),n,.data$yval,.data$rules)
   var_names <- tree$frame %>% filter(.data$var!='<leaf>') %>% select(.data$var) %>% unique()
   df2 <- df1 %>% bind_cols(as.data.frame(matrix(data=NA,nrow = nrow(df1),ncol = nrow(var_names),dimnames = list(c(),var_names$var))))
   
@@ -156,7 +160,7 @@ tree_table.make <- function(tree, integer_columns){
       }
     }
     
-    df3 <- df2 %>% mutate(percentage=n/sum(n)*100) %>% select(.data$persona,.data$yval,.data$percentage,everything()) %>%
+    df3 <- df2 %>% mutate(percentage=n/sum(n)*100) %>% select(.data$segment,.data$yval,.data$percentage,everything()) %>%
       rename(mean_value=.data$yval)%>% select(-.data$rules)
     df3[,5:ncol(df3)][is.na( df3[,5:ncol(df3)])] <- 'All'
     
@@ -164,7 +168,7 @@ tree_table.make <- function(tree, integer_columns){
     # Without this step, a condition for an integer column could be, e.g., > 1.5.
     # With this step, this condition gets changed to >= 2.
     
-    # Select the columns in the persona table that are integers in the raw DF
+    # Select the columns in the segment table that are integers in the raw DF
     
     if (sum(names(df3) %in% integer_columns) == 1) {
       df_to_change <- data.frame(df3[, names(df3) %in% integer_columns], stringsAsFactors = FALSE)
@@ -202,20 +206,22 @@ tree_table.make <- function(tree, integer_columns){
     }
     
     return(df3)
-  }else{print("Only one node! This isn't a tree - it's a stump!")}
+  } else {
+    warning("Only one node! This isn't a tree - it's a stump!")
+  }
 }
 
 #' @importFrom tibble rownames_to_column tibble
 #' @importFrom dplyr mutate row_number arrange bind_cols filter transmute %>%
 #' @importFrom rpart.utils rpart.rules
 #' @importFrom rlang .data
-persona_tree.make <- function(tree){
+segment_tree.make <- function(tree){
   
   df1 <- rownames_to_column(tree$frame) %>% mutate(orig_row=row_number()) %>% arrange(as.numeric(.data$rowname)) %>%
     bind_cols(tibble(rules=unlist(rpart.rules(tree))) %>% filter(nchar(.data$rules)>0)) %>%
     filter(.data$var=='<leaf>') %>%
-    transmute(persona=row_number(),n,.data$yval,.data$rules,.data$orig_row) %>% arrange(.data$orig_row)
-  tree$frame$yval[tree$frame$var=='<leaf>'] <- df1$persona
+    transmute(segment=row_number(),n,.data$yval,.data$rules,.data$orig_row) %>% arrange(.data$orig_row)
+  tree$frame$yval[tree$frame$var=='<leaf>'] <- df1$segment
   return(list(tree = tree,
               df = df1))
 }
@@ -250,8 +256,10 @@ dynamic_binning <-
 #' 5 Show the split variable name in the interior nodes. 
 #' @param fontfamily Names of the font family to use for the text in the plots.
 #' @param ... Additional arguments.
+#' @return 
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rpart.plot prp
+#' @return An rpart.plot object. This plot object can be plotted using the rpart::prp function.
 #' @export
 
 rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfamily='sans',...){
@@ -405,14 +413,15 @@ rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfami
 #' @param print_plot logical, indicates whether to print the generated plot or not
 #' @importFrom dplyr select %>%
 #' @importFrom stringr str_remove_all str_remove str_split
+#' @return A formatted and "prettified" rpart.plot object. This plot object can be plotted using the rpart::prp function.
 #' @export
-tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
+tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
   
-  if(print_plot){rpart.plot_pretty(tree$persona_model)}
+  if(print_plot){rpart.plot_pretty(tree$segment_model)}
   
-  features_used <- names(tree$persona_table)
-  features_used <- features_used[!features_used %in% c("persona","mean_value","percentage","n")]
-  split_data <- tree$persona_table %>% select(features_used)
+  features_used <- names(tree$segment_table)
+  features_used <- features_used[!features_used %in% c("segment","mean_value","percentage","n")]
+  split_data <- tree$segment_table %>% select(features_used)
   
   character_check <- function(x){
     words <- unique(x)
@@ -436,7 +445,7 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
     split_data[,col_number] <- sapply(split_data[,col_number],dynamic_binning)
   }
   
-  tree$persona_table[,features_used] <- split_data
+  tree$segment_table[,features_used] <- split_data
   
   return(tree)
 }
@@ -446,15 +455,18 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
 #' Organises the model outputs, predictions and settings in a general structure
 #' @param model The model to organise
 #' @param inputdata The data used to train the model
+#' @return A structure with the class name "tree_model" which contains a list of all the relevant model data, 
+#' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
+#' and the input data used to train the model.
 #' @export
 tree_abstract <- function(model, inputdata){
   #TODO: add performance statistics
   #tree_performance()
   structure(
-    list(persona_model = model$persona_model,
+    list(segment_model = model$segment_model,
          model_hyperparameters = model$model_inputs,
-         persona_table = model$persona_table,
-         predicted_values = model$persona_predicted,
+         segment_table = model$segment_table,
+         predicted_values = model$segment_predicted,
          input_data = inputdata),
     
     class = "tree_model")

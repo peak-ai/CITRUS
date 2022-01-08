@@ -4,14 +4,23 @@
 \alias{segment}
 \title{Segment Function}
 \usage{
-segment(data, modeltype = "tree", FUN = NULL, FUN_preprocess = NULL,
-  steps = c("preprocess", "model"), prettify = F, print_plot = F,
-  hyperparameters = NULL, force = FALSE, verbose = TRUE)
+segment(
+  data,
+  modeltype = c("tree", "k-clusters"),
+  FUN = NULL,
+  FUN_preprocess = NULL,
+  steps = c("preprocess", "model"),
+  prettify = FALSE,
+  print_plot = FALSE,
+  hyperparameters = NULL,
+  force = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame, the data to segment}
 
-\item{modeltype}{character, the type of model to use to segment choices are: 'tree', 'unsupervised'}
+\item{modeltype}{character, the type of model to use to segment choices are: 'tree', 'k-clusters'}
 
 \item{FUN}{function, A user specified function to segment, if the standard methods are not wanting to be used}
 
@@ -28,6 +37,10 @@ segment(data, modeltype = "tree", FUN = NULL, FUN_preprocess = NULL,
 \item{force}{logical, TRUE to ignore errors in validation step and force model execution.}
 
 \item{verbose}{logical whether information about the segmentation pipeline should be given.}
+}
+\value{
+A list of three objects. A tibble providing high-level segment attributes, a lookup table (data frame)
+with the id and predicted segment number, and an rpart object defining the model.
 }
 \description{
 Segments the data by running all steps in the segmentation pipeline, including output table

@@ -4,14 +4,20 @@
 \alias{preprocess}
 \title{Preprocess Function}
 \usage{
-preprocess(df, samplesize = NA, numeric_operation_list = c("mean"),
-  categories = NULL, target = NA, target_agg = "mean",
-  verbose = TRUE)
+preprocess(
+  df,
+  samplesize = NA,
+  numeric_operation_list = c("mean"),
+  categories = NULL,
+  target = NA,
+  target_agg = "mean",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{df}{data.frame, the data to preprocess}
 
-\item{samplesize}{numeric, the fraction of customers used to create a sub-sample of the input df}
+\item{samplesize}{numeric, the fraction of ids used to create a sub-sample of the input df}
 
 \item{numeric_operation_list}{list, a list of the aggregation functions to apply to numeric columns}
 
@@ -23,6 +29,10 @@ preprocess(df, samplesize = NA, numeric_operation_list = c("mean"),
 
 \item{verbose}{logical whether information about the preprocessing should be given}
 }
+\value{
+An id attributes data frame, e.g. customer attributes if the id represents customer IDs. 
+A single row per unique id.
+}
 \description{
-Transforms a transactional table into a customer aggregated table with custom options for aggregation methods for numeric and categorical columns.
+Transforms a transactional table into an id aggregated table with custom options for aggregation methods for numeric and categorical columns.
 }

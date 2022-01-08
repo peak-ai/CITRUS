@@ -2,23 +2,20 @@
 #'
 #' Validates that the input data adheres to the expected format for modelling.
 #' @param df data.frame, the data to validate
-#' @param supervised logical, TRUE for supervised learning, FALSE for unsupervised
+#' @param supervised logical, TRUE for supervised learning, FALSE for k-clusters
 #' @param force logical, TRUE to ignore error on categorical columns
 #' @param hyperparameters list of hyperparameters used in the model
 #' @importFrom dplyr n_distinct summarise_all select_if
+#' @return `TRUE` if all checks are passed. Otherwise an error is raised.
 #' @export
 
 validate <- function(df, supervised = TRUE, force, hyperparameters) {
   missing_columns <- c()
   other_errors <- c()
   toomanylevels_columns <- c()
-  categorical_columns <- df[,names(df) != 'customerid'] %>% select_if(is.character) %>% summarise_all(n_distinct)
   
-  
-  
-  if (!is.null(hyperparameters$segmentation_variables)) {
-    df <- df[,names(df) %in% hyperparameters$segmentation_variables]
-  }
+  categorical_columns <- df[,names(df) != 'id'] %>% select_if(is.character) %>% summarise_all(n_distinct)
+  infinitecounts <- df[,names(df) != 'id'] %>% summarise_all(function(x) sum(is.infinite(x)))
   
   if(supervised == TRUE) {
     index <- which(colnames(df) == hyperparameters$dependent_variable)
@@ -29,16 +26,20 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
     missing_columns <- c(missing_columns, hyperparameters$dependent_variable)
   }
   
-  if (!('customerid' %in% names(df))) {
-    missing_columns <- c(missing_columns, 'customerid')
+  if (!('id' %in% names(df))) {
+    missing_columns <- c(missing_columns, 'id')
   } else {
-    if (n_distinct(df$customerid) != nrow(df)) {
-      error_message <- 'Customer observations are not unique. nrow(df) > n_distinct(df$customerid).'
+    if (n_distinct(df$id) != nrow(df)) {
+      error_message <- 'ID observations are not unique. nrow(df) > n_distinct(df$id).'
       other_errors <- c(other_errors, error_message)
+    }
+    if (!is.null(hyperparameters$segmentation_variables)) {
+      variables <- c("id", hyperparameters$segmentation_variables)
+      df <- df[, variables]
     }
   }
   
-  if (sum(!(names(df) %in% c('customerid', 'response'))) == 0) {
+  if (sum(!(names(df) %in% c('id', 'response'))) == 0) {
     error_message <- 'The dataframe does not contain any feature columns.'
     other_errors <- c(other_errors, error_message)
   }
@@ -64,5 +65,5 @@ validate <- function(df, supervised = TRUE, force, hyperparameters) {
 
 
 # df_test <- formatted %>%
-#   select(customerid)
+#   select(id)
 # validate(df_test, supervised = TRUE)

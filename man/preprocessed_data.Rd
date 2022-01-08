@@ -4,7 +4,9 @@
 \name{preprocessed_data}
 \alias{preprocessed_data}
 \title{Segmentation preprocessed data}
-\format{Data frame on a customer level. Contains 402 rows and 8 columns.}
+\format{
+Data frame on a customer level. Contains 402 rows and 8 columns.
+}
 \usage{
 data(preprocessed_data)
 }
