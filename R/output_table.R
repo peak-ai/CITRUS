@@ -68,7 +68,7 @@ output_table <- function(data, model) {
   if(response %in% names(df)) {
     df <- df %>%
       group_by(.data$segment)%>%
-      summarise(n = n(), mean_value = mean(as.numeric(as.character(.data$response)),na.rm=TRUE)) %>%
+      summarise(n = n(), mean_value = mean(as.numeric(as.character(.data[[response]])),na.rm=TRUE)) %>%
       mutate(percentage = paste0(100*round((.data$n/sum(.data$n)),3),'%')) %>% 
         left_join(df_agg, by = 'segment')
 
