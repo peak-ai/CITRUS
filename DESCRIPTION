@@ -22,7 +22,7 @@ Suggests: testthat
 Depends:
     R (>= 3.5.0)
 Imports:
-    ggplot2,
+    ggplot2 (>= 3.3.0),
     GGally (>= 2.0.0),
     clustMixType (>= 0.1-16),
     treeClust,
