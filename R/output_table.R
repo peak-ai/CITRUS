@@ -30,8 +30,7 @@ output_table <- function(data, model) {
   }
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
-  characterlevel <- lapply(df_agg,is.character)==TRUE
-  
+
   df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
     group_by(.data$segment) %>%
     summarise(across(everything(), ~round(mean(.data$., na.rm = TRUE), 2)))
@@ -41,6 +40,7 @@ output_table <- function(data, model) {
     summarise(across(everything(), ~mode(.data$.)))
   
   df_agg <- full_join(df_agg_numeric, df_agg_character, by = 'segment')
+  characterlevel <- lapply(df_agg,is.character)==TRUE
   
   names(df_agg)[characterlevel] <- paste0(names(df_agg)[characterlevel],'_mode')
   names(df_agg)[!characterlevel] <- paste0(names(df_agg)[!characterlevel],'_mean')
