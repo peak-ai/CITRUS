@@ -108,7 +108,7 @@ preprocess <- function(df,
           ungroup() %>%
           select(-n)
         var <- paste0('top_', col_name)
-        temp_df[var] <- temp_df[col_name]
+        temp_df[var] <- factor(temp_df[col_name][[1]],levels=unique(df[col_name][[1]]))
 
       } else {
         temp_df <- df %>%
