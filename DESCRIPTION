@@ -3,13 +3,14 @@ Type: Package
 Title: Customer Intelligence Tool for Rapid Understandable Segmentation
 Version: 1.0.1
 Authors@R: c(
-    person("Dom","Clarke", email = "dom.clarke@peak.ai", role = c("aut", "cre")),
+    person("Dom","Clarke",email = "dom.clarke@peak.ai", role = c("aut", "cre")),
     person("Cinzia","Braglia",email = "cinzia.braglia@peak.ai",role = "aut"),
     person("Oskar","Nummedal",email = "oskar.nummadel@peak.ai",role = "aut"),
     person("Leo", "McCarthy",email = "leo.mccarthy@peak.ai", role = "aut"),
     person("Rebekah", "Yates",email = "rebekah.yates@peak.ai", role = "aut"),
+    person("Stuart", "Davie",email = "stuart.davie@peak.ai", role = "aut"),
     person("Joash","Alonso",role = "aut"),
-    person("PEAK AI LIMITED", role = "cph")
+    person("PEAK AI LIMITED",role = "cph")
   )
 Maintainer: Dom Clarke <dom.clarke@peak.ai>
 Copyright: See the file COPYRIGHTS
@@ -22,18 +23,18 @@ Suggests: testthat
 Depends:
     R (>= 3.5.0)
 Imports:
-    ggplot2,
-    GGally,
+    ggplot2 (>= 3.3.0),
+    GGally (>= 2.0.0),
     clustMixType (>= 0.1-16),
-    treeClust,
-    rpart,
-    tibble,
-    rpart.plot,
-    rpart.utils,
-    stringr,
-    dplyr,
-    RColorBrewer,
-    rlang
+    treeClust (>= 1.1-7),
+    rpart (>= 4.1-15),
+    tibble (>= 3.0.0),
+    rpart.plot (>= 3.0.7),
+    rpart.utils (>= 0.5),
+    stringr (>= 1.3.0),
+    dplyr (>= 1.0.7),
+    RColorBrewer (>= 1.1-2),
+    rlang (>= 0.4.9)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
