@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">citrus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -134,12 +134,6 @@
                        numeric_operation_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'min'</span>, <span class="st">'sd'</span><span class="op">)</span>,
                        target <span class="op">=</span> <span class="st">'desc_chars'</span>, 
                        target_agg <span class="op">=</span> <span class="st">'mean'</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Please ensure columns are renamed accordingly:"</span>
-<span class="co">#&gt; [1] "Unique Identifier: id"</span>
-<span class="co">#&gt; [1] "Transaction Identifier: transactionid"</span>
-<span class="co">#&gt; [1] "Transaction Date: orderdate"</span>
-<span class="co">#&gt; [1] "Value Column: transactionvalue"</span>
-<span class="co">#&gt; [1] "Target column: desc_chars (mean)"</span>
 <span class="co">#&gt; Calculating target values</span>
 <span class="fu"><a href="../reference/validate.html">validate</a></span><span class="op">(</span><span class="va">formatted</span>, supervised <span class="op">=</span> <span class="cn">TRUE</span>, hyperparameters <span class="op">=</span> <span class="va">hyperparameters</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE</span>
@@ -170,7 +164,7 @@
 <span class="co">#&gt;   .. .. ..- attr(*, "order")= int [1:6] 1 1 1 1 1 1</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "intercept")= int 1</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "response")= int 1</span>
-<span class="co">#&gt;   .. .. ..- attr(*, ".Environment")=&lt;environment: 0x7fd0185fd040&gt; </span>
+<span class="co">#&gt;   .. .. ..- attr(*, ".Environment")=&lt;environment: 0x7fe3d0f5cc38&gt; </span>
 <span class="co">#&gt;   .. .. ..- attr(*, "predvars")= language list(response, recency, frequency, monetary, transactionvalue_min, transactionvalue_sd,      top_country)</span>
 <span class="co">#&gt;   .. .. ..- attr(*, "dataClasses")= Named chr [1:7] "numeric" "numeric" "numeric" "numeric" ...</span>
 <span class="co">#&gt;   .. .. .. ..- attr(*, "names")= chr [1:7] "response" "recency" "frequency" "monetary" ...</span>
@@ -198,7 +192,7 @@
 <span class="co">#&gt;   .. ..- attr(*, "dimnames")=List of 2</span>
 <span class="co">#&gt;   .. .. ..$ : chr [1:31] "top_country" "transactionvalue_min" "monetary" "transactionvalue_sd" ...</span>
 <span class="co">#&gt;   .. .. ..$ : chr [1:5] "count" "ncat" "improve" "index" ...</span>
-<span class="co">#&gt;   ..$ csplit             : int [1:2, 1:15] 3 3 3 3 3 3 1 2 1 2 ...</span>
+<span class="co">#&gt;   ..$ csplit             : int [1:2, 1:15] 3 3 1 2 3 3 1 2 1 2 ...</span>
 <span class="co">#&gt;   ..$ variable.importance: Named num [1:5] 194.4 89.4 41.4 31.2 12.6</span>
 <span class="co">#&gt;   .. ..- attr(*, "names")= chr [1:5] "top_country" "monetary" "transactionvalue_min" "transactionvalue_sd" ...</span>
 <span class="co">#&gt;   ..$ y                  : Named num [1:410] 26.8 24.8 26.4 26 28 ...</span>
@@ -206,7 +200,7 @@
 <span class="co">#&gt;   ..$ ordered            : Named logi [1:6] FALSE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="co">#&gt;   .. ..- attr(*, "names")= chr [1:6] "recency" "frequency" "monetary" "transactionvalue_min" ...</span>
 <span class="co">#&gt;   ..- attr(*, "xlevels")=List of 1</span>
-<span class="co">#&gt;   .. ..$ top_country: chr [1:15] "Australia" "Belgium" "EIRE" "France" ...</span>
+<span class="co">#&gt;   .. ..$ top_country: chr [1:15] "United Kingdom" "France" "Australia" "Netherlands" ...</span>
 <span class="co">#&gt;   ..- attr(*, "class")= chr "rpart"</span>
 <span class="co">#&gt;  $ model_hyperparameters:List of 4</span>
 <span class="co">#&gt;   ..$ segmentation_variables   : chr [1:6] "recency" "frequency" "monetary" "transactionvalue_min" ...</span>
@@ -246,7 +240,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Joash Alonso.</p>
+  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Rebekah Yates, Joash Alonso.</p>
 </div>
 
 <div class="pkgdown">
