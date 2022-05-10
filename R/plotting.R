@@ -3,6 +3,7 @@
 #' @param model list, a citrus segmentation model
 #' @param vars data.frame, the data to segment
 #' @importFrom ggplot2 aes theme element_text
+#' @return GGally object displaying the segment feature pair plots.
 #' @export
 
 citrus_pair_plot <- function(model,vars = NULL) {

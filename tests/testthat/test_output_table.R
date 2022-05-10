@@ -8,7 +8,7 @@ hyperparameters <- list(dependent_variable = 'response',
                         number_of_segments = 6,
                         print_plot = FALSE,
                         print_safety_check=20,
-                        saveoutput = T)
+                        saveoutput = FALSE)
 
 model <- citrus::tree_segment(preprocessed_data, hyperparameters)
 model <- citrus::tree_segment_prettify(model,print_plot = T)

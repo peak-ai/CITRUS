@@ -11,6 +11,10 @@ output_table(data, model)
 
 \item{model}{A model object used to classify ids with, generated from the model selection layer}
 }
+\value{
+A tibble providing high-level segment attributes such as mean and max (numeric) or mode (categorical)
+for the segmentation features used.
+}
 \description{
 Generates the output table for model and data
 }

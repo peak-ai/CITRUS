@@ -6,6 +6,7 @@
 #' @param force logical, TRUE to ignore error on categorical columns
 #' @param hyperparameters list of hyperparameters used in the model
 #' @importFrom dplyr n_distinct summarise_all select_if
+#' @return `TRUE` if all checks are passed. Otherwise an error is raised.
 #' @export
 
 validate <- function(df, supervised = TRUE, force, hyperparameters) {

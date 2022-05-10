@@ -16,8 +16,10 @@
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot geom_line geom_point geom_text scale_x_continuous xlab ylab
 #' @param verbose logical whether information about the clustering procedure should be given.
+#' @return A class called "k-clusters" containing a list of the model definition, the hyper-parameters,
+#' a table of outliers, the elbow plot (ggplot object) used to determine the optimal no. of clusters, and
+#' a lookup table containing segment predictions for customers.
 #' @export
-#'
 k_clusters <- function(data, hyperparameters, verbose = TRUE){
   
   
@@ -99,7 +101,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
             probs <- apply(dists, 1, min)
             probs[center_ids] <- 0
             
-            center_ids[ii] <- sample(unique, 1, prob = probs[unique],replace = F)
+            center_ids[ii] <- sample(unique, 1, prob = probs[unique],replace = FALSE)
           }
         } else{
           center_ids = start
@@ -131,7 +133,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
     cl_sd <- ave(cluster_dist$distance, cluster_dist$cluster,FUN = function(x) sd(x, na.rm=TRUE))
     cluster_z_score <- (cl_d - cl_md)/cl_sd
     data_outliers <- data.frame(data, cluster =  km$cluster, c_dist = cl_d, cluster_z_score,
-                                cluster_outlier = ifelse(cluster_z_score > 2, T , F))
+                                cluster_outlier = ifelse(cluster_z_score > 2, TRUE , FALSE))
     #return table only for outliers
     return(data_outliers[data_outliers$cluster_z_score > 2,])
   }
@@ -144,7 +146,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
     csd <- ave(distances, km$cluster,FUN = function(x) sd(x, na.rm=TRUE))
     cluster_z_score <- (distances - cm)/csd
     data_outliers <- data.frame(data, cluster =  km$cluster, c_dist = distances, cluster_z_score,
-                                cluster_outlier = ifelse(cluster_z_score > 2, T , F))
+                                cluster_outlier = ifelse(cluster_z_score > 2, TRUE , FALSE))
     #return table only for outliers
     return(data_outliers[data_outliers$cluster_z_score > 2,])
   }
@@ -326,14 +328,13 @@ lambdaestimation <- function(x, num.method = 1, fac.method = 1, outtype = "numer
   } 
   # if(num.method == 1 & verbose == TRUE) cat("Numeric variances:\n")
   # if(num.method == 2 & verbose == TRUE) cat("Numeric standard deviations:\n")
-  # print(vnum)
   if(num.method == 1 & verbose == TRUE) cat("Average numeric variance:", mean(vnum), "\n\n")
   if(num.method == 2& verbose == TRUE) cat("Average numeric standard deviation:", mean(vnum), "\n\n")
   
   if(verbose == TRUE) {
-    cat(paste("Heuristic for categorical variables: (method = ",fac.method,") \n", sep = ""))
-    print(vcat)
-    cat("Average categorical variation:", mean(vcat), "\n\n")
+    message(paste("Heuristic for categorical variables: (method = ",fac.method,") \n", sep = ""))
+    message(vcat)
+    message("Average categorical variation:", mean(vcat), "\n\n")
   }
   
   if(anynum & anyfact) {
