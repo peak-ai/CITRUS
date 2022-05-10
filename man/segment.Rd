@@ -10,11 +10,11 @@ segment(
   FUN = NULL,
   FUN_preprocess = NULL,
   steps = c("preprocess", "model"),
-  prettify = F,
-  print_plot = F,
+  prettify = FALSE,
+  print_plot = FALSE,
   hyperparameters = NULL,
   force = FALSE,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -37,6 +37,10 @@ segment(
 \item{force}{logical, TRUE to ignore errors in validation step and force model execution.}
 
 \item{verbose}{logical whether information about the segmentation pipeline should be given.}
+}
+\value{
+A list of three objects. A tibble providing high-level segment attributes, a lookup table (data frame)
+with the id and predicted segment number, and an rpart object defining the model.
 }
 \description{
 Segments the data by running all steps in the segmentation pipeline, including output table

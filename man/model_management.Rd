@@ -11,6 +11,9 @@ model_management(model, hyperparameters)
 
 \item{hyperparameters}{list, list of hyperparameters of the model}
 }
+\value{
+No return value. Called to save model and settings locally.
+}
 \description{
 Saves the model and its settings so that it can be recreated
 }

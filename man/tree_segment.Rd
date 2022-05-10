@@ -17,6 +17,10 @@ number_of_segments: integer, number of leaves you want the decision tree to have
 
 \item{verbose}{logical whether information about the segmentation procedure should be given.}
 }
+\value{
+List of 4 objects. The rpart object defining the model, a data frame providing high-level segment attributes,
+a lookup table (data frame) with the id and predicted segment number, and a list of the hyperparameters used.
+}
 \description{
 Runs decision tree optimisation on the data to segment ids.
 }

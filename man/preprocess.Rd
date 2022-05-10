@@ -29,6 +29,10 @@ preprocess(
 
 \item{verbose}{logical whether information about the preprocessing should be given}
 }
+\value{
+An id attributes data frame, e.g. customer attributes if the id represents customer IDs. 
+A single row per unique id.
+}
 \description{
 Transforms a transactional table into an id aggregated table with custom options for aggregation methods for numeric and categorical columns.
 }

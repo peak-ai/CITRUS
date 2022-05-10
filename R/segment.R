@@ -11,6 +11,8 @@
 #' @param hyperparameters list of hyperparameters to use in the model.
 #' @param force logical, TRUE to ignore errors in validation step and force model execution.
 #' @param verbose logical whether information about the segmentation pipeline should be given.
+#' @return A list of three objects. A tibble providing high-level segment attributes, a lookup table (data frame)
+#' with the id and predicted segment number, and an rpart object defining the model.
 #' @importFrom utils modifyList
 #' @export
 segment <- function(data,
@@ -18,9 +20,11 @@ segment <- function(data,
                     FUN = NULL,
                     FUN_preprocess = NULL,
                     steps = c('preprocess', 'model'),
-                    prettify = F,
-                    print_plot = F,
-                    hyperparameters = NULL, force = FALSE, verbose = TRUE) {
+                    prettify = FALSE,
+                    print_plot = FALSE,
+                    hyperparameters = NULL, 
+                    force = FALSE, 
+                    verbose = FALSE) {
   
   steps <- match.arg(steps, several.ok = TRUE)
   modeltype <- match.arg(modeltype)
@@ -33,7 +37,6 @@ segment <- function(data,
       if(verbose == TRUE) {message('Using default preprocessing')}
       if (modeltype == 'tree') {
         data <- preprocess(data, target = 'transactionvalue', target_agg = 'mean', verbose = verbose)
-        #print(data)
       } else if (modeltype == 'k-clusters') {
         data <- preprocess(data, verbose = verbose)
       }
@@ -73,7 +76,7 @@ segment <- function(data,
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
 
         # Prettify layer
-        if(prettify == T){
+        if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
           model <- tree_segment_prettify(model, print_plot = print_plot)
         }
@@ -110,10 +113,10 @@ segment <- function(data,
         model = k_clusters(data, hyperparameters, verbose = verbose)
   
         # Prettify layer
-        if(prettify == T){
+        if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
-          print(citrus_pair_plot(model))
 
+          citrus_pair_plot(model)
         }
       }
 
@@ -121,7 +124,6 @@ segment <- function(data,
       # User defined model
       if(verbose == TRUE) {message('Using custom model')}
       model <- FUN(data)
-      # Abstraction layer
     }
   }
   # Model management layer

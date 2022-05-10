@@ -12,6 +12,8 @@
 #' @importFrom rpart.plot rpart.plot
 #' @importFrom rlang .data
 #' @param verbose logical whether information about the segmentation procedure should be given.
+#' @return List of 4 objects. The rpart object defining the model, a data frame providing high-level segment attributes,
+#' a lookup table (data frame) with the id and predicted segment number, and a list of the hyperparameters used.
 #' @export
 tree_segment <- function(data, hyperparameters, verbose = TRUE){
   
@@ -44,7 +46,9 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
                                                        min_segmentation_fraction=hyperparameters$min_segmentation_fraction,
                                                        number_of_leafs=hyperparameters$number_of_segments)
   
-  if(nrow(first_tree$frame)==1){print('Only 1 segment. Change parameters or inputs!')}else{
+  if(nrow(first_tree$frame)==1){
+    warning('Only 1 segment. Change parameters or inputs!')
+  } else {
     segment_table <- tree_table.make(first_tree, int_colnames)
     segment_tree  <- segment_tree.make(first_tree)
     segment_tree_df <- segment_tree$df
@@ -75,8 +79,8 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
   control <- rpart.control(cp=-1,minbucket = minbucket,minsplit = minsplit)
   tree <- rpart(f,data=df,method='anova',control = control)
   
-  if(nrow(tree$frame %>% filter(.data$var=='<leaf>'))<number_of_leafs){
-    print('WARNING: Output number of segments is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
+  if(nrow(tree$frame %>% filter(.data$var=='<leaf>')) < number_of_leafs) {
+    warning('Output number of segments is less than than the requested amount. Reduce the minimum segmentation fraction, increase the number of segmentation variables, get more data etc.')
     pruned_tree <- tree
   } else{
     cp_adjusted_tree <- tree
@@ -103,7 +107,7 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
       }
       if(stopcount==1000){
         number_check <- TRUE
-        print(paste('Pruning was unable to converge. Number of leafs likely to not match what was requested. min_cp=',min_cp,'  max_cp=',max_cp))
+        warning(paste('Pruning was unable to converge. Number of leafs likely to not match what was requested. min_cp=',min_cp,'  max_cp=',max_cp))
       }
     }
     return(pruned_tree)
@@ -202,7 +206,9 @@ tree_table.make <- function(tree, integer_columns){
     }
     
     return(df3)
-  }else{print("Only one node! This isn't a tree - it's a stump!")}
+  } else {
+    warning("Only one node! This isn't a tree - it's a stump!")
+  }
 }
 
 #' @importFrom tibble rownames_to_column tibble
@@ -250,8 +256,10 @@ dynamic_binning <-
 #' 5 Show the split variable name in the interior nodes. 
 #' @param fontfamily Names of the font family to use for the text in the plots.
 #' @param ... Additional arguments.
+#' @return 
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rpart.plot prp
+#' @return An rpart.plot object. This plot object can be plotted using the rpart::prp function.
 #' @export
 
 rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfamily='sans',...){
@@ -405,8 +413,9 @@ rpart.plot_pretty <- function(model,main="",sub,caption,palettes,type=2,fontfami
 #' @param print_plot logical, indicates whether to print the generated plot or not
 #' @importFrom dplyr select %>%
 #' @importFrom stringr str_remove_all str_remove str_split
+#' @return A formatted and "prettified" rpart.plot object. This plot object can be plotted using the rpart::prp function.
 #' @export
-tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
+tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
   
   if(print_plot){rpart.plot_pretty(tree$segment_model)}
   
@@ -446,6 +455,9 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = F){
 #' Organises the model outputs, predictions and settings in a general structure
 #' @param model The model to organise
 #' @param inputdata The data used to train the model
+#' @return A structure with the class name "tree_model" which contains a list of all the relevant model data, 
+#' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
+#' and the input data used to train the model.
 #' @export
 tree_abstract <- function(model, inputdata){
   #TODO: add performance statistics

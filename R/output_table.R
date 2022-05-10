@@ -5,6 +5,8 @@
 #' @param model A model object used to classify ids with, generated from the model selection layer
 #' @importFrom dplyr left_join select mutate group_by summarise summarise_each funs across
 #' @importFrom rlang .data
+#' @return A tibble providing high-level segment attributes such as mean and max (numeric) or mode (categorical)
+#' for the segmentation features used.
 #' @export
 output_table <- function(data, model) {
   #TODO: Add summary stats for the predictors
@@ -28,7 +30,7 @@ output_table <- function(data, model) {
   }
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
-  characterlevel <- lapply(df_agg,is.character)==T
+  characterlevel <- lapply(df_agg,is.character)==TRUE
   
   df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
     group_by(.data$segment) %>%
@@ -66,7 +68,7 @@ output_table <- function(data, model) {
   if(response %in% names(df)) {
     df <- df %>%
       group_by(.data$segment)%>%
-      summarise(n = n(), mean_value = mean(as.numeric(as.character(.data$response)),na.rm=T)) %>%
+      summarise(n = n(), mean_value = mean(as.numeric(as.character(.data$response)),na.rm=TRUE)) %>%
       mutate(percentage = paste0(100*round((.data$n/sum(.data$n)),3),'%')) %>% 
         left_join(df_agg, by = 'segment')
 
@@ -87,25 +89,25 @@ top5categories <- function(codes){
   codes <- as.factor(codes)
   codes_table <- tabulate(codes)
   top5categories_input <- round(100*codes_table/sum(codes_table),2)
-  top5categories_input_values <- top5categories_input[order(top5categories_input,decreasing = T)[1:5]]
-  top5categories_input_names <- levels(codes)[order(top5categories_input,decreasing = T)[1:5]]
+  top5categories_input_values <- top5categories_input[order(top5categories_input,decreasing = TRUE)[1:5]]
+  top5categories_input_names <- levels(codes)[order(top5categories_input,decreasing = TRUE)[1:5]]
   top5categories_input_values <- top5categories_input_values[!is.na(top5categories_input_values)]
   top5categories_input_names <- top5categories_input_names[!is.na(top5categories_input_names)]
   top5categories_output <- paste0(top5categories_input_names, ' - ',top5categories_input_values,'%',collapse = '; ')
   return(top5categories_output)
 }
   
-mode <- function(codes, max = T){
+mode <- function(codes, max = TRUE){
   codes <- as.factor(codes)
-  if(max == T){
+  if(max == TRUE){
     levels(codes)[which.max(tabulate(codes))]
   }else{
     levels(codes)[which.min(tabulate(codes))]
   }
 }
 range_output <- function(codes){
-  min_codes <- round(min(codes,na.rm = T),2)
-  max_codes <- round(max(codes,na.rm = T),2)
+  min_codes <- round(min(codes,na.rm = TRUE),2)
+  max_codes <- round(max(codes,na.rm = TRUE),2)
   output <- paste0(min_codes,' - ',max_codes)
   return(output)
 }
