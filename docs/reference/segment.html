@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">citrus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -157,11 +157,11 @@
   FUN <span class='op'>=</span> <span class='cn'>NULL</span>,
   FUN_preprocess <span class='op'>=</span> <span class='cn'>NULL</span>,
   steps <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"preprocess"</span>, <span class='st'>"model"</span><span class='op'>)</span>,
-  prettify <span class='op'>=</span> <span class='cn'>F</span>,
-  print_plot <span class='op'>=</span> <span class='cn'>F</span>,
+  prettify <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  print_plot <span class='op'>=</span> <span class='cn'>FALSE</span>,
   hyperparameters <span class='op'>=</span> <span class='cn'>NULL</span>,
   force <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -209,6 +209,10 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list of three objects. A tibble providing high-level segment attributes, a lookup table (data frame)
+with the id and predicted segment number, and an rpart object defining the model.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -221,7 +225,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Joash Alonso.</p>
+  <p>Developed by Dom Clarke, Cinzia Braglia, Oskar Nummedal, Leo McCarthy, Rebekah Yates, Joash Alonso.</p>
 </div>
 
 <div class="pkgdown">
