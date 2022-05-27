@@ -31,7 +31,7 @@ output_table <- function(data, model) {
   
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables))
   
-  df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
+  df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment', drop = FALSE] %>%
     group_by(.data$segment) %>%
     summarise(across(everything(), ~round(mean(.data$., na.rm = TRUE), 2)))
   
@@ -71,7 +71,7 @@ output_table <- function(data, model) {
       summarise(n = n(), mean_value = mean(as.numeric(as.character(.data[[response]])),na.rm=TRUE)) %>%
       mutate(percentage = paste0(100*round((.data$n/sum(.data$n)),3),'%')) %>% 
       left_join(df_agg, by = 'segment')
-    
+
   } else {
     df <- df %>%
       group_by(.data$segment)%>%

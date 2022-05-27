@@ -24,3 +24,6 @@ a lookup table (data frame) with the id and predicted segment number, and a list
 \description{
 Runs decision tree optimisation on the data to segment ids.
 }
+\author{
+Stuart Davie, \email{stuart.davie@peak.ai}
+}
