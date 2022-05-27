@@ -44,6 +44,10 @@ segment <- function(data,
       if(verbose == TRUE) {message('Using custom preprocessing')}
       data <- FUN_preprocess(data)
     }
+    
+    if (length(steps) == 1) {
+      return (data)
+    }
   }
 
   # Model selection layer
