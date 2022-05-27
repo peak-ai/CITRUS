@@ -32,11 +32,11 @@ output_table <- function(data, model) {
   df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
   characterlevel <- lapply(df_agg,is.character)==TRUE
   
-  df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
+  df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment', drop = FALSE] %>%
     group_by(.data$segment) %>%
     summarise(across(everything(), ~round(mean(.data$., na.rm = TRUE), 2)))
   
-  df_agg_character <- df_agg[, !unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment'] %>%
+  df_agg_character <- df_agg[, !unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment', drop = FALSE] %>%
     group_by(.data$segment) %>%
     summarise(across(everything(), ~mode(.data$.)))
   
@@ -48,11 +48,11 @@ output_table <- function(data, model) {
   
   
   seg_vars <- model$model_hyperparameters$segmentation_variables
-  df_agg2_numeric <- df[, (unlist(lapply(df, is.numeric)) & names(df) %in% seg_vars) | names(df) == 'segment'] %>%
+  df_agg2_numeric <- df[, (unlist(lapply(df, is.numeric)) & names(df) %in% seg_vars) | names(df) == 'segment', drop = FALSE] %>%
     group_by(.data$segment) %>% 
     summarise(across(everything(), ~range_output(.data$.)))
   
-  df_agg2_character <- df[, (!unlist(lapply(df, is.numeric)) & names(df) %in% seg_vars) | names(df) == 'segment'] %>%
+  df_agg2_character <- df[, (!unlist(lapply(df, is.numeric)) & names(df) %in% seg_vars) | names(df) == 'segment', drop = FALSE] %>%
     group_by(.data$segment) %>% 
     summarise(across(everything(), ~top5categories(.data$.)))
   
@@ -70,14 +70,14 @@ output_table <- function(data, model) {
       group_by(.data$segment)%>%
       summarise(n = n(), mean_value = mean(as.numeric(as.character(.data[[response]])),na.rm=TRUE)) %>%
       mutate(percentage = paste0(100*round((.data$n/sum(.data$n)),3),'%')) %>% 
-        left_join(df_agg, by = 'segment')
+      left_join(df_agg, by = 'segment')
 
   } else {
     df <- df %>%
       group_by(.data$segment)%>%
       summarise(n = n()) %>%
       mutate(mean_value = NULL, percentage = paste0(100*round(.data$n/sum(.data$n),3),'%')) %>% 
-        left_join(df_agg, by = 'segment')
+      left_join(df_agg, by = 'segment')
     
   }
 
