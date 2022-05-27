@@ -83,7 +83,7 @@ segment <- function(data,
         
         # Abstraction layer
         if(verbose == TRUE) {message('Abstracting model')}
-        model <- tree_abstract(model, data)
+        model <- tree_abstract(model)
       }
       
       # Model B

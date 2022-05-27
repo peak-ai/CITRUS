@@ -463,15 +463,14 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
 #' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
 #' and the input data used to train the model.
 #' @export
-tree_abstract <- function(model, inputdata){
+tree_abstract <- function(model){
   #TODO: add performance statistics
   #tree_performance()
   structure(
     list(segment_model = model$segment_model,
          model_hyperparameters = model$model_inputs,
          segment_table = model$segment_table,
-         predicted_values = model$segment_predicted,
-         input_data = inputdata),
+         predicted_values = model$segment_predicted),
     
     class = "tree_model")
 }
