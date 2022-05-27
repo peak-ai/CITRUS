@@ -29,8 +29,7 @@ output_table <- function(data, model) {
     segmentation_vars <- allcolumnnames[!allcolumnnames %in% c('id', response , 'segment')]  
   }
   
-  df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables)) 
-  characterlevel <- lapply(df_agg,is.character)==TRUE
+  df_agg <- df %>% select(c('segment',model$model_hyperparameters$segmentation_variables))
   
   df_agg_numeric <- df_agg[, unlist(lapply(df_agg, is.numeric)) | names(df_agg) == 'segment', drop = FALSE] %>%
     group_by(.data$segment) %>%
@@ -41,6 +40,7 @@ output_table <- function(data, model) {
     summarise(across(everything(), ~mode(.data$.)))
   
   df_agg <- full_join(df_agg_numeric, df_agg_character, by = 'segment')
+  characterlevel <- lapply(df_agg,is.character)==TRUE
   
   names(df_agg)[characterlevel] <- paste0(names(df_agg)[characterlevel],'_mode')
   names(df_agg)[!characterlevel] <- paste0(names(df_agg)[!characterlevel],'_mean')
@@ -80,9 +80,9 @@ output_table <- function(data, model) {
       left_join(df_agg, by = 'segment')
     
   }
-
+  
   return(df)
-
+  
 }
 
 top5categories <- function(codes){
@@ -96,7 +96,7 @@ top5categories <- function(codes){
   top5categories_output <- paste0(top5categories_input_names, ' - ',top5categories_input_values,'%',collapse = '; ')
   return(top5categories_output)
 }
-  
+
 mode <- function(codes, max = TRUE){
   codes <- as.factor(codes)
   if(max == TRUE){
