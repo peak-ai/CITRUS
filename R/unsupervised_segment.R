@@ -261,6 +261,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
   out <- list(segment_model = km,
               input_data = cbind("id" = ids,data),
               model_hyperparameters = input_params,
+              # input_data = cbind("id" = ids,data),
               outliers_table = data_outliers,
               elbow_plot = elbow_plot,
               predicted_values = data.frame("id" = ids,"segment" = km$cluster)
