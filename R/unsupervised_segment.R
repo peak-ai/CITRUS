@@ -258,7 +258,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
   }
   if(verbose == TRUE) { message(paste0("Number of rows: ", nrow(data)))}
   out <- list(segment_model = km,
-              input_data = cbind("id" = ids,data),
+              # input_data = cbind("id" = ids,data),
               model_hyperparameters =input_params,
               outliers_table = data_outliers,
               elbow_plot = elbow_plot,
