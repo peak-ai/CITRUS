@@ -12,6 +12,7 @@
 #' @importFrom rpart.plot rpart.plot
 #' @importFrom rlang .data
 #' @param verbose logical whether information about the segmentation procedure should be given.
+#' @author Stuart Davie, \email{stuart.davie@@peak.ai}
 #' @return List of 4 objects. The rpart object defining the model, a data frame providing high-level segment attributes,
 #' a lookup table (data frame) with the id and predicted segment number, and a list of the hyperparameters used.
 #' @export
@@ -71,6 +72,7 @@ tree_segment <- function(data, hyperparameters, verbose = TRUE){
 #' @importFrom rpart rpart.control rpart prune
 #' @importFrom tibble rownames_to_column 
 #' @importFrom rlang .data
+#' @author Stuart Davie, \email{stuart.davie@@peak.ai}
 decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,dependent_variable='response',min_segmentation_fraction=0.05,number_of_leafs=6){
   
   minbucket = floor(nrow(df)*min_segmentation_fraction)
@@ -119,6 +121,7 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
 #' @importFrom rpart.utils rpart.rules rpart.subrules.table
 #' @importFrom stringr str_split
 #' @importFrom rlang .data
+#' @author Stuart Davie, \email{stuart.davie@@peak.ai}
 tree_table.make <- function(tree, integer_columns){
   
   df1 <- rownames_to_column(tree$frame) %>% arrange(as.numeric(.data$rowname)) %>%
@@ -215,6 +218,7 @@ tree_table.make <- function(tree, integer_columns){
 #' @importFrom dplyr mutate row_number arrange bind_cols filter transmute %>%
 #' @importFrom rpart.utils rpart.rules
 #' @importFrom rlang .data
+#' @author Stuart Davie, \email{stuart.davie@@peak.ai}
 segment_tree.make <- function(tree){
   
   df1 <- rownames_to_column(tree$frame) %>% mutate(orig_row=row_number()) %>% arrange(as.numeric(.data$rowname)) %>%
