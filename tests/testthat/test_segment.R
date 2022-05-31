@@ -11,8 +11,6 @@ customer_data <- citrus::preprocessed_data %>%
     monetary > 100 ~ 'High'
   ))
 
-o <- preprocess(data)
-
 test_that("Supervised default output object check", {
   output_supervised <- segment(data, modeltype = 'tree')
   
