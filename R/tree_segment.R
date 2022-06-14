@@ -120,6 +120,7 @@ rpart.lists <- function(object) {
 #'
 #'
 #' @param object an rpart object
+#' @importFrom stats setNames
 #' @export
 #' @examples
 #' library(rpart)
@@ -146,6 +147,7 @@ rpart.rules.table<-function(object) {
 #' Returns an unpivoted table of variable values (factor levels) associated with each branch.
 #'
 #' @param object an rpart object
+#' @importFrom stats setNames
 #' @export
 #' @examples
 #' library(rpart)
