@@ -5,6 +5,7 @@
 #' @param hyperparameters list, list of hyperparameters of the model
 #' @importFrom utils object.size
 #' @importFrom grDevices pdf dev.off
+#' @importFrom methods is
 #' @return No return value. Called to save model and settings locally.
 #' @export
 model_management <- function(model,hyperparameters){

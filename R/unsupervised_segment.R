@@ -274,6 +274,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
 }
 
 #' @importFrom stats predict
+#' @importFrom methods is
 predict.k_clusters <- function(object,newdata,...){
   object <-  object$segment_model
   if (is(object, "kmeans")) {
