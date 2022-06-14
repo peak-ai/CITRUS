@@ -10,8 +10,7 @@
 #' library(rpart)
 #' fit<-rpart(Reliability~.,data=car.test.frame)
 #' rpart.rules(fit)
-rpart.rules<-function(object)
-{
+rpart.rules<-function(object) {
   frame<-object$frame
   ruleNums<-as.numeric(row.names(frame))  ##Convert the row names into a list of rule numbers
   is.leaf <- (frame$var == "<leaf>")
