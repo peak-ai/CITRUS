@@ -1,3 +1,120 @@
+#' rpart.rules function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
+#' Returns a list of strings summarizing the branch path to each node.
+#'
+#'
+#' @param object an rpart object
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.rules(fit)
+rpart.rules<-function(object)
+{
+  frame<-object$frame
+  ruleNums<-as.numeric(row.names(frame))  ##Convert the row names into a list of rule numbers
+  is.leaf <- (frame$var == "<leaf>")
+  frame[!is.leaf,"order"]<-seq_along(which(!is.leaf)) ##Number the branches to number them for matching with subrule sets
+  rules<-replicate(max(ruleNums),NULL)
+  rules[1]<-"NULL"
+  
+  ##The rule numbering convention contains the information to determine branch lineage. 
+  ##Most of the potential rule numbers don't actually exist, but this will result in the creation of a NULL rule.
+  for (i in as.numeric(row.names(frame))[-1])
+  {
+    if(i%%2==0)
+    {
+      rules[i]<-paste(rules[i/2],paste('L',frame[as.character(i/2),"order"],sep=''),sep=',')
+    }
+    else
+    {
+        rules[i]<-paste(rules[(i-1)/2],paste('R',frame[as.character((i-1)/2),"order"],sep=''),sep=',')
+    }
+  }
+  rules<-lapply(rules,function (x) gsub("NULL,",'',x))
+  return(rules)
+}
+
+#' rpart.lists function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
+#' Creates lists of variable values (factor levels) associated with each rule in an \pkg{rpart} object.  
+#'
+#'
+#' @param object an rpart object
+#' @return a list of lists
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.lists(fit)
+rpart.lists <- function(object)
+{
+  
+  ff <- object$frame
+  n <- nrow(ff)
+  if (n == 1L) return("root")            # special case of no splits
+  
+  
+  ##This section  borrowed from the rpart source to identify the appropriate locations from the splits table.
+  is.leaf <- (ff$var == "<leaf>")
+  whichrow <- !is.leaf
+  vnames <- ff$var[whichrow] # the variable names for the primary splits
+  
+  index <- cumsum(c(1, ff$ncompete + ff$nsurrogate + !is.leaf))
+  irow <- index[c(whichrow, FALSE)] # we only care about the primary split
+  ncat <- object$splits[irow, 2L]
+  ##
+  
+  lsplit <- rsplit <- list()  
+  
+  if (any(ncat < 2L)) 
+  {               # any continuous vars ?
+    
+    jrow <- irow[ncat < 2L]
+    cutpoint <- object$splits[jrow, 4L]
+    temp1 <- (ifelse(ncat < 0, "<", ">="))[ncat < 2L]
+    temp2 <- (ifelse(ncat < 0, ">=", "<"))[ncat < 2L]
+    lsplit[ncat<2L] <- cutpoint
+    #lsplit[ncat<2L] <- lapply(lsplit[ncat<2L],function (x) structure(x, 'numeric'=TRUE))
+    
+    rsplit[ncat<2L] <- cutpoint
+    #rsplit[ncat<2L] <- lapply(rsplit[ncat<2L],function (x) structure(x, 'numeric'=TRUE))
+    
+  }
+  
+  if (any(ncat > 1L)) 
+  {               # any categorical variables ?
+    xlevels <- attr(object, "xlevels")
+    ##
+    ## jrow will be the row numbers of factors within lsplit and rsplit
+    ## crow the row number in "csplit"
+    ## and cindex the index on the "xlevels" list
+    ##
+    jrow <- seq_along(ncat)[ncat > 1L]
+    crow <- object$splits[irow[ncat > 1L], 4L] #row number in csplit
+    cindex <- (match(vnames, names(xlevels)))[ncat > 1L]
+
+    
+    lsplit[jrow]<-lapply(seq_along(jrow),function (i) xlevels[[cindex[i]]][object$csplit[crow[i], ]==1L])
+    rsplit[jrow]<-lapply(seq_along(jrow),function (i) xlevels[[cindex[i]]][object$csplit[crow[i], ]==3L])
+
+  }
+
+
+  lsplit<-lapply(seq_along(lsplit), function (i) structure(lsplit[[i]], "compare"=ifelse(ncat[i]<2L,ifelse(ncat[i]<0,"<",">="),"=")))
+  rsplit<-lapply(seq_along(lsplit), function (i) structure(rsplit[[i]], "compare"=ifelse(ncat[i]<2L,ifelse(ncat[i]<0,">=","<"),"=")))
+  
+  
+  names(lsplit)<-vnames
+  names(rsplit)<-vnames
+  
+  results<-list("L"=lsplit,"R"=rsplit)  
+
+  return(results)
+}
+
 #' rpart.rules.table function
 #' 
 #' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
