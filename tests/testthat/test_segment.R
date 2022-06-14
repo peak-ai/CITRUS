@@ -91,7 +91,18 @@ test_that("Dependent variable other than 'response'", {
 
 test_that("Only run 'preprocess' step", {
   
+  # Default supervised preprocessing
   output <- segment(data, steps = c('preprocess'))
+  
+  # Check rows
+  expect_equal(nrow(output), 410)
+  
+  # Check column names
+  expect_true(all(names(output) == c('id', 'recency', 'frequency', 'monetary', 'response')))
+  
+  
+  # Unsupervised preprocessing
+  output <- segment(data, steps = c('preprocess'), modeltype = 'k-clusters')
   
   # Check rows
   expect_equal(nrow(output), 410)
