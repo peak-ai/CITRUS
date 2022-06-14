@@ -34,6 +34,8 @@ Imports:
     dplyr (>= 1.0.7),
     RColorBrewer (>= 1.1-2),
     rlang (>= 0.4.9)
+Remotes:
+    tidyverse/dplyr@v1.0.7
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.0
