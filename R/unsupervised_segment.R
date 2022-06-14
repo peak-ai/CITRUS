@@ -276,10 +276,10 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
 #' @importFrom stats predict
 predict.k_clusters <- function(object,newdata,...){
   object <-  object$segment_model
-  if (class(object) == "kmeans") {
+  if (is(object, "kmeans")) {
     list(cluster = apply(newdata, 1, function(r) which.min(colSums((t(object$centers) - r)^2))),
          dists = t(apply(newdata, 1, function(r) colSums((t(object$centers) - r)^2))))
-  }else if (class(object) == "kproto"){
+  }else if (is(object, "kproto")) {
     if(any(grepl('factor|character', sapply(newdata,class)))) {
       # data contain at least one categorical column
       if(any(grepl('character', sapply(newdata,class)))) {
