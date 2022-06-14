@@ -1,3 +1,68 @@
+#' rpart.rules.table function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
+#' Returns an unpivoted table of branch paths (subrules) associated with each node.
+#'
+#'
+#' @param object an rpart object
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.rules.table(fit)
+rpart.rules.table<-function(object)
+{
+  rules<-rpart.rules(object)
+  ff<-object$frame
+  ff$rules<-unlist(rules[as.numeric(row.names(ff))])
+  ruleList<-lapply(row.names(ff),function (name) setNames(data.frame(name,
+                                                                     (strsplit(ff[name,'rules'],split=',')),
+                                                                     ff[name,'var']=="<leaf>"
+                                                                     ),
+                                                          c("Rule","Subrule","Leaf")))
+  combinedRules<-Reduce(rbind,ruleList)
+  
+  return(combinedRules)
+  
+}
+
+#' rpart.subrules.table function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE                   
+#' Returns an unpivoted table of variable values (factor levels) associated with each branch.
+#'
+#' @param object an rpart object
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.subrules.table(fit)
+rpart.subrules.table<-function(object)  
+{
+  lists<-rpart.lists(object)
+  leftCompares<-lapply(lists$L,function (x) attr(x,"compare"))
+  rightCompares<-lapply(lists$R,function (x) attr(x,"compare"))
+  leftRules<-lapply(seq_along(lists$L),function (i) setNames(data.frame(paste('L',i,sep=''),names(lists$L)[i],as.character(unlist(lists$L[i],use.names=FALSE)),NA,NA),c("Subrule","Variable","Value","Less","Greater")))
+  rightRules<-lapply(seq_along(lists$R),function (i) setNames(data.frame(paste('R',i,sep=''),names(lists$R)[i],as.character(unlist(lists$R[i]),use.names=FALSE),NA,NA),c("Subrule","Variable","Value","Less","Greater")))
+  
+  reassign.columns<-function(object,compare)
+  {
+    if(grepl("<",compare))
+      object$Less<-object$Value
+    if(grepl(">",compare))
+      object$Greater<-object$Value
+    if(!grepl("=",compare))
+      object$Value=NA
+    return(object)
+  }
+  
+  leftTable<-Reduce(rbind,Map(reassign.columns, leftRules, leftCompares))
+  rightTable<-Reduce(rbind,Map(reassign.columns, rightRules, rightCompares))
+  
+  
+  return(rbind(leftTable,rightTable))
+}                   
+
 #' Tree Segment Function
 #'
 #' Runs decision tree optimisation on the data to segment ids.
@@ -118,7 +183,6 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
 
 #' @importFrom tibble rownames_to_column tibble
 #' @importFrom dplyr arrange bind_cols filter transmute row_number select group_by summarise mutate n ungroup full_join rename %>% everything
-#' @importFrom rpart.utils rpart.rules rpart.subrules.table
 #' @importFrom stringr str_split
 #' @importFrom rlang .data
 #' @author Stuart Davie, \email{stuart.davie@@peak.ai}
@@ -216,7 +280,6 @@ tree_table.make <- function(tree, integer_columns){
 
 #' @importFrom tibble rownames_to_column tibble
 #' @importFrom dplyr mutate row_number arrange bind_cols filter transmute %>%
-#' @importFrom rpart.utils rpart.rules
 #' @importFrom rlang .data
 #' @author Stuart Davie, \email{stuart.davie@@peak.ai}
 segment_tree.make <- function(tree){
