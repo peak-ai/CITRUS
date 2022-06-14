@@ -4,12 +4,10 @@
 \alias{tree_abstract}
 \title{Abstraction layer function}
 \usage{
-tree_abstract(model, inputdata)
+tree_abstract(model)
 }
 \arguments{
 \item{model}{The model to organise}
-
-\item{inputdata}{The data used to train the model}
 }
 \value{
 A structure with the class name "tree_model" which contains a list of all the relevant model data, 

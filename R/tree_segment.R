@@ -10,8 +10,7 @@
 #' library(rpart)
 #' fit<-rpart(Reliability~.,data=car.test.frame)
 #' rpart.rules(fit)
-rpart.rules<-function(object)
-{
+rpart.rules<-function(object) {
   frame<-object$frame
   ruleNums<-as.numeric(row.names(frame))  ##Convert the row names into a list of rule numbers
   is.leaf <- (frame$var == "<leaf>")
@@ -49,8 +48,7 @@ rpart.rules<-function(object)
 #' library(rpart)
 #' fit<-rpart(Reliability~.,data=car.test.frame)
 #' rpart.lists(fit)
-rpart.lists <- function(object)
-{
+rpart.lists <- function(object) {
   
   ff <- object$frame
   n <- nrow(ff)
@@ -127,8 +125,7 @@ rpart.lists <- function(object)
 #' library(rpart)
 #' fit<-rpart(Reliability~.,data=car.test.frame)
 #' rpart.rules.table(fit)
-rpart.rules.table<-function(object)
-{
+rpart.rules.table<-function(object) {
   rules<-rpart.rules(object)
   ff<-object$frame
   ff$rules<-unlist(rules[as.numeric(row.names(ff))])
@@ -154,8 +151,7 @@ rpart.rules.table<-function(object)
 #' library(rpart)
 #' fit<-rpart(Reliability~.,data=car.test.frame)
 #' rpart.subrules.table(fit)
-rpart.subrules.table<-function(object)  
-{
+rpart.subrules.table<-function(object) {
   lists<-rpart.lists(object)
   leftCompares<-lapply(lists$L,function (x) attr(x,"compare"))
   rightCompares<-lapply(lists$R,function (x) attr(x,"compare"))
@@ -440,7 +436,6 @@ dynamic_binning <-
 #' 5 Show the split variable name in the interior nodes. 
 #' @param fontfamily Names of the font family to use for the text in the plots.
 #' @param ... Additional arguments.
-#' @return 
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom rpart.plot prp
 #' @return An rpart.plot object. This plot object can be plotted using the rpart::prp function.
@@ -638,7 +633,6 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
 #'
 #' Organises the model outputs, predictions and settings in a general structure
 #' @param model The model to organise
-#' @param inputdata The data used to train the model
 #' @return A structure with the class name "tree_model" which contains a list of all the relevant model data, 
 #' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
 #' and the input data used to train the model.
