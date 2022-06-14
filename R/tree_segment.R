@@ -1,3 +1,185 @@
+#' rpart.rules function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
+#' Returns a list of strings summarizing the branch path to each node.
+#'
+#'
+#' @param object an rpart object
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.rules(fit)
+rpart.rules<-function(object)
+{
+  frame<-object$frame
+  ruleNums<-as.numeric(row.names(frame))  ##Convert the row names into a list of rule numbers
+  is.leaf <- (frame$var == "<leaf>")
+  frame[!is.leaf,"order"]<-seq_along(which(!is.leaf)) ##Number the branches to number them for matching with subrule sets
+  rules<-replicate(max(ruleNums),NULL)
+  rules[1]<-"NULL"
+  
+  ##The rule numbering convention contains the information to determine branch lineage. 
+  ##Most of the potential rule numbers don't actually exist, but this will result in the creation of a NULL rule.
+  for (i in as.numeric(row.names(frame))[-1])
+  {
+    if(i%%2==0)
+    {
+      rules[i]<-paste(rules[i/2],paste('L',frame[as.character(i/2),"order"],sep=''),sep=',')
+    }
+    else
+    {
+        rules[i]<-paste(rules[(i-1)/2],paste('R',frame[as.character((i-1)/2),"order"],sep=''),sep=',')
+    }
+  }
+  rules<-lapply(rules,function (x) gsub("NULL,",'',x))
+  return(rules)
+}
+
+#' rpart.lists function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
+#' Creates lists of variable values (factor levels) associated with each rule in an \pkg{rpart} object.  
+#'
+#'
+#' @param object an rpart object
+#' @return a list of lists
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.lists(fit)
+rpart.lists <- function(object)
+{
+  
+  ff <- object$frame
+  n <- nrow(ff)
+  if (n == 1L) return("root")            # special case of no splits
+  
+  
+  ##This section  borrowed from the rpart source to identify the appropriate locations from the splits table.
+  is.leaf <- (ff$var == "<leaf>")
+  whichrow <- !is.leaf
+  vnames <- ff$var[whichrow] # the variable names for the primary splits
+  
+  index <- cumsum(c(1, ff$ncompete + ff$nsurrogate + !is.leaf))
+  irow <- index[c(whichrow, FALSE)] # we only care about the primary split
+  ncat <- object$splits[irow, 2L]
+  ##
+  
+  lsplit <- rsplit <- list()  
+  
+  if (any(ncat < 2L)) 
+  {               # any continuous vars ?
+    
+    jrow <- irow[ncat < 2L]
+    cutpoint <- object$splits[jrow, 4L]
+    temp1 <- (ifelse(ncat < 0, "<", ">="))[ncat < 2L]
+    temp2 <- (ifelse(ncat < 0, ">=", "<"))[ncat < 2L]
+    lsplit[ncat<2L] <- cutpoint
+    #lsplit[ncat<2L] <- lapply(lsplit[ncat<2L],function (x) structure(x, 'numeric'=TRUE))
+    
+    rsplit[ncat<2L] <- cutpoint
+    #rsplit[ncat<2L] <- lapply(rsplit[ncat<2L],function (x) structure(x, 'numeric'=TRUE))
+    
+  }
+  
+  if (any(ncat > 1L)) 
+  {               # any categorical variables ?
+    xlevels <- attr(object, "xlevels")
+    ##
+    ## jrow will be the row numbers of factors within lsplit and rsplit
+    ## crow the row number in "csplit"
+    ## and cindex the index on the "xlevels" list
+    ##
+    jrow <- seq_along(ncat)[ncat > 1L]
+    crow <- object$splits[irow[ncat > 1L], 4L] #row number in csplit
+    cindex <- (match(vnames, names(xlevels)))[ncat > 1L]
+
+    
+    lsplit[jrow]<-lapply(seq_along(jrow),function (i) xlevels[[cindex[i]]][object$csplit[crow[i], ]==1L])
+    rsplit[jrow]<-lapply(seq_along(jrow),function (i) xlevels[[cindex[i]]][object$csplit[crow[i], ]==3L])
+
+  }
+
+
+  lsplit<-lapply(seq_along(lsplit), function (i) structure(lsplit[[i]], "compare"=ifelse(ncat[i]<2L,ifelse(ncat[i]<0,"<",">="),"=")))
+  rsplit<-lapply(seq_along(lsplit), function (i) structure(rsplit[[i]], "compare"=ifelse(ncat[i]<2L,ifelse(ncat[i]<0,">=","<"),"=")))
+  
+  
+  names(lsplit)<-vnames
+  names(rsplit)<-vnames
+  
+  results<-list("L"=lsplit,"R"=rsplit)  
+
+  return(results)
+}
+
+#' rpart.rules.table function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE
+#' Returns an unpivoted table of branch paths (subrules) associated with each node.
+#'
+#'
+#' @param object an rpart object
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.rules.table(fit)
+rpart.rules.table<-function(object)
+{
+  rules<-rpart.rules(object)
+  ff<-object$frame
+  ff$rules<-unlist(rules[as.numeric(row.names(ff))])
+  ruleList<-lapply(row.names(ff),function (name) setNames(data.frame(name,
+                                                                     (strsplit(ff[name,'rules'],split=',')),
+                                                                     ff[name,'var']=="<leaf>"
+                                                                     ),
+                                                          c("Rule","Subrule","Leaf")))
+  combinedRules<-Reduce(rbind,ruleList)
+  
+  return(combinedRules)
+  
+}
+
+#' rpart.subrules.table function
+#' 
+#' THIS HAS BEEN COPIED FROM THE ARCHIVED rpart.utils PACKAGE AND THIS CODE WAS WRITTEN BY THE AUTHORS OF THAT PACKAGE                   
+#' Returns an unpivoted table of variable values (factor levels) associated with each branch.
+#'
+#' @param object an rpart object
+#' @export
+#' @examples
+#' library(rpart)
+#' fit<-rpart(Reliability~.,data=car.test.frame)
+#' rpart.subrules.table(fit)
+rpart.subrules.table<-function(object)  
+{
+  lists<-rpart.lists(object)
+  leftCompares<-lapply(lists$L,function (x) attr(x,"compare"))
+  rightCompares<-lapply(lists$R,function (x) attr(x,"compare"))
+  leftRules<-lapply(seq_along(lists$L),function (i) setNames(data.frame(paste('L',i,sep=''),names(lists$L)[i],as.character(unlist(lists$L[i],use.names=FALSE)),NA,NA),c("Subrule","Variable","Value","Less","Greater")))
+  rightRules<-lapply(seq_along(lists$R),function (i) setNames(data.frame(paste('R',i,sep=''),names(lists$R)[i],as.character(unlist(lists$R[i]),use.names=FALSE),NA,NA),c("Subrule","Variable","Value","Less","Greater")))
+  
+  reassign.columns<-function(object,compare)
+  {
+    if(grepl("<",compare))
+      object$Less<-object$Value
+    if(grepl(">",compare))
+      object$Greater<-object$Value
+    if(!grepl("=",compare))
+      object$Value=NA
+    return(object)
+  }
+  
+  leftTable<-Reduce(rbind,Map(reassign.columns, leftRules, leftCompares))
+  rightTable<-Reduce(rbind,Map(reassign.columns, rightRules, rightCompares))
+  
+  
+  return(rbind(leftTable,rightTable))
+}                   
+
 #' Tree Segment Function
 #'
 #' Runs decision tree optimisation on the data to segment ids.
@@ -118,7 +300,6 @@ decision_tree_user_defined_leafs.make <- function(df,segmentation_variables,depe
 
 #' @importFrom tibble rownames_to_column tibble
 #' @importFrom dplyr arrange bind_cols filter transmute row_number select group_by summarise mutate n ungroup full_join rename %>% everything
-#' @importFrom rpart.utils rpart.rules rpart.subrules.table
 #' @importFrom stringr str_split
 #' @importFrom rlang .data
 #' @author Stuart Davie, \email{stuart.davie@@peak.ai}
@@ -216,7 +397,6 @@ tree_table.make <- function(tree, integer_columns){
 
 #' @importFrom tibble rownames_to_column tibble
 #' @importFrom dplyr mutate row_number arrange bind_cols filter transmute %>%
-#' @importFrom rpart.utils rpart.rules
 #' @importFrom rlang .data
 #' @author Stuart Davie, \email{stuart.davie@@peak.ai}
 segment_tree.make <- function(tree){
@@ -463,15 +643,14 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
 #' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
 #' and the input data used to train the model.
 #' @export
-tree_abstract <- function(model, inputdata){
+tree_abstract <- function(model){
   #TODO: add performance statistics
   #tree_performance()
   structure(
     list(segment_model = model$segment_model,
          model_hyperparameters = model$model_inputs,
          segment_table = model$segment_table,
-         predicted_values = model$segment_predicted,
-         input_data = inputdata),
+         predicted_values = model$segment_predicted),
     
     class = "tree_model")
 }
