@@ -636,8 +636,7 @@ tree_segment_prettify <- function(tree, char_length = 20, print_plot = FALSE){
 #' Organises the model outputs, predictions and settings in a general structure
 #' @param model The model to organise
 #' @return A structure with the class name "tree_model" which contains a list of all the relevant model data, 
-#' including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
-#' and the input data used to train the model.
+#' including the rpart model object, hyper-parameters, segment table and the labelled customer lookup table.
 #' @export
 tree_abstract <- function(model){
   #TODO: add performance statistics
