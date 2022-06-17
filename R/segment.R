@@ -28,7 +28,7 @@ segment <- function(data,
   
   steps <- match.arg(steps, several.ok = TRUE)
   modeltype <- match.arg(modeltype)
-
+  
   # Data processing layer
   # returns data in appropriate format called 'data'
   if ('preprocess' %in% steps) {
@@ -44,13 +44,17 @@ segment <- function(data,
       if(verbose == TRUE) {message('Using custom preprocessing')}
       data <- FUN_preprocess(data)
     }
+    
+    if (length(steps) == 1) {
+      return (data)
+    }
   }
-
+  
   # Model selection layer
   if ('model' %in% steps) {
     if(verbose == TRUE) {message('Setting up model')}
     if (is.null(FUN)) {
-
+      
       # Tree Model
       if (modeltype == 'tree') {
         if(verbose == TRUE) {message('Tree based model chosen')}
@@ -74,24 +78,24 @@ segment <- function(data,
         if(verbose == TRUE) {message('Training model')}
         model = tree_segment(data, hyperparameters, verbose = verbose)
         if(verbose == TRUE) {message('Number of segments: ', paste0(max(model$segment_table$segment, '\n')))}
-
+        
         # Prettify layer
         if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
           model <- tree_segment_prettify(model, print_plot = print_plot)
         }
-
+        
         # Abstraction layer
         if(verbose == TRUE) {message('Abstracting model')}
-        model <- tree_abstract(model, data)
+        model <- tree_abstract(model)
       }
-
+      
       # Model B
       if (modeltype == 'k-clusters') {
         if(verbose == TRUE) {message('k-clusters model chosen')}
-  
+        
         if(verbose == TRUE) {message('Validating input data')}
-  
+        
         # Default hyperparameters
         default_hyperparameters = list(centers = 'auto',
                                        iter_max = 50,
@@ -108,18 +112,18 @@ segment <- function(data,
         }
         
         validate(data, supervised = FALSE, force = force, hyperparameters)
-  
+        
         if(verbose == TRUE) {message('Training model')}
         model = k_clusters(data, hyperparameters, verbose = verbose)
-  
+        
         # Prettify layer
         if(prettify == TRUE){
           if(verbose == TRUE) {message('Prettifying output data')}
-
+          
           citrus_pair_plot(model)
         }
       }
-
+      
     } else {
       # User defined model
       if(verbose == TRUE) {message('Using custom model')}
@@ -128,15 +132,14 @@ segment <- function(data,
   }
   # Model management layer
   model_management(model,hyperparameters)
-
+  
   # Output
   if(verbose == TRUE) {message('Generating output table')}
   output <- output_table(data, model)
   
   
-
   if(verbose == TRUE) {message('Finished!')}
-  return(list('OutputTable' = output,"segments" =  model$predicted_values ,"CitrusModel" = model))
-
+  return(list('OutputTable' = output, 'CitrusModel' = model))
+  
 }
 
