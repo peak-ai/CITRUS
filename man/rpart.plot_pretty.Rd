@@ -39,8 +39,6 @@ rpart.plot_pretty(
 \item{...}{Additional arguments.}
 }
 \value{
-
-
 An rpart.plot object. This plot object can be plotted using the rpart::prp function.
 }
 \description{
