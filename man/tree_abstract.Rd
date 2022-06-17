@@ -4,17 +4,14 @@
 \alias{tree_abstract}
 \title{Abstraction layer function}
 \usage{
-tree_abstract(model, inputdata)
+tree_abstract(model)
 }
 \arguments{
 \item{model}{The model to organise}
-
-\item{inputdata}{The data used to train the model}
 }
 \value{
 A structure with the class name "tree_model" which contains a list of all the relevant model data, 
-including the rpart model object, hyper-parameters, segment table, labelled customer lookup table, 
-and the input data used to train the model.
+including the rpart model object, hyper-parameters, segment table and the labelled customer lookup table.
 }
 \description{
 Organises the model outputs, predictions and settings in a general structure

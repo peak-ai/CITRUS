@@ -5,6 +5,7 @@
 #' @param hyperparameters list, list of hyperparameters of the model
 #' @importFrom utils object.size
 #' @importFrom grDevices pdf dev.off
+#' @importFrom methods is
 #' @return No return value. Called to save model and settings locally.
 #' @export
 model_management <- function(model,hyperparameters){
@@ -52,7 +53,7 @@ model_management <- function(model,hyperparameters){
         #   save(model$segment_table,
         #        file=paste0(directory_path,'/segment_table.RData'), ascii=TRUE)
         # }
-        if(class(model) == 'k-clusters'){
+        if(is(model, 'k-clusters')){
           outliers <- model$outliers_table
           if(nrow(outliers) > 0) {
             save(outliers,
@@ -61,7 +62,7 @@ model_management <- function(model,hyperparameters){
         }  
       
         #Save rpart.plot
-        if(class(model) == 'tree_model'){
+        if(is(model, 'tree_model')){
            pdf(paste0(directory_path,'/tree.pdf'))
            rpart.plot_pretty(segment_model)
            dev.off()

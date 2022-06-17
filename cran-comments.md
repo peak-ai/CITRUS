@@ -1,3 +1,19 @@
+# Update v1.0.2
+
+## Test environments
+* Mac OS X 10.15.7, R-devel
+* Ubuntu 20.04.3 LTS, R-devel
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
+
+## Reverse dependencies
+
+None
+
+# Original release
+
 ### Third submission
 > If there are references describing the methods in your package, please add these in the description field of your DESCRIPTION file in the form
 authors (year) <doi:...>
