@@ -12,7 +12,7 @@ hyperparameters <- list(dependent_variable = 'response',
 
 model <- citrus::tree_segment(preprocessed_data, hyperparameters)
 model <- citrus::tree_segment_prettify(model,print_plot = T)
-model <- citrus::tree_abstract(model, preprocessed_data)
+model <- citrus::tree_abstract(model)
 output <- citrus::output_table(preprocessed_data,model)
 
 test_that("Number of Columns", {
