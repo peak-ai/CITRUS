@@ -44,6 +44,67 @@ test_that("Supervised custom output object check", {
   expect_true(output_supervised$CitrusModel$model_hyperparameters$number_of_segments == 4)
 })
 
+test_that("No error with single type of feature (categorical/numeric)", {
+  
+  # Only numeric feature columns
+  output_supervised <- segment(customer_data %>% select(id, recency, frequency, monetary, response),
+                               steps = c('model'),
+                               modeltype = 'tree', 
+                               hyperparameters = list(dependent_variable = 'response',
+                                                      min_segmentation_fraction = 0.1,
+                                                      print_safety_check = 20,
+                                                      number_of_segments = 4,
+                                                      print_plot = FALSE))
+  
+  # Only categorical feature columns
+  output_supervised <- segment(customer_data %>% select(id, top_country, spend_range, response),
+                               steps = c('model'),
+                               modeltype = 'tree', 
+                               hyperparameters = list(dependent_variable = 'response',
+                                                      min_segmentation_fraction = 0.01,
+                                                      print_safety_check = 20,
+                                                      number_of_segments = 2,
+                                                      print_plot = FALSE))
+  
+  expect_true(TRUE)
+})
+
+test_that("Dependent variable other than 'response'", {
+  
+  output_supervised <- segment(customer_data %>% select(id, recency, frequency, monetary, response) %>% rename('target_var' = response),
+                               steps = c('model'),
+                               modeltype = 'tree', 
+                               hyperparameters = list(dependent_variable = 'target_var',
+                                                      min_segmentation_fraction = 0.1,
+                                                      print_safety_check = 20,
+                                                      number_of_segments = 4,
+                                                      print_plot = FALSE))
+  
+  expect_true(TRUE)
+})
+
+test_that("Only run 'preprocess' step", {
+  
+  # Default supervised preprocessing
+  output <- segment(data, steps = c('preprocess'))
+  
+  # Check rows
+  expect_equal(nrow(output), 410)
+  
+  # Check column names
+  expect_true(all(names(output) == c('id', 'recency', 'frequency', 'monetary', 'response')))
+  
+  
+  # Unsupervised preprocessing
+  output <- segment(data, steps = c('preprocess'), modeltype = 'k-clusters')
+  
+  # Check rows
+  expect_equal(nrow(output), 410)
+  
+  # Check column names
+  expect_true(all(names(output) == c('id', 'recency', 'frequency', 'monetary', 'transactionvalue_mean')))
+})
+
 test_that("k-clusters default output object check", {
   output_kclust <- segment(data, modeltype = 'k-clusters')
   
