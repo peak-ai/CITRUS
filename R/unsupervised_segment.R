@@ -35,6 +35,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
   input_params <- list(centers = hyperparameters$centers,
                        iter_max = hyperparameters$iter_max,
                        nstart = hyperparameters$nstart,
+                       standardize = hyperparameters$standardize,
                        segmentation_variables = hyperparameters$segmentation_variables)
   
   # treatment of missings
@@ -258,8 +259,7 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
   }
   if(verbose == TRUE) { message(paste0("Number of rows: ", nrow(data)))}
   out <- list(segment_model = km,
-              input_data = cbind("id" = ids,data),
-              model_hyperparameters =input_params,
+              model_hyperparameters = input_params,
               outliers_table = data_outliers,
               elbow_plot = elbow_plot,
               predicted_values = data.frame("id" = ids,"segment" = km$cluster)
@@ -274,12 +274,13 @@ k_clusters <- function(data, hyperparameters, verbose = TRUE){
 }
 
 #' @importFrom stats predict
+#' @importFrom methods is
 predict.k_clusters <- function(object,newdata,...){
   object <-  object$segment_model
-  if (class(object) == "kmeans") {
+  if (is(object, "kmeans")) {
     list(cluster = apply(newdata, 1, function(r) which.min(colSums((t(object$centers) - r)^2))),
          dists = t(apply(newdata, 1, function(r) colSums((t(object$centers) - r)^2))))
-  }else if (class(object) == "kproto"){
+  }else if (is(object, "kproto")) {
     if(any(grepl('factor|character', sapply(newdata,class)))) {
       # data contain at least one categorical column
       if(any(grepl('character', sapply(newdata,class)))) {
